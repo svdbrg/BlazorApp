@@ -1,0 +1,185 @@
+@page "/mortgage"
+
+<title>Calculate mortgage stuff</title>
+
+@using BlazorApp.Data
+
+<h1>Mortgage all the things</h1>
+
+<p>This is a tool to help visualize your mortgage application.</p>
+
+<div class="mortgage">
+    <div class="form-group">
+        <div>
+            <label for="purchasePrice">Purchase price SEK</label>
+            <div class="input">
+                <input id="purchasePrice" class="form-control" @bind="PurchasePrice" @bind:event="oninput" />
+            </div>
+        </div>
+        <div>
+            <label for="downPayment">Down payment SEK</label>
+            <div class="input">
+                <input id="downPayment" class="form-control" @bind="DownPayment" @bind:event="oninput" />
+            </div>
+        </div>
+        <div>
+            <label for="interestRate">Interest rate %</label>
+            <div class="input">
+                <input id="interestRate" class="form-control" @bind="InterestRate" @bind:event="oninput" />
+            </div>
+        </div>
+        <div>
+            <label for="totalSalary">Total monthly salary</label>
+            <div class="input">
+                <input id="totalSalary" class="form-control" @bind="TotalSalary" @bind:event="oninput" />
+            </div>
+        </div>
+    </div>
+    <div class="expenses">
+        <label>Monthly expenses</label>
+        <div>
+            <div class="input">
+                <input @bind="expenseName" class="form-control" @bind:event="oninput" />
+            </div>
+            <div class="input">
+                <input @bind="expenseCost" class="form-control" @bind:event="oninput" />
+            </div>
+            <button class="btn btn-primary" @onclick="AddToCollection">Click me</button>
+
+            @if (Expenses != null)
+            {
+                <table>
+                    <tr>
+                        <th>Expense</th>
+                        <th>Cost</th>
+                    </tr>
+                    @foreach (var expense in Expenses)
+                    {
+                        <tr>
+                            <td>@expense.Name</td>
+                            <td>@expense.Cost.ToString("C0")</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>
+                            <b>Total</b>
+                        </td>
+                        <td>
+                            <b>@Expenses.Select(e => e.Cost).Sum().ToString("C0")</b>
+                        </td>
+                    </tr>
+                </table>
+            }
+        </div>
+    </div>
+    <div class="summary">
+        <div>
+            <label>Purchase price: </label>
+            <b>@PurchasePrice.ToString("C0")</b>
+        </div>
+        <div>
+            <label>Down payment: </label>
+            <b>@DownPayment.ToString("C0")</b>
+        </div>
+        <div>
+            <label>Interest rate: </label>
+            <b>@InterestRate%</b>
+        </div>
+        <div>
+            <label>Loan: </label>
+            <b>@Loan.ToString("C0")</b>
+        </div>
+        <div>
+            <label>Total salary to compare with: </label>
+            <b>@TotalSalaryToCompareWith.ToString("C0")</b>
+        </div>
+        <div>
+            <label>Monthly installment rate</label>
+            <b>@InstallmentRate%</b>
+        </div>
+        <div>
+            <label>Monthly loan costs</label>
+            <b>@MonthlyLoanCost.ToString("C")</b>
+        </div>
+    </div>
+</div>
+
+@code {
+    private int PurchasePrice { get; set; }
+    private int DownPayment { get; set; }
+    private double InterestRate { get; set; }
+    private int TotalSalary { get; set; }
+    private List<Expense> Expenses { get; set; }
+
+    private string expenseName { get; set; }
+    private int expenseCost { get; set; }
+
+    private double TotalSalaryToCompareWith { get => (TotalSalary * 12) * 4.5; }
+    private int Loan { get => PurchasePrice - DownPayment; }
+
+    private void AddToCollection()
+    {
+        if (Expenses == null)
+        {
+            Expenses = new List<Expense>();
+        }
+
+        Expenses.Add(new Expense
+        {
+            Name = expenseName,
+            Cost = expenseCost
+        });
+
+        expenseName = "";
+        expenseCost = 0;
+    }
+
+    private double MonthlyLoanCost
+    {
+        get
+        {
+            return
+            (Loan * (InterestRate / 100) / 12)
+            + ((double)Loan * ((double)InstallmentRate / 100) / 12);
+        }
+    }
+
+    private int InstallmentRate
+    {
+        get
+        {
+            if (Loan == 0 || PurchasePrice == 0)
+            {
+                return 0;
+            }
+
+            var loanPercentageOfTotalCost = (double)Loan / (double)PurchasePrice;
+            var percentage = 0;
+
+            if (Loan > DownPayment)
+            {
+                if (loanPercentageOfTotalCost > 0.5 && loanPercentageOfTotalCost <= 0.7)
+                {
+                    percentage++;
+                }
+
+                if (loanPercentageOfTotalCost > 0.7)
+                {
+                    percentage = percentage + 2;
+                }
+            }
+            if (Loan > TotalSalaryToCompareWith)
+            {
+                percentage++;
+            }
+
+            return percentage;
+        }
+    }
+
+    private class Expense
+    {
+        internal string Name { get; set; }
+        internal int Cost { get; set; }
+    }
+}
