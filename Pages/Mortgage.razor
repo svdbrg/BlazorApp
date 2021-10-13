@@ -13,7 +13,8 @@
         <div>
             <label for="purchasePrice">Purchase price SEK</label>
             <div class="input">
-                <input id="purchasePrice" class="form-control" @bind="PurchasePrice" @bind:event="oninput" />
+                <input id="purchasePrice" class="form-control" @onchange="changeValue" @bind="PurchasePrice"
+                    @bind:event="oninput" />
             </div>
         </div>
         <div>
@@ -75,11 +76,11 @@
     <div class="summary">
         <div>
             <label>Purchase price: </label>
-            <b>@PurchasePrice.ToString("C0")</b>
+            <b>@PurchasePrice</b>
         </div>
         <div>
             <label>Down payment: </label>
-            <b>@DownPayment.ToString("C0")</b>
+            <b>@DownPayment</b>
         </div>
         <div>
             <label>Interest rate: </label>
@@ -102,20 +103,71 @@
             <b>@MonthlyLoanCost.ToString("C")</b>
         </div>
     </div>
+    <div>
+        <label>@counter</label>>>
+    </div>
 </div>
 
 @code {
-    private int PurchasePrice { get; set; }
-    private int DownPayment { get; set; }
-    private double InterestRate { get; set; }
-    private int TotalSalary { get; set; }
-    private List<Expense> Expenses { get; set; }
+    private int purchasePrice = 0;
+    private string PurchasePrice
+    {
+        get => purchasePrice.ToString("N0");
+        set
+        {
+            if (int.TryParse(value.RemoveWhitespace(), out var number))
+            {
+                purchasePrice = number;
+            }
+        }
+    }
 
-    private string expenseName { get; set; }
+    private int downPayment = 0;
+    private string DownPayment
+    {
+        get => downPayment.ToString("N0");
+        set
+        {
+            if (int.TryParse(value.RemoveWhitespace(), out var number))
+            {
+                downPayment = number;
+            }
+        }
+    }
+
+    private int totalSalary = 0;
+    private string TotalSalary
+    {
+        get => totalSalary.ToString("N0");
+        set
+        {
+            if (int.TryParse(value.RemoveWhitespace(), out var number))
+            {
+                totalSalary = number;
+            }
+        }
+    }
+
+    private double InterestRate { get; set; }
+    private List<Expense> Expenses { get; set; } = new();
+
+    private string expenseName { get; set; } = string.Empty;
     private int expenseCost { get; set; }
 
-    private double TotalSalaryToCompareWith { get => (TotalSalary * 12) * 4.5; }
-    private int Loan { get => PurchasePrice - DownPayment; }
+    private double TotalSalaryToCompareWith { get => (totalSalary * 12) * 4.5; }
+    private int Loan { get => purchasePrice - downPayment; }
+
+    private int counter;
+    private void changeValue()
+    {
+        for (int i = 5; i > -1; i--)
+        {
+            
+            Thread.Sleep(1000);
+            counter = i;
+            Console.WriteLine(counter);
+        }
+    }
 
     private void AddToCollection()
     {
@@ -148,15 +200,15 @@
     {
         get
         {
-            if (Loan == 0 || PurchasePrice == 0)
+            if (Loan == 0 || purchasePrice == 0)
             {
                 return 0;
             }
 
-            var loanPercentageOfTotalCost = (double)Loan / (double)PurchasePrice;
+            var loanPercentageOfTotalCost = (double)Loan / (double)purchasePrice;
             var percentage = 0;
 
-            if (Loan > DownPayment)
+            if (Loan > downPayment)
             {
                 if (loanPercentageOfTotalCost > 0.5 && loanPercentageOfTotalCost <= 0.7)
                 {
@@ -179,7 +231,7 @@
 
     private class Expense
     {
-        internal string Name { get; set; }
+        internal string Name { get; set; } = string.Empty;
         internal int Cost { get; set; }
     }
 }
