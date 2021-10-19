@@ -114,23 +114,26 @@
 </div>
 
 @code {
+    private MortgageItem mortgage = new();
+
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
             var file = new DirectoryInfo(directory).GetFiles().OrderByDescending(o => o.LastWriteTime).FirstOrDefault();
-            var json = File.ReadAllText($"{directory}/{file.Name}");
-            
-            if (!string.IsNullOrWhiteSpace(json) && mortgage != null)
+            if (file != null)
             {
-                mortgage = JsonSerializer.Deserialize<MortgageItem>(json);
+                var json = File.ReadAllText($"{directory}/{file.Name}");
 
-                InvokeAsync(StateHasChanged);
+                if (!string.IsNullOrWhiteSpace(json) && mortgage != null)
+                {
+                    mortgage = JsonSerializer.Deserialize<MortgageItem>(json) ?? new();
+
+                    InvokeAsync(StateHasChanged);
+                }
             }
         }
     }
-
-    private MortgageItem mortgage = new();
 
     private string expenseName { get; set; } = string.Empty;
     private int expenseCost { get; set; }
