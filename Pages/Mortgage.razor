@@ -3,6 +3,8 @@
 <title>Calculate mortgage stuff</title>
 
 @using BlazorApp.Data
+@using System.Timers
+@using System.Text.Json
 
 <h1>Mortgage all the things</h1>
 
@@ -13,26 +15,29 @@
         <div>
             <label for="purchasePrice">Purchase price SEK</label>
             <div class="input">
-                <input id="purchasePrice" class="form-control" @onchange="changeValue" @bind="PurchasePrice"
-                    @bind:event="oninput" />
+                <input id="purchasePrice" class="form-control" @onchange="changeValue"
+                    @bind="mortgage.PurchasePriceString" @bind:event="oninput" />
             </div>
         </div>
         <div>
             <label for="downPayment">Down payment SEK</label>
             <div class="input">
-                <input id="downPayment" class="form-control" @bind="DownPayment" @bind:event="oninput" />
+                <input id="downPayment" class="form-control" @bind="mortgage.DownPaymentString" @bind:event="oninput"
+                    @onchange="changeValue" />
             </div>
         </div>
         <div>
             <label for="interestRate">Interest rate %</label>
             <div class="input">
-                <input id="interestRate" class="form-control" @bind="InterestRate" @bind:event="oninput" />
+                <input id="interestRate" class="form-control" @bind="mortgage.InterestRate" @bind:event="oninput"
+                    @onchange="changeValue" />
             </div>
         </div>
         <div>
             <label for="totalSalary">Total monthly salary</label>
             <div class="input">
-                <input id="totalSalary" class="form-control" @bind="TotalSalary" @bind:event="oninput" />
+                <input id="totalSalary" class="form-control" @bind="mortgage.TotalSalaryString" @bind:event="oninput"
+                    @onchange="changeValue" />
             </div>
         </div>
     </div>
@@ -45,16 +50,16 @@
             <div class="input">
                 <input @bind="expenseCost" class="form-control" @bind:event="oninput" />
             </div>
-            <button class="btn btn-primary" @onclick="AddToCollection">Click me</button>
+            <button class="btn btn-primary" @onclick="AddToExpenses">Click me</button>
 
-            @if (Expenses != null)
+            @if (mortgage.Expenses != null)
             {
                 <table>
                     <tr>
                         <th>Expense</th>
                         <th>Cost</th>
                     </tr>
-                    @foreach (var expense in Expenses)
+                    @foreach (var expense in mortgage.Expenses)
                     {
                         <tr>
                             <td>@expense.Name</td>
@@ -66,7 +71,7 @@
                             <b>Total</b>
                         </td>
                         <td>
-                            <b>@Expenses.Select(e => e.Cost).Sum().ToString("C0")</b>
+                            <b>@mortgage.Expenses.Select(e => e.Cost).Sum().ToString("C0")</b>
                         </td>
                     </tr>
                 </table>
@@ -76,162 +81,116 @@
     <div class="summary">
         <div>
             <label>Purchase price: </label>
-            <b>@PurchasePrice</b>
+            <b>@mortgage.PurchasePriceString</b>
         </div>
         <div>
             <label>Down payment: </label>
-            <b>@DownPayment</b>
+            <b>@mortgage.DownPaymentString</b>
         </div>
         <div>
             <label>Interest rate: </label>
-            <b>@InterestRate%</b>
+            <b>@mortgage.InterestRate%</b>
         </div>
         <div>
             <label>Loan: </label>
-            <b>@Loan.ToString("C0")</b>
+            <b>@mortgage.Loan.ToString("C0")</b>
         </div>
         <div>
             <label>Total salary to compare with: </label>
-            <b>@TotalSalaryToCompareWith.ToString("C0")</b>
+            <b>@mortgage.TotalSalaryToCompareWith.ToString("C0")</b>
         </div>
         <div>
             <label>Monthly installment rate</label>
-            <b>@InstallmentRate%</b>
+            <b>@mortgage.InstallmentRate%</b>
         </div>
         <div>
             <label>Monthly loan costs</label>
-            <b>@MonthlyLoanCost.ToString("C")</b>
+            <b>@mortgage.MonthlyLoanCost.ToString("C")</b>
         </div>
     </div>
     <div>
-        <label>@counter</label>>>
+        <label>@displayCounter</label>
     </div>
 </div>
 
 @code {
-    private int purchasePrice = 0;
-    private string PurchasePrice
+    protected override void OnAfterRender(bool firstRender)
     {
-        get => purchasePrice.ToString("N0");
-        set
+        if (firstRender)
         {
-            if (int.TryParse(value.RemoveWhitespace(), out var number))
+            var file = new DirectoryInfo(directory).GetFiles().OrderByDescending(o => o.LastWriteTime).FirstOrDefault();
+            var json = File.ReadAllText($"{directory}/{file.Name}");
+            
+            if (!string.IsNullOrWhiteSpace(json) && mortgage != null)
             {
-                purchasePrice = number;
+                mortgage = JsonSerializer.Deserialize<MortgageItem>(json);
+
+                InvokeAsync(StateHasChanged);
             }
         }
     }
 
-    private int downPayment = 0;
-    private string DownPayment
-    {
-        get => downPayment.ToString("N0");
-        set
-        {
-            if (int.TryParse(value.RemoveWhitespace(), out var number))
-            {
-                downPayment = number;
-            }
-        }
-    }
-
-    private int totalSalary = 0;
-    private string TotalSalary
-    {
-        get => totalSalary.ToString("N0");
-        set
-        {
-            if (int.TryParse(value.RemoveWhitespace(), out var number))
-            {
-                totalSalary = number;
-            }
-        }
-    }
-
-    private double InterestRate { get; set; }
-    private List<Expense> Expenses { get; set; } = new();
+    private MortgageItem mortgage = new();
 
     private string expenseName { get; set; } = string.Empty;
     private int expenseCost { get; set; }
 
-    private double TotalSalaryToCompareWith { get => (totalSalary * 12) * 4.5; }
-    private int Loan { get => purchasePrice - downPayment; }
+    private static Timer aTimer = new Timer();
+    private int counter = 5;
+    private string displayCounter = "";
 
-    private int counter;
+    private string directory = "save";
+    private string fileName = $"mortgage-{DateTime.Now.ToString("yyyy-MM-dd")}.json";
     private void changeValue()
     {
-        for (int i = 5; i > -1; i--)
-        {
-            
-            Thread.Sleep(1000);
-            counter = i;
-            Console.WriteLine(counter);
-        }
+        counter = 5;
+        aTimer.Stop();
+        aTimer = new Timer(1000);
+        aTimer.Elapsed += CountDownTimer;
+        aTimer.Enabled = true;
     }
 
-    private void AddToCollection()
+    private void CountDownTimer(Object? source, ElapsedEventArgs e)
     {
-        if (Expenses == null)
+        if (counter > 0)
         {
-            Expenses = new List<Expense>();
+            counter -= 1;
+            displayCounter = counter.ToString();
+        }
+        else
+        {
+            aTimer.Enabled = false;
+            displayCounter = "Saved to file!";
+            counter = 5;
+            SaveChangesToJson();
         }
 
-        Expenses.Add(new Expense
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void AddToExpenses()
+    {
+        mortgage.Expenses.Add(new Expense
         {
             Name = expenseName,
             Cost = expenseCost
         });
 
+        changeValue();
+
         expenseName = "";
         expenseCost = 0;
     }
 
-    private double MonthlyLoanCost
+    private void SaveChangesToJson()
     {
-        get
+        var data = mortgage.ToJson();
+
+        if (!Directory.Exists(directory))
         {
-            return
-            (Loan * (InterestRate / 100) / 12)
-            + ((double)Loan * ((double)InstallmentRate / 100) / 12);
+            Directory.CreateDirectory(directory);
         }
-    }
 
-    private int InstallmentRate
-    {
-        get
-        {
-            if (Loan == 0 || purchasePrice == 0)
-            {
-                return 0;
-            }
-
-            var loanPercentageOfTotalCost = (double)Loan / (double)purchasePrice;
-            var percentage = 0;
-
-            if (Loan > downPayment)
-            {
-                if (loanPercentageOfTotalCost > 0.5 && loanPercentageOfTotalCost <= 0.7)
-                {
-                    percentage++;
-                }
-
-                if (loanPercentageOfTotalCost > 0.7)
-                {
-                    percentage = percentage + 2;
-                }
-            }
-            if (Loan > TotalSalaryToCompareWith)
-            {
-                percentage++;
-            }
-
-            return percentage;
-        }
-    }
-
-    private class Expense
-    {
-        internal string Name { get; set; } = string.Empty;
-        internal int Cost { get; set; }
+        File.WriteAllText($"{directory}/{fileName}", data);
     }
 }
