@@ -85,7 +85,20 @@ div.mortgage div.summary {
     float: left;
 }
 
+table.expenses {
+    width: 100%;
+}
 
-    form.mortgage div.form-group > div {
-        margin-bottom: 20px;
-    }
+.center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
+
+div.summary table td:nth-child(2) {
+    text-align: right;
+    font-weight: bold;
+    padding-left: 10px;
+}

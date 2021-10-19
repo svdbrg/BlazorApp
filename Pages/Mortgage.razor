@@ -54,23 +54,25 @@
 
             @if (mortgage.Expenses != null)
             {
-                <table>
+                <table class="expenses">
                     <tr>
                         <th>Expense</th>
-                        <th>Cost</th>
+                        <th class="center">Cost</th>
+                        <th class="center">Remove</th>
                     </tr>
                     @foreach (var expense in mortgage.Expenses)
                     {
                         <tr>
                             <td>@expense.Name</td>
-                            <td>@expense.Cost.ToString("C0")</td>
+                            <td class="right">@expense.Cost.ToString("C0")</td>
+                            <td class="center"><label @onclick="@(e => RemoveExpense(expense))">x</label></td>
                         </tr>
                     }
                     <tr>
                         <td>
                             <b>Total</b>
                         </td>
-                        <td>
+                        <td class="right">
                             <b>@mortgage.Expenses.Select(e => e.Cost).Sum().ToString("C0")</b>
                         </td>
                     </tr>
@@ -79,34 +81,36 @@
         </div>
     </div>
     <div class="summary">
-        <div>
-            <label>Purchase price: </label>
-            <b>@mortgage.PurchasePriceString</b>
-        </div>
-        <div>
-            <label>Down payment: </label>
-            <b>@mortgage.DownPaymentString</b>
-        </div>
-        <div>
-            <label>Interest rate: </label>
-            <b>@mortgage.InterestRate%</b>
-        </div>
-        <div>
-            <label>Loan: </label>
-            <b>@mortgage.Loan.ToString("C0")</b>
-        </div>
-        <div>
-            <label>Total salary to compare with: </label>
-            <b>@mortgage.TotalSalaryToCompareWith.ToString("C0")</b>
-        </div>
-        <div>
-            <label>Monthly installment rate</label>
-            <b>@mortgage.InstallmentRate%</b>
-        </div>
-        <div>
-            <label>Monthly loan costs</label>
-            <b>@mortgage.MonthlyLoanCost.ToString("C")</b>
-        </div>
+        <table>
+            <tr>
+                <td>Purchase price: </td>
+                <td>@mortgage.PurchasePrice.ToString("C0")</td>
+            </tr>
+            <tr>
+                <td>Down payment: </td>
+                <td>@mortgage.DownPayment.ToString("C0")</td>
+            </tr>
+            <tr>
+                <td>Interest rate: </td>
+                <td>@mortgage.InterestRate%</td>
+            </tr>
+            <tr>
+                <td>Loan: </td>
+                <td>@mortgage.Loan.ToString("C0")</td>
+            </tr>
+            <tr>
+                <td>Total salary to compare with: </td>
+                <td>@mortgage.TotalSalaryToCompareWith.ToString("C0")</td>
+            </tr>
+            <tr>
+                <td>Monthly installment rate</td>
+                <td>@mortgage.InstallmentRate%</td>
+            </tr>
+            <tr>
+                <td>Monthly loan costs</td>
+                <td>@mortgage.MonthlyLoanCost.ToString("C")</td>
+            </tr>
+        </table>
     </div>
     <div>
         <label>@displayCounter</label>
@@ -144,6 +148,12 @@
 
     private string directory = "save";
     private string fileName = $"mortgage-{DateTime.Now.ToString("yyyy-MM-dd")}.json";
+    private void RemoveExpense(Expense expense)
+    {
+        mortgage.Expenses.Remove(expense);
+        changeValue();
+    }
+
     private void changeValue()
     {
         counter = 5;
@@ -173,6 +183,11 @@
 
     private void AddToExpenses()
     {
+        if (string.IsNullOrWhiteSpace(expenseName) || expenseCost < 1)
+        {
+            return;
+        }
+
         mortgage.Expenses.Add(new Expense
         {
             Name = expenseName,
