@@ -45,10 +45,10 @@
         <label>Monthly expenses</label>
         <div>
             <div class="input">
-                <input @bind="expenseName" class="form-control" @bind:event="oninput" />
+                <input @bind="expenseName" @onkeydown="@Enter" class="form-control" @bind:event="oninput" />
             </div>
             <div class="input">
-                <input @bind="expenseCost" class="form-control" @bind:event="oninput" />
+                <input @bind="expenseCost" @onkeydown="@Enter" class="form-control" @bind:event="oninput" />
             </div>
             <button class="btn btn-primary" @onclick="AddToExpenses">Click me</button>
 
@@ -60,7 +60,7 @@
                         <th class="center">Cost</th>
                         <th class="center">Remove</th>
                     </tr>
-                    @foreach (var expense in mortgage.Expenses)
+                    @foreach (var expense in mortgage.Expenses.OrderBy(e => e.Cost))
                     {
                         <tr>
                             <td>@expense.Name</td>
@@ -70,10 +70,19 @@
                     }
                     <tr>
                         <td>
+                            Loan cost
+                        </td>
+                        <td class="right">
+                            @mortgage.MonthlyLoanCost.ToString("C0")
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
                             <b>Total</b>
                         </td>
                         <td class="right">
-                            <b>@mortgage.Expenses.Select(e => e.Cost).Sum().ToString("C0")</b>
+                            <b>@((mortgage.Expenses.Select(e => e.Cost).Sum() + mortgage.MonthlyLoanCost).ToString("C0"))</b>
                         </td>
                     </tr>
                 </table>
@@ -179,6 +188,14 @@
         }
 
         InvokeAsync(StateHasChanged);
+    }
+
+    public void Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            AddToExpenses();
+        }
     }
 
     private void AddToExpenses()
