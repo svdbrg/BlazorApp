@@ -85,8 +85,14 @@ div.mortgage div.summary {
     float: left;
 }
 
+div.summary table {
+    width: 100%;
+    margin-top: 20px;
+}
+
 table.expenses {
     width: 100%;
+    margin-top: 20px;
 }
 
 .center {

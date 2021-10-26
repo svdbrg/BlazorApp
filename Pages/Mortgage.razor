@@ -40,6 +40,38 @@
                     @onchange="changeValue" />
             </div>
         </div>
+        <div class="summary">
+            <table>
+                <tr>
+                    <td>Purchase price: </td>
+                    <td>@mortgage.PurchasePrice.ToString("C0")</td>
+                </tr>
+                <tr>
+                    <td>Down payment: </td>
+                    <td>@mortgage.DownPayment.ToString("C0")</td>
+                </tr>
+                <tr>
+                    <td>Interest rate: </td>
+                    <td>@mortgage.InterestRate%</td>
+                </tr>
+                <tr>
+                    <td>Loan: </td>
+                    <td>@mortgage.Loan.ToString("C0")</td>
+                </tr>
+                <tr>
+                    <td>Total salary to compare with: </td>
+                    <td>@mortgage.TotalSalaryToCompareWith.ToString("C0")</td>
+                </tr>
+                <tr>
+                    <td>Monthly installment rate</td>
+                    <td>@mortgage.InstallmentRate%</td>
+                </tr>
+                <tr>
+                    <td>Monthly loan costs</td>
+                    <td>@mortgage.MonthlyLoanCost.ToString("C")</td>
+                </tr>
+            </table>
+        </div>
     </div>
     <div class="expenses">
         <label>Monthly expenses</label>
@@ -57,15 +89,27 @@
                 <table class="expenses">
                     <tr>
                         <th>Expense</th>
-                        <th class="center">Cost</th>
-                        <th class="center">Remove</th>
+                        <th class="right">Cost</th>
+                        <th class="center"></th>
                     </tr>
                     @foreach (var expense in mortgage.Expenses.OrderBy(e => e.Cost))
                     {
                         <tr>
                             <td>@expense.Name</td>
                             <td class="right">@expense.Cost.ToString("C0")</td>
-                            <td class="center"><label @onclick="@(e => RemoveExpense(expense))">x</label></td>
+                            <td class="center">
+                                <a class="text-decoration-none" @onclick="@(e => RemoveExpense(expense))">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-trash" viewBox="0 0 16 16">
+                                        <path
+                                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z">
+                                        </path>
+                                        <path fill-rule="evenodd"
+                                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z">
+                                        </path>
+                                    </svg>
+                                </a>
+                            </td>
                         </tr>
                     }
                     <tr>
@@ -82,47 +126,17 @@
                             <b>Total</b>
                         </td>
                         <td class="right">
-                            <b>@((mortgage.Expenses.Select(e => e.Cost).Sum() + mortgage.MonthlyLoanCost).ToString("C0"))</b>
+                            <b>@((mortgage.Expenses.Select(e => e.Cost).Sum() +
+                            mortgage.MonthlyLoanCost).ToString("C0"))</b>
                         </td>
                     </tr>
                 </table>
             }
         </div>
     </div>
-    <div class="summary">
-        <table>
-            <tr>
-                <td>Purchase price: </td>
-                <td>@mortgage.PurchasePrice.ToString("C0")</td>
-            </tr>
-            <tr>
-                <td>Down payment: </td>
-                <td>@mortgage.DownPayment.ToString("C0")</td>
-            </tr>
-            <tr>
-                <td>Interest rate: </td>
-                <td>@mortgage.InterestRate%</td>
-            </tr>
-            <tr>
-                <td>Loan: </td>
-                <td>@mortgage.Loan.ToString("C0")</td>
-            </tr>
-            <tr>
-                <td>Total salary to compare with: </td>
-                <td>@mortgage.TotalSalaryToCompareWith.ToString("C0")</td>
-            </tr>
-            <tr>
-                <td>Monthly installment rate</td>
-                <td>@mortgage.InstallmentRate%</td>
-            </tr>
-            <tr>
-                <td>Monthly loan costs</td>
-                <td>@mortgage.MonthlyLoanCost.ToString("C")</td>
-            </tr>
-        </table>
-    </div>
     <div>
-        <label>@displayCounter</label>
+        <RadzenProgressBar @bind-Value="@counter" ShowValue="false" Style="margin-bottom: 20px" />
+        <label>@saveCounterMessage</label>
     </div>
 </div>
 
@@ -152,8 +166,8 @@
     private int expenseCost { get; set; }
 
     private static Timer aTimer = new Timer();
-    private int counter = 5;
-    private string displayCounter = "";
+    private double counter = 100;
+    private string saveCounterMessage = "";
 
     private string directory = "save";
     private string fileName = $"mortgage-{DateTime.Now.ToString("yyyy-MM-dd")}.json";
@@ -165,9 +179,9 @@
 
     private void changeValue()
     {
-        counter = 5;
+        counter = 100;
         aTimer.Stop();
-        aTimer = new Timer(1000);
+        aTimer = new Timer(50);
         aTimer.Elapsed += CountDownTimer;
         aTimer.Enabled = true;
     }
@@ -177,13 +191,12 @@
         if (counter > 0)
         {
             counter -= 1;
-            displayCounter = counter.ToString();
         }
         else
         {
             aTimer.Enabled = false;
-            displayCounter = "Saved to file!";
-            counter = 5;
+            saveCounterMessage = "Saved to file!";
+            counter = 100;
             SaveChangesToJson();
         }
 
