@@ -11,33 +11,34 @@
 <p>This is a tool to help visualize your mortgage application.</p>
 
 <div class="mortgage">
+    <div>
+        <RadzenProgressBar @bind-Value="@counter" ShowValue="false" Style="margin-bottom: 20px" />
+        <label>@saveCounterMessage</label>
+    </div>
+    <h2>Loan information</h2>
     <div class="form-group">
         <div>
             <label for="purchasePrice">Purchase price SEK</label>
             <div class="input">
-                <input id="purchasePrice" class="form-control" @onchange="changeValue"
-                    @bind="mortgage.PurchasePriceString" @bind:event="oninput" />
+                <input id="purchasePrice" class="form-control" @onchange="changeValue" @bind="mortgage.PurchasePriceString" @bind:event="oninput" />
             </div>
         </div>
         <div>
             <label for="downPayment">Down payment SEK</label>
             <div class="input">
-                <input id="downPayment" class="form-control" @bind="mortgage.DownPaymentString" @bind:event="oninput"
-                    @onchange="changeValue" />
+                <input id="downPayment" class="form-control" @bind="mortgage.DownPaymentString" @bind:event="oninput" @onchange="changeValue" />
             </div>
         </div>
         <div>
             <label for="interestRate">Interest rate %</label>
             <div class="input">
-                <input id="interestRate" class="form-control" @bind="mortgage.InterestRate" @bind:event="oninput"
-                    @onchange="changeValue" />
+                <input id="interestRate" class="form-control" @bind="mortgage.InterestRate" @bind:event="oninput" @onchange="changeValue" />
             </div>
         </div>
         <div>
             <label for="totalSalary">Total monthly salary</label>
             <div class="input">
-                <input id="totalSalary" class="form-control" @bind="mortgage.TotalSalaryString" @bind:event="oninput"
-                    @onchange="changeValue" />
+                <input id="totalSalary" class="form-control" @bind="mortgage.TotalSalaryString" @bind:event="oninput" @onchange="changeValue" />
             </div>
         </div>
         <div class="summary">
@@ -74,7 +75,7 @@
         </div>
     </div>
     <div class="expenses">
-        <label>Monthly expenses</label>
+        <h2>Monthly expenses</h2>
         <div>
             <div class="input">
                 <input @bind="expenseName" @onkeydown="@Enter" class="form-control" @bind:event="oninput" />
@@ -82,7 +83,6 @@
             <div class="input">
                 <input @bind="expenseCost" @onkeydown="@Enter" class="form-control" @bind:event="oninput" />
             </div>
-            <button class="btn btn-primary" @onclick="AddToExpenses">Click me</button>
 
             @if (mortgage.Expenses != null)
             {
@@ -133,10 +133,6 @@
                 </table>
             }
         </div>
-    </div>
-    <div>
-        <RadzenProgressBar @bind-Value="@counter" ShowValue="false" Style="margin-bottom: 20px" />
-        <label>@saveCounterMessage</label>
     </div>
 </div>
 
