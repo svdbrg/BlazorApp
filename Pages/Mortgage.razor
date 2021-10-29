@@ -18,29 +18,29 @@
         <div>
             <label for="purchasePrice">Purchase price SEK</label>
             <div class="input">
-                <input id="purchasePrice" class="form-control" @onchange="setTimer" @bind="mortgage.PurchasePriceString"
-                    @bind:event="oninput" />
+                <input id="purchasePrice" class="form-control" @onchange="saveChangesToFile"
+                    @bind="mortgage.PurchasePriceString" @bind:event="oninput" />
             </div>
         </div>
         <div>
             <label for="downPayment">Down payment SEK</label>
             <div class="input">
                 <input id="downPayment" class="form-control" @bind="mortgage.DownPaymentString" @bind:event="oninput"
-                    @onchange="setTimer" />
+                    @onchange="saveChangesToFile" />
             </div>
         </div>
         <div>
             <label for="interestRate">Interest rate %</label>
             <div class="input">
                 <input id="interestRate" class="form-control" @bind="mortgage.InterestRate" @bind:event="oninput"
-                    @onchange="setTimer" />
+                    @onchange="saveChangesToFile" />
             </div>
         </div>
         <div>
             <label for="totalSalary">Total monthly salary</label>
             <div class="input">
                 <input id="totalSalary" class="form-control" @bind="mortgage.TotalSalaryString" @bind:event="oninput"
-                    @onchange="setTimer" />
+                    @onchange="saveChangesToFile" />
             </div>
         </div>
         <div class="summary">
@@ -151,20 +151,24 @@
 @code {
     private MortgageItem mortgage = new();
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            var file = new DirectoryInfo(directory).GetFiles().OrderByDescending(o => o.LastWriteTime).FirstOrDefault();
+            var file = new DirectoryInfo(directory)
+            .GetFiles()
+            .OrderByDescending(o => o.LastWriteTime)
+            .FirstOrDefault();
+
             if (file != null)
             {
-                var json = File.ReadAllText($"{directory}/{file.Name}");
+                var json = await File.ReadAllTextAsync($"{directory}/{file.Name}");
 
                 if (!string.IsNullOrWhiteSpace(json) && mortgage != null)
                 {
                     mortgage = JsonSerializer.Deserialize<MortgageItem>(json) ?? new();
 
-                    InvokeAsync(StateHasChanged);
+                    await InvokeAsync(StateHasChanged);
                 }
             }
         }
@@ -173,19 +177,18 @@
     private string expenseName { get; set; } = string.Empty;
     private int expenseCost { get; set; }
 
-    private static Timer aTimer = new Timer();
-    private double counter = 100;
     private string saveCounterMessage = "";
-
     private string directory = "save";
     private string fileName = $"mortgage-{DateTime.Now.ToString("yyyy-MM-dd")}.json";
-    private void RemoveExpense(Expense expense)
+
+    private async Task RemoveExpense(Expense expense)
     {
         mortgage.Expenses.Remove(expense);
-        Task.WaitAll(setTimer());
+
+        await saveChangesToFile();
     }
 
-    private async Task setTimer()
+    private async Task saveChangesToFile()
     {
         saveCounterMessage = "Saving...";
 
@@ -200,29 +203,6 @@
         await Task.Delay(1500);
         saveCounterMessage = "";
         await InvokeAsync(StateHasChanged);
-
-    }
-
-    private async Task CountDownTimerEvent(Object? source, ElapsedEventArgs e)
-    {
-        if (counter > 0)
-        {
-            counter--;
-        }
-        else
-        {
-            aTimer.Enabled = false;
-            Task.WaitAll();
-            saveCounterMessage = "Saved to file!";
-            counter = 100;
-            await InvokeAsync(async () =>
-            {
-                await Task.Delay(3000);
-                saveCounterMessage = "";
-            });
-        }
-
-        await InvokeAsync(StateHasChanged);
     }
 
     public void Enter(KeyboardEventArgs e)
@@ -233,7 +213,7 @@
         }
     }
 
-    private void AddToExpenses()
+    private async Task AddToExpenses()
     {
         if (string.IsNullOrWhiteSpace(expenseName) || expenseCost < 1)
         {
@@ -246,7 +226,7 @@
             Cost = expenseCost
         });
 
-        setTimer();
+        await saveChangesToFile();
 
         expenseName = "";
         expenseCost = 0;
