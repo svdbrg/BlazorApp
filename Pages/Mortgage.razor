@@ -9,40 +9,38 @@
 <h1>Mortgage all the things</h1>
 
 <p>This is a tool to help visualize your mortgage application and the costs that follow owning a home.</p>
-
+<div class="message @GetClassName()">
+    <b>@saveCounterMessage</b>
+</div>
 <div class="mortgage">
-    <div>
-        <RadzenProgressBar @bind-Value="@counter" ShowValue="false" Style="margin-bottom: 20px" />
-        <label>@saveCounterMessage</label>
-    </div>
     <div class="form-group">
         <h2>Loan information</h2>
         <div>
             <label for="purchasePrice">Purchase price SEK</label>
             <div class="input">
-                <input id="purchasePrice" class="form-control" @onchange="changeValue"
-                    @bind="mortgage.PurchasePriceString" @bind:event="oninput" />
+                <input id="purchasePrice" class="form-control" @onchange="setTimer" @bind="mortgage.PurchasePriceString"
+                    @bind:event="oninput" />
             </div>
         </div>
         <div>
             <label for="downPayment">Down payment SEK</label>
             <div class="input">
                 <input id="downPayment" class="form-control" @bind="mortgage.DownPaymentString" @bind:event="oninput"
-                    @onchange="changeValue" />
+                    @onchange="setTimer" />
             </div>
         </div>
         <div>
             <label for="interestRate">Interest rate %</label>
             <div class="input">
                 <input id="interestRate" class="form-control" @bind="mortgage.InterestRate" @bind:event="oninput"
-                    @onchange="changeValue" />
+                    @onchange="setTimer" />
             </div>
         </div>
         <div>
             <label for="totalSalary">Total monthly salary</label>
             <div class="input">
                 <input id="totalSalary" class="form-control" @bind="mortgage.TotalSalaryString" @bind:event="oninput"
-                    @onchange="changeValue" />
+                    @onchange="setTimer" />
             </div>
         </div>
         <div class="summary">
@@ -184,33 +182,47 @@
     private void RemoveExpense(Expense expense)
     {
         mortgage.Expenses.Remove(expense);
-        changeValue();
+        Task.WaitAll(setTimer());
     }
 
-    private void changeValue()
+    private async Task setTimer()
     {
-        counter = 100;
-        aTimer.Stop();
-        aTimer = new Timer(50);
-        aTimer.Elapsed += CountDownTimer;
-        aTimer.Enabled = true;
+        saveCounterMessage = "Saving...";
+
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(3000);
+
+        await SaveChangesToJson();
+
+        saveCounterMessage = "Saved to file!";
+        await InvokeAsync(StateHasChanged);
+
+        await Task.Delay(1500);
+        saveCounterMessage = "";
+        await InvokeAsync(StateHasChanged);
+
     }
 
-    private void CountDownTimer(Object? source, ElapsedEventArgs e)
+    private async Task CountDownTimerEvent(Object? source, ElapsedEventArgs e)
     {
         if (counter > 0)
         {
-            counter -= 1;
+            counter--;
         }
         else
         {
             aTimer.Enabled = false;
+            Task.WaitAll();
             saveCounterMessage = "Saved to file!";
             counter = 100;
-            SaveChangesToJson();
+            await InvokeAsync(async () =>
+            {
+                await Task.Delay(3000);
+                saveCounterMessage = "";
+            });
         }
 
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 
     public void Enter(KeyboardEventArgs e)
@@ -234,13 +246,13 @@
             Cost = expenseCost
         });
 
-        changeValue();
+        setTimer();
 
         expenseName = "";
         expenseCost = 0;
     }
 
-    private void SaveChangesToJson()
+    private async Task SaveChangesToJson()
     {
         var data = mortgage.ToJson();
 
@@ -249,6 +261,11 @@
             Directory.CreateDirectory(directory);
         }
 
-        File.WriteAllText($"{directory}/{fileName}", data);
+        await File.WriteAllTextAsync($"{directory}/{fileName}", data);
+    }
+
+    private string GetClassName()
+    {
+        return string.IsNullOrWhiteSpace(saveCounterMessage) ? "" : "top";
     }
 }
