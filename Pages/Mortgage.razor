@@ -1,6 +1,6 @@
 @page "/mortgage"
 
-<title>Calculate mortgage stuff</title>
+<PageTitle>Calculate your mortgage costs</PageTitle>
 
 @using BlazorApp.Data
 @using System.Timers
@@ -8,37 +8,41 @@
 
 <h1>Mortgage all the things</h1>
 
-<p>This is a tool to help visualize your mortgage application.</p>
+<p>This is a tool to help visualize your mortgage application and the costs that follow owning a home.</p>
 
 <div class="mortgage">
     <div>
         <RadzenProgressBar @bind-Value="@counter" ShowValue="false" Style="margin-bottom: 20px" />
         <label>@saveCounterMessage</label>
     </div>
-    <h2>Loan information</h2>
     <div class="form-group">
+        <h2>Loan information</h2>
         <div>
             <label for="purchasePrice">Purchase price SEK</label>
             <div class="input">
-                <input id="purchasePrice" class="form-control" @onchange="changeValue" @bind="mortgage.PurchasePriceString" @bind:event="oninput" />
+                <input id="purchasePrice" class="form-control" @onchange="changeValue"
+                    @bind="mortgage.PurchasePriceString" @bind:event="oninput" />
             </div>
         </div>
         <div>
             <label for="downPayment">Down payment SEK</label>
             <div class="input">
-                <input id="downPayment" class="form-control" @bind="mortgage.DownPaymentString" @bind:event="oninput" @onchange="changeValue" />
+                <input id="downPayment" class="form-control" @bind="mortgage.DownPaymentString" @bind:event="oninput"
+                    @onchange="changeValue" />
             </div>
         </div>
         <div>
             <label for="interestRate">Interest rate %</label>
             <div class="input">
-                <input id="interestRate" class="form-control" @bind="mortgage.InterestRate" @bind:event="oninput" @onchange="changeValue" />
+                <input id="interestRate" class="form-control" @bind="mortgage.InterestRate" @bind:event="oninput"
+                    @onchange="changeValue" />
             </div>
         </div>
         <div>
             <label for="totalSalary">Total monthly salary</label>
             <div class="input">
-                <input id="totalSalary" class="form-control" @bind="mortgage.TotalSalaryString" @bind:event="oninput" @onchange="changeValue" />
+                <input id="totalSalary" class="form-control" @bind="mortgage.TotalSalaryString" @bind:event="oninput"
+                    @onchange="changeValue" />
             </div>
         </div>
         <div class="summary">
@@ -78,58 +82,68 @@
         <h2>Monthly expenses</h2>
         <div>
             <div class="input">
-                <input @bind="expenseName" @onkeydown="@Enter" class="form-control" @bind:event="oninput" />
+                <label for="expenseName">Name</label>
+                <input id="expenseName" @bind="expenseName" @onkeydown="@Enter" class="form-control"
+                    @bind:event="oninput" />
             </div>
             <div class="input">
-                <input @bind="expenseCost" @onkeydown="@Enter" class="form-control" @bind:event="oninput" />
+                <label for="expenseCost">Cost SEK</label>
+                <input id="expenseCost" @bind="expenseCost" @onkeydown="@Enter" class="form-control"
+                    @bind:event="oninput" />
             </div>
 
             @if (mortgage.Expenses != null)
             {
                 <table class="expenses">
-                    <tr>
-                        <th>Expense</th>
-                        <th class="right">Cost</th>
-                        <th class="center"></th>
-                    </tr>
-                    @foreach (var expense in mortgage.Expenses.OrderBy(e => e.Cost))
-                    {
+                    <thead>
                         <tr>
-                            <td>@expense.Name</td>
-                            <td class="right">@expense.Cost.ToString("C0")</td>
-                            <td class="center">
-                                <a class="text-decoration-none" @onclick="@(e => RemoveExpense(expense))">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-trash" viewBox="0 0 16 16">
-                                        <path
-                                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z">
-                                        </path>
-                                        <path fill-rule="evenodd"
-                                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z">
-                                        </path>
-                                    </svg>
-                                </a>
+                            <th>Expense</th>
+                            <th class="right">Cost</th>
+                            <th class="center"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var expense in mortgage.Expenses.OrderBy(e => e.Cost))
+                        {
+                            <tr>
+                                <td>@expense.Name</td>
+                                <td class="right">@expense.Cost.ToString("C0")</td>
+                                <td class="right">
+                                    <a class="text-decoration-none" @onclick="@(e => RemoveExpense(expense))">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-trash" viewBox="0 0 16 16">
+                                            <path
+                                        d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z">
+                                            </path>
+                                            <path fill-rule="evenodd"
+                                        d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z">
+                                            </path>
+                                        </svg>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                        <tr>
+                            <td>
+                                Loan cost
+                            </td>
+                            <td class="right">
+                                @mortgage.MonthlyLoanCost.ToString("C0")
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>
+                                <b>Total</b>
+                            </td>
+                            <td class="right">
+                                <b>@((mortgage.Expenses.Select(e => e.Cost).Sum() +
+                                mortgage.MonthlyLoanCost).ToString("C0"))</b>
                             </td>
                         </tr>
-                    }
-                    <tr>
-                        <td>
-                            Loan cost
-                        </td>
-                        <td class="right">
-                            @mortgage.MonthlyLoanCost.ToString("C0")
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <b>Total</b>
-                        </td>
-                        <td class="right">
-                            <b>@((mortgage.Expenses.Select(e => e.Cost).Sum() +
-                            mortgage.MonthlyLoanCost).ToString("C0"))</b>
-                        </td>
-                    </tr>
+                    </tfoot>
                 </table>
             }
         </div>
