@@ -8,7 +8,6 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddLocalization();
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
