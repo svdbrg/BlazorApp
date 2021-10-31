@@ -205,11 +205,11 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    public void Enter(KeyboardEventArgs e)
+    public async Task Enter(KeyboardEventArgs e)
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
-            AddToExpenses();
+            await AddToExpenses();
         }
     }
 
@@ -226,10 +226,10 @@
             Cost = expenseCost
         });
 
-        await saveChangesToFile();
-
         expenseName = "";
         expenseCost = 0;
+
+        await saveChangesToFile();
     }
 
     private async Task SaveChangesToJson()
