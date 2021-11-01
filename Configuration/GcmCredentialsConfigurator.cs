@@ -8,6 +8,6 @@ public static class GcmCredentialsConfigurator
 
         Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", "/gcm.json");
 
-        Console.WriteLine(Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS"));
+        Console.WriteLine("Credentials: " + Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS"));
     }
 }
