@@ -4,7 +4,6 @@
 
 @using BlazorApp.Data
 @using BlazorApp.Services
-@using System.Text.Json
 
 @inject IDataService _dataService
 
@@ -20,7 +19,7 @@
         <div>
             <label for="purchasePrice">Purchase price SEK</label>
             <div class="input">
-                <input id="purchasePrice" class="form-control" @onchange="saveChangesToFile"
+                <input id="purchasePrice" class="form-control" @onchange="saveChanges"
                     @bind="mortgage.PurchasePrice" @bind:event="oninput" />
             </div>
         </div>
@@ -28,21 +27,21 @@
             <label for="downPayment">Down payment SEK</label>
             <div class="input">
                 <input id="downPayment" class="form-control" @bind="mortgage.DownPayment" @bind:event="oninput"
-                    @onchange="saveChangesToFile" />
+                    @onchange="saveChanges" />
             </div>
         </div>
         <div>
             <label for="interestRate">Interest rate %</label>
             <div class="input">
                 <input id="interestRate" class="form-control" @bind="mortgage.InterestRate" @bind:event="oninput"
-                    @onchange="saveChangesToFile" />
+                    @onchange="saveChanges" />
             </div>
         </div>
         <div>
             <label for="totalSalary">Total monthly salary</label>
             <div class="input">
                 <input id="totalSalary" class="form-control" @bind="mortgage.TotalSalary" @bind:event="oninput"
-                    @onchange="saveChangesToFile" />
+                    @onchange="saveChanges" />
             </div>
         </div>
         <div class="summary">
@@ -171,17 +170,17 @@
     {
         mortgage.Expenses.Remove(expense);
 
-        await saveChangesToFile();
+        await saveChanges();
     }
 
-    private async Task saveChangesToFile()
+    private async Task saveChanges()
     {
         saveCounterMessage = "Saving...";
 
         await InvokeAsync(StateHasChanged);
         await Task.Delay(3000);
 
-        await SaveChanges();
+        await _dataService.SaveData(mortgage);
 
         saveCounterMessage = "Saved to file!";
         await InvokeAsync(StateHasChanged);
@@ -215,12 +214,7 @@
         expenseName = "";
         expenseCost = 0;
 
-        await saveChangesToFile();
-    }
-
-    private async Task SaveChanges()
-    {
-        await _dataService.SaveData(mortgage);
+        await saveChanges();
     }
 
     private string GetClassName()

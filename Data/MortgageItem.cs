@@ -1,6 +1,3 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
 namespace BlazorApp.Data;
 
 public class MortgageItem
@@ -12,7 +9,6 @@ public class MortgageItem
     public List<Expense> Expenses { get; set; } = new();
 
 
-    [JsonIgnore]
     public string PurchasePriceString
     {
         get => this.PurchasePrice.ToString("N0");
@@ -25,7 +21,6 @@ public class MortgageItem
         }
     }
 
-    [JsonIgnore]
     public string DownPaymentString
     {
         get => this.DownPayment.ToString("N0");
@@ -38,7 +33,6 @@ public class MortgageItem
         }
     }
 
-    [JsonIgnore]
     public string TotalSalaryString
     {
         get => this.TotalSalary.ToString("N0");
@@ -51,13 +45,10 @@ public class MortgageItem
         }
     }
 
-    [JsonIgnore]
     public double TotalSalaryToCompareWith { get => (this.TotalSalary * 12) * 4.5; }
 
-    [JsonIgnore]
     public int Loan { get => this.PurchasePrice - this.DownPayment; }
 
-    [JsonIgnore]
     public double MonthlyLoanCost
     {
         get
@@ -68,7 +59,6 @@ public class MortgageItem
         }
     }
 
-    [JsonIgnore]
     public int InstallmentRate
     {
         get
@@ -100,11 +90,6 @@ public class MortgageItem
 
             return percentage;
         }
-    }
-
-    public string ToJson()
-    {
-        return JsonSerializer.Serialize(this);
     }
 }
 
