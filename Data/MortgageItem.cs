@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace BlazorApp.Data;
 
 public class MortgageItem
-{
+{    
     public int PurchasePrice { get; set; }
     public int DownPayment { get; set; }
     public int TotalSalary { get; set; }

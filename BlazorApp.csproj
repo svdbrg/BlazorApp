@@ -9,4 +9,12 @@
   <ItemGroup>
   </ItemGroup>
 
+  <ItemGroup>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="Google.Cloud.Firestore" Version="2.4.0" />
+  </ItemGroup>
+
 </Project>

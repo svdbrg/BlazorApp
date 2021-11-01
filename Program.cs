@@ -1,3 +1,6 @@
+using AutoMapper;
+using BlazorApp.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var port = Environment.GetEnvironmentVariable("PORT");
@@ -7,6 +10,16 @@ builder.WebHost.UseUrls("http://*:" + port);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddLocalization();
+builder.Services.AddTransient<IDataService, GcmDataService>();
+
+// Auto Mapper Configurations
+var mapperConfig = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new MortgageItemProfile());
+});
+
+var mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
 
 var app = builder.Build();
 
@@ -14,6 +27,11 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
+    GcmCredentialsConfigurator.ConfigureGoogleCredentials();
+}
+else
+{
+    Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", "C:\\Users\\svdbrg\\gcm\\mortgager.json");
 }
 
 app.UseStaticFiles();

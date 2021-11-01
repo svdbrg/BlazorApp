@@ -3,8 +3,10 @@
 <PageTitle>Calculate your mortgage costs</PageTitle>
 
 @using BlazorApp.Data
-@using System.Timers
+@using BlazorApp.Services
 @using System.Text.Json
+
+@inject IDataService _dataService
 
 <h1>Mortgage all the things</h1>
 
@@ -155,22 +157,8 @@
     {
         if (firstRender)
         {
-            var file = new DirectoryInfo(directory)
-            .GetFiles()
-            .OrderByDescending(o => o.LastWriteTime)
-            .FirstOrDefault();
-
-            if (file != null)
-            {
-                var json = await File.ReadAllTextAsync($"{directory}/{file.Name}");
-
-                if (!string.IsNullOrWhiteSpace(json) && mortgage != null)
-                {
-                    mortgage = JsonSerializer.Deserialize<MortgageItem>(json) ?? new();
-
-                    await InvokeAsync(StateHasChanged);
-                }
-            }
+            mortgage = await _dataService.GetSavedData() ?? new();
+            await InvokeAsync(StateHasChanged);
         }
     }
 
@@ -178,8 +166,6 @@
     private int expenseCost { get; set; }
 
     private string saveCounterMessage = "";
-    private string directory = "save";
-    private string fileName = $"mortgage-{DateTime.Now.ToString("yyyy-MM-dd")}.json";
 
     private async Task RemoveExpense(Expense expense)
     {
@@ -195,7 +181,7 @@
         await InvokeAsync(StateHasChanged);
         await Task.Delay(3000);
 
-        await SaveChangesToJson();
+        await SaveChanges();
 
         saveCounterMessage = "Saved to file!";
         await InvokeAsync(StateHasChanged);
@@ -232,16 +218,9 @@
         await saveChangesToFile();
     }
 
-    private async Task SaveChangesToJson()
+    private async Task SaveChanges()
     {
-        var data = mortgage.ToJson();
-
-        if (!Directory.Exists(directory))
-        {
-            Directory.CreateDirectory(directory);
-        }
-
-        await File.WriteAllTextAsync($"{directory}/{fileName}", data);
+        await _dataService.SaveData(mortgage);
     }
 
     private string GetClassName()
