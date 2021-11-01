@@ -14,14 +14,14 @@ public class MortgageItemDto
     [FirestoreProperty]
     public double InterestRate { get; set; }
     [FirestoreProperty]
-    public IEnumerable<ExpenseDto> Expenses { get; set; }
+    public IEnumerable<ExpenseDto> Expenses { get; set; } = new List<ExpenseDto>();
 }
 
 [FirestoreData]
 public class ExpenseDto
 {
     [FirestoreProperty]
-    public string Name { get; set; }
+    public string? Name { get; set; }
     [FirestoreProperty]
     public int Cost { get; set; }
 }

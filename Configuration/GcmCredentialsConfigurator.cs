@@ -1,14 +1,25 @@
 public static class GcmCredentialsConfigurator
 {
-    public static void ConfigureGoogleCredentials()
+    public static void AddGoogleCredentials(this WebApplication app)
     {
-        var dir = Directory.GetCurrentDirectory();
-        var filecontent = Environment.GetEnvironmentVariable("gcm.json");
+        var filePath = "";
+        
+        if (app.Environment.IsDevelopment())
+        {
+            filePath = "C:\\Users\\svdbrg\\gcm\\mortgager.json";
+        }
+        else
+        {
+            var dir = Directory.GetCurrentDirectory();
+            var filecontent = Environment.GetEnvironmentVariable("gcm.json");
 
-        File.WriteAllText($"{dir}/gcm.json", filecontent);
+            File.WriteAllText($"{dir}/gcm.json", filecontent);
 
-        Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", $"{dir}/gcm.json");
+            filePath = $"{dir}/gcm.json";
 
-        Console.WriteLine("Credentials: " + Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS"));
+            Console.WriteLine("Credentials: " + Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS"));
+        }
+
+        Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", filePath);
     }
 }

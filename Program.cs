@@ -27,12 +27,9 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    GcmCredentialsConfigurator.ConfigureGoogleCredentials();
 }
-else
-{
-    Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", "C:\\Users\\svdbrg\\gcm\\mortgager.json");
-}
+
+app.AddGoogleCredentials();
 
 app.UseStaticFiles();
 

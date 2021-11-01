@@ -2,6 +2,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0-focal AS base
 
 RUN apt-get update -y
 RUN apt-get install -y icu-devtools
+
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
 WORKDIR /app
