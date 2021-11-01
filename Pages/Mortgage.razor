@@ -19,13 +19,13 @@
             <label for="purchasePrice">Purchase price SEK</label>
             <div class="input">
                 <input id="purchasePrice" class="form-control" @onchange="saveChangesToFile"
-                    @bind="mortgage.PurchasePriceString" @bind:event="oninput" />
+                    @bind="mortgage.PurchasePrice" @bind:event="oninput" />
             </div>
         </div>
         <div>
             <label for="downPayment">Down payment SEK</label>
             <div class="input">
-                <input id="downPayment" class="form-control" @bind="mortgage.DownPaymentString" @bind:event="oninput"
+                <input id="downPayment" class="form-control" @bind="mortgage.DownPayment" @bind:event="oninput"
                     @onchange="saveChangesToFile" />
             </div>
         </div>
@@ -39,7 +39,7 @@
         <div>
             <label for="totalSalary">Total monthly salary</label>
             <div class="input">
-                <input id="totalSalary" class="form-control" @bind="mortgage.TotalSalaryString" @bind:event="oninput"
+                <input id="totalSalary" class="form-control" @bind="mortgage.TotalSalary" @bind:event="oninput"
                     @onchange="saveChangesToFile" />
             </div>
         </div>
