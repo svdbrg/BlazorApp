@@ -6,6 +6,7 @@
 @using BlazorApp.Services
 
 @inject IDataService _dataService
+@inject IJSRuntime js
 
 <h1>Mortgage all the things</h1>
 
@@ -168,6 +169,10 @@
 
     private async Task RemoveExpense(Expense expense)
     {
+        if(!await js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete monthly expense '{expense.Name}'?")) {
+            return;
+        }
+        
         mortgage.Expenses.Remove(expense);
 
         await saveChanges();
@@ -182,7 +187,7 @@
 
         await _dataService.SaveData(mortgage);
 
-        saveCounterMessage = "Saved to file!";
+        saveCounterMessage = "Data is saved!";
         await InvokeAsync(StateHasChanged);
 
         await Task.Delay(1500);

@@ -1,13 +1,12 @@
 namespace BlazorApp.Data;
 
 public class MortgageItem
-{    
+{
     public int PurchasePrice { get; set; }
     public int DownPayment { get; set; }
     public int TotalSalary { get; set; }
     public double InterestRate { get; set; }
     public List<Expense> Expenses { get; set; } = new();
-
 
     public string PurchasePriceString
     {

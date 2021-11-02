@@ -12,16 +12,20 @@ public class GcmDataService : IDataService
         _mapper = mapper;
     }
 
+    private string documentSuffix = Environment.GetEnvironmentVariable("Environment") ?? "test";
+
     public async Task<MortgageItem?> GetSavedData()
     {
+
         var db = FirestoreDb.Create("mortgager");
 
-        var collection = db.Collection("mortgages");
-        var snapshot = await collection.GetSnapshotAsync();
+        var docRef = db.Collection("mortgages").Document($"mortgage-{documentSuffix}");
+
+        var snapshot = await docRef.GetSnapshotAsync();
 
         if (snapshot != null)
         {
-            var mortgageDto = snapshot.Documents.First().ConvertTo<MortgageItemDto>();
+            var mortgageDto = snapshot.ConvertTo<MortgageItemDto>();
 
             return _mapper.Map<MortgageItem>(mortgageDto);
         }
@@ -33,7 +37,7 @@ public class GcmDataService : IDataService
     {
         var db = FirestoreDb.Create("mortgager");
 
-        var docRef = db.Collection("mortgages").Document("mortgage");
+        var docRef = db.Collection("mortgages").Document($"mortgage-{documentSuffix}");
 
         var mortgageItemDto = _mapper.Map<MortgageItemDto>(item);
 

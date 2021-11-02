@@ -16,8 +16,6 @@ public static class GcmCredentialsConfigurator
             File.WriteAllText($"{dir}/gcm.json", filecontent);
 
             filePath = $"{dir}/gcm.json";
-
-            Console.WriteLine("Credentials: " + Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS"));
         }
 
         Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", filePath);
