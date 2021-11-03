@@ -62,7 +62,12 @@ public class MortgageItem
     {
         get 
         {
+            try {
             return (int)Math.Round((decimal)this.Loan / (decimal)(this.TotalSalary * 12) * 100, 0);
+            }
+            catch {
+                return 0;
+            }
         }
     }
 
