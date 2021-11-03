@@ -58,6 +58,14 @@ public class MortgageItem
         }
     }
 
+    public int DebtRatio
+    {
+        get 
+        {
+            return Math.Round((decimal)this.Loan / (decimal)(this.TotalSalary * 12) * 100, 0);
+        }
+    }
+
     public int InstallmentRate
     {
         get
