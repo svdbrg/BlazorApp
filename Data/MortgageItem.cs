@@ -60,14 +60,13 @@ public class MortgageItem
 
     public int DebtRatio
     {
-        get 
+        get
         {
-            try {
-            return (int)Math.Round((decimal)this.Loan / (decimal)(this.TotalSalary * 12) * 100, 0);
+            if (this.Loan > 0 && this.TotalSalary > 0)
+            {
+                return (int)Math.Round((decimal)this.Loan / (decimal)(this.TotalSalary * 12) * 100, 0);
             }
-            catch {
-                return 0;
-            }
+            return 0;
         }
     }
 
