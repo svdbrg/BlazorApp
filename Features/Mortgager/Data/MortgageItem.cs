@@ -1,4 +1,4 @@
-namespace BlazorApp.Data;
+namespace BlazorApp.Features.Mortgager.Data;
 
 public class MortgageItem
 {

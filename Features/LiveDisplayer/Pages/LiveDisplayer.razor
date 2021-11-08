@@ -1,0 +1,56 @@
+@page "/livedisplayer"
+@using Data
+@using BlazorApp.Features.LiveDisplayer.Services
+
+@inject IDataService _dataFetcher
+
+<PageTitle>Live Display</PageTitle>
+
+<div id="table">
+    <table>
+        <thead>
+            <tr>
+                <th>POS</th>
+                <th>Team</th>
+                <th>PL</th>
+                <th>GD</th>
+                <th>Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var team in table.Teams)
+            {
+                <tr>
+                    <td>@team.Position</td>
+                    <td>@team.Name</td>
+                    <td>@team.Played</td>
+                    <td>@team.GoalDifference</td>
+                    <td>@team.Points</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div id="fixtures">
+    <div class="day-wrapper">
+        <div class="day"></div>
+        @foreach (var fixture in fixtures)
+        {
+            <div class="fixture">
+                <div class="home">@fixture.HomeTeam</div>
+                <div class="result">@fixture.Result</div>
+                <div class="away">@fixture.AwayTeam</div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private TableStandings table = new();
+    private IEnumerable<Fixture> fixtures = new List<Fixture>();
+    protected override async Task OnInitializedAsync()
+    {
+        table = await _dataFetcher.GetTable();
+        fixtures = await _dataFetcher.GetFixtures();
+    }
+}

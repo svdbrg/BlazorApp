@@ -1,6 +1,6 @@
 using Google.Cloud.Firestore;
 
-namespace BlazorApp.Data;
+namespace BlazorApp.Features.Mortgager.Data;
 
 [FirestoreData]
 public class MortgageItemDto

@@ -1,6 +1,6 @@
-using BlazorApp.Data;
+using BlazorApp.Features.Mortgager.Data;
 
-namespace BlazorApp.Services;
+namespace BlazorApp.Features.Mortgager.Services;
 
 public interface IDataService {
     Task<string> SaveData(MortgageItem item);

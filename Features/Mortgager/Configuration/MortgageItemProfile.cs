@@ -1,5 +1,5 @@
 using AutoMapper;
-using BlazorApp.Data;
+using BlazorApp.Features.Mortgager.Data;
 
 public class MortgageItemProfile : Profile
 {

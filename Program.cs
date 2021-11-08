@@ -1,5 +1,5 @@
-using AutoMapper;
-using BlazorApp.Services;
+using BlazorApp.Features.LiveDisplayer.Configuration;
+using BlazorApp.Features.Mortgager.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,16 +10,9 @@ builder.WebHost.UseUrls("http://*:" + port);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddLocalization();
-builder.Services.AddTransient<IDataService, GcmDataService>();
 
-// Auto Mapper Configurations
-var mapperConfig = new MapperConfiguration(mc =>
-{
-    mc.AddProfile(new MortgageItemProfile());
-});
-
-var mapper = mapperConfig.CreateMapper();
-builder.Services.AddSingleton(mapper);
+builder.Services.ConfigureMortgager(builder);
+builder.Services.ConfigureLiveDisplayer();
 
 var app = builder.Build();
 

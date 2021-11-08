@@ -159,3 +159,75 @@ div.summary table td:nth-child(2) {
         margin-top: 20px;
     }
 }
+
+
+
+
+
+
+#fixtures, #table {
+    width: 50%;
+    float: left;
+}
+
+#fixtures .day-wrapper {
+    margin-bottom: 10px;
+}
+    
+    #fixtures .day-wrapper .day {
+        text-align: center;
+    }
+
+    #fixtures .day-wrapper .fixture .home, 
+    #fixtures .day-wrapper .fixture .result,
+    #fixtures .day-wrapper .fixture .away {
+        width: 33%;
+        float: left;
+        text-align: center;
+    }
+
+    #fixtures .day-wrapper .fixture .home {
+        text-align: right;
+    }
+
+    #fixtures .day-wrapper .fixture .away {
+        text-align: left;
+    }
+
+    #table table {
+        width: 100%;
+    }
+
+#table thead th:first-child,
+#table thead th:nth-child(3),
+#table thead th:nth-child(4),
+#table thead th:last-child,
+#table tbody td:first-child,
+#table tbody td:nth-child(3),
+#table tbody td:nth-child(4),
+#table tbody td:last-child {
+    text-align: right;
+}
+
+#table th:nth-child(2),
+#table td:nth-child(2) {
+    padding-left: 10px;
+}
+
+#table tbody tr:nth-child(4),
+#table tbody tr:nth-child(5),
+#table tbody tr:nth-child(17) {
+    border-bottom: solid 1px black;
+}
+
+
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 800px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+      #table, #fixtures {
+          float: none;
+          width: 100%;
+      }
+}

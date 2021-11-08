@@ -1,8 +1,8 @@
 using AutoMapper;
-using BlazorApp.Data;
+using BlazorApp.Features.Mortgager.Data;
 using Google.Cloud.Firestore;
 
-namespace BlazorApp.Services;
+namespace BlazorApp.Features.Mortgager.Services;
 
 public class GcmDataService : IDataService
 {
