@@ -20,8 +20,8 @@
         <div>
             <label for="purchasePrice">Purchase price SEK</label>
             <div class="input">
-                <input id="purchasePrice" class="form-control" @onchange="saveChanges"
-                    @bind="mortgage.PurchasePrice" @bind:event="oninput" />
+                <input id="purchasePrice" class="form-control" @onchange="saveChanges" @bind="mortgage.PurchasePrice"
+                    @bind:event="oninput" />
             </div>
         </div>
         <div>
@@ -173,10 +173,11 @@
 
     private async Task RemoveExpense(Expense expense)
     {
-        if(!await js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete monthly expense '{expense.Name}'?")) {
+        if (!await js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete monthly expense '{expense.Name}'?"))
+        {
             return;
         }
-        
+
         mortgage.Expenses.Remove(expense);
 
         await saveChanges();

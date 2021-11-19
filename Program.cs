@@ -12,7 +12,8 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddLocalization();
 
 builder.Services.ConfigureMortgager(builder);
-builder.Services.ConfigureLiveDisplayer();
+builder.Services.ConfigureLiveDisplayer(builder);
+builder.Services.ConfigureAutoMapper();
 
 var app = builder.Build();
 

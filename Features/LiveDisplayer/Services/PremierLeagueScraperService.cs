@@ -1,4 +1,5 @@
 using System.Text.Json;
+using AutoMapper;
 using BlazorApp.Features.LiveDisplayer.Data;
 using HtmlAgilityPack;
 
@@ -8,11 +9,13 @@ public class PremierLeagueScraperService : IDataService
 {
     private readonly ILogger<PremierLeagueScraperService> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IMapper _mapper;
 
-    public PremierLeagueScraperService(ILogger<PremierLeagueScraperService> logger, IHttpClientFactory httpClientFactory)
+    public PremierLeagueScraperService(ILogger<PremierLeagueScraperService> logger, IHttpClientFactory httpClientFactory, IMapper mapper)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     public async IAsyncEnumerable<Day> GetDaysAndFixturesAsync()
@@ -29,13 +32,7 @@ public class PremierLeagueScraperService : IDataService
                 Fixtures = dtosGrouped
                     .SelectMany(fix => fix)
                     .Where(d => d.fixture.kickoff.kickoffDay == item.Key)
-                    .Select(f => new Fixture
-                    {
-                        HomeTeam = f.fixture.teams[0].team.club.abbr,
-                        AwayTeam = f.fixture.teams[1].team.club.abbr,
-                        Time = f.fixture.kickoff.label.Split(',')[1],
-                        DateAndTime = DateTime.Parse(f.fixture.kickoff.label)
-                    })
+                    .Select(f => _mapper.Map<Fixture>(f.fixture))
             };
         }
     }
