@@ -38,3 +38,4 @@ msbuild.wrn
 
 mortgage*.json
 Properties/
+gcm.json

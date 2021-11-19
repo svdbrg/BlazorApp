@@ -3,9 +3,6 @@ using BlazorApp.Features.Mortgager.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var port = Environment.GetEnvironmentVariable("PORT");
-builder.WebHost.UseUrls("http://*:" + port);
-
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
@@ -14,6 +11,9 @@ builder.Services.AddLocalization();
 builder.Services.ConfigureMortgager(builder);
 builder.Services.ConfigureLiveDisplayer(builder);
 builder.Services.ConfigureAutoMapper();
+
+var port = Environment.GetEnvironmentVariable("PORT");
+builder.WebHost.UseUrls("http://*:" + port);
 
 var app = builder.Build();
 
