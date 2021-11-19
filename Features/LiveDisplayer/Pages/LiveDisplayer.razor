@@ -32,25 +32,34 @@
     </table>
 </div>
 <div id="fixtures">
-    <div class="day-wrapper">
-        <div class="day"></div>
-        @foreach (var fixture in fixtures)
-        {
-            <div class="fixture">
-                <div class="home">@fixture.HomeTeam</div>
-                <div class="result">@fixture.Result</div>
-                <div class="away">@fixture.AwayTeam</div>
-            </div>
-        }
-    </div>
+    @foreach (var day in days)
+    {
+        <div class="day-wrapper">
+            <div class="day">@day.Date</div>
+            @foreach (var fixture in day.Fixtures)
+            {
+                <div class="fixture">
+                    <div class="home">@fixture.HomeTeam</div>
+                    <div class="result">@fixture.DateAndTime.ToShortTimeString()</div>
+                    <div class="away">@fixture.AwayTeam</div>
+                </div>
+            }
+
+        </div>
+    }
 </div>
 
 @code {
     private TableStandings table = new();
-    private IEnumerable<Fixture> fixtures = new List<Fixture>();
+    private List<Day> days = new();
     protected override async Task OnInitializedAsync()
     {
-        table = await _dataFetcher.GetTable();
-        fixtures = await _dataFetcher.GetFixtures();
+        table = await _dataFetcher.GetTableAsync();
+
+        await foreach (var day in _dataFetcher.GetDaysAndFixturesAsync())
+        {
+            days.Add(day);
+            StateHasChanged();
+        }
     }
 }

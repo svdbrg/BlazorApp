@@ -3,6 +3,6 @@ namespace BlazorApp.Features.LiveDisplayer.Services;
 
 public interface IDataService
 {
-    Task<TableStandings> GetTable();
-    Task<IEnumerable<Fixture>> GetFixtures();
+    Task<TableStandings> GetTableAsync();
+    IAsyncEnumerable<Day> GetDaysAndFixturesAsync();
 }
