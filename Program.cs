@@ -18,12 +18,10 @@ builder.Services.ConfigureLiveDisplayer(builder);
 
 builder.Services.ConfigureAutoMapper();
 
-var port = Environment.GetEnvironmentVariable("PORT");
-builder.WebHost.UseUrls("http://*:" + port);
 
 var app = builder.Build();
 
-app.Urls.Add("http://*:" + port);
+app.Urls.Add("http://*:" + Environment.GetEnvironmentVariable("PORT"));
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
