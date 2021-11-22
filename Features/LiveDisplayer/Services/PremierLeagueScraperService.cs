@@ -47,14 +47,20 @@ public class PremierLeagueScraperService : IDataService
             htmlDoc.LoadHtml(rawHtml);
 
             var matches = htmlDoc.DocumentNode
-                .Descendants("a")
-                .Where(a => a.HasClass("embeddableMatchContainer"))
-                .Select(m => m.GetDataAttribute("matchid").Value);
+                ?.Descendants("a")
+                ?.Where(a => a.HasClass("embeddableMatchContainer"))
+                ?.Select(m => m.GetAttributes("href").First().Value.Replace("/match/", ""));
 
-            client.DefaultRequestHeaders.Add("Origin", "https://www.premierleague.com");
-            var response = await client.GetAsync($"https://footballapi.pulselive.com/football/broadcasting-schedule/fixtures?pageSize=100&fixtureIds={string.Join(',', matches)}&comps=1");
+            if (matches != null)
+            {
 
-            return JsonSerializer.Deserialize<RootDto>(await response.Content.ReadAsStreamAsync()) ?? new RootDto();
+                client.DefaultRequestHeaders.Add("Origin", "https://www.premierleague.com");
+                var response = await client.GetAsync($"https://footballapi.pulselive.com/football/broadcasting-schedule/fixtures?pageSize=100&fixtureIds={string.Join(',', matches)}&comps=1");
+
+                return JsonSerializer.Deserialize<RootDto>(await response.Content.ReadAsStreamAsync()) ?? new RootDto();
+            }
+
+            return new RootDto();
         }
     }
 
