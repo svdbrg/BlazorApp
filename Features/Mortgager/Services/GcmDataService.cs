@@ -1,6 +1,8 @@
 using AutoMapper;
 using BlazorApp.Features.Mortgager.Data;
+using BlazorApp.Features.Shared;
 using Google.Cloud.Firestore;
+using Microsoft.Extensions.Options;
 
 namespace BlazorApp.Features.Mortgager.Services;
 
@@ -16,7 +18,6 @@ public class GcmDataService : IDataService
 
     public async Task<MortgageItem?> GetSavedData()
     {
-
         var db = FirestoreDb.Create("mortgager");
 
         var docRef = db.Collection("mortgages").Document($"mortgage-{documentSuffix}");
