@@ -40,7 +40,7 @@
             {
                 <div class="fixture">
                     <div class="home">@fixture.HomeTeam</div>
-                    <div class="result">@(string.IsNullOrWhiteSpace(fixture.Result) ? fixture.DateAndTime.ToShortTimeString() : fixture.Result)</div>
+                    <div class="result">@(fixture.Status == "U" ? fixture.DateAndTime.ToShortTimeString() : fixture.Result)</div>
                     <div class="away">@fixture.AwayTeam</div>
                 </div>
             }

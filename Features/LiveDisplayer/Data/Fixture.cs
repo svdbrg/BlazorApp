@@ -11,5 +11,6 @@ public class Fixture
     public string HomeTeam { get; set; } = string.Empty;
     public string AwayTeam { get; set; } = string.Empty;
     public string Result { get; set; } = string.Empty;
+    public string Status { get; set; } = string.Empty;
     public DateTime DateAndTime { get; set; }
 }
