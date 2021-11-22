@@ -22,7 +22,7 @@ public class PremierLeagueScraperService : IDataService
     {
         var days = new List<Day>();
         var dtos = await GetFixturesWithApiAsync();
-        var dtosGrouped = dtos.content.GroupBy(c => c.fixture.kickoff.kickoffDay);
+        var dtosGrouped = dtos.content.GroupBy(c => c.kickoff.kickoffDay);
 
         foreach (var item in dtosGrouped)
         {
@@ -31,8 +31,8 @@ public class PremierLeagueScraperService : IDataService
                 Date = item.Key,
                 Fixtures = dtosGrouped
                     .SelectMany(fix => fix)
-                    .Where(d => d.fixture.kickoff.kickoffDay == item.Key)
-                    .Select(f => _mapper.Map<Fixture>(f.fixture))
+                    .Where(d => d.kickoff.kickoffDay == item.Key)
+                    .Select(f => _mapper.Map<Fixture>(f))
             };
         }
     }
@@ -46,20 +46,22 @@ public class PremierLeagueScraperService : IDataService
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(rawHtml);
 
-            var matches = htmlDoc.DocumentNode
-                ?.Descendants("a")
-                ?.Where(a => a.HasClass("embeddableMatchContainer"))
-                ?.Select(m => m.GetAttributes("href").First().Value.Replace("/match/", ""));
+            var gameweekId = htmlDoc.DocumentNode
+                ?.Descendants("div")
+                ?.Where(d => d.GetAttributeValue("data-widget", "miss") == "gameweek-matches")
+                ?.First()
+                ?.GetDataAttribute("gameweek")
+                ?.Value;
 
-            if (matches != null)
+            if (gameweekId == null)
             {
-                client.DefaultRequestHeaders.Add("Origin", "https://www.premierleague.com");
-                var response = await client.GetAsync($"https://footballapi.pulselive.com/football/broadcasting-schedule/fixtures?pageSize=100&fixtureIds={string.Join(',', matches)}&comps=1");
-
-                return JsonSerializer.Deserialize<RootDto>(await response.Content.ReadAsStreamAsync()) ?? new RootDto();
+                return new RootDto();
             }
 
-            return new RootDto();
+            client.DefaultRequestHeaders.Add("Origin", "https://www.premierleague.com");
+            var response = await client.GetAsync($"https://footballapi.pulselive.com/football/fixtures?pageSize=100&comps=1&gameweeks={gameweekId}");
+
+            return JsonSerializer.Deserialize<RootDto>(await response.Content.ReadAsStreamAsync()) ?? new RootDto();
         }
     }
 
