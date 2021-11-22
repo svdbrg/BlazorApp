@@ -64,6 +64,7 @@ public class Team2Dto
 public class TeamDto
 {
     public Team2Dto team { get; set; } = new();
+    public int score { get; set; }
 }
 
 public class GroundDto

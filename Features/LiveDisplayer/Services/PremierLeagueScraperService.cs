@@ -53,7 +53,6 @@ public class PremierLeagueScraperService : IDataService
 
             if (matches != null)
             {
-
                 client.DefaultRequestHeaders.Add("Origin", "https://www.premierleague.com");
                 var response = await client.GetAsync($"https://footballapi.pulselive.com/football/broadcasting-schedule/fixtures?pageSize=100&fixtureIds={string.Join(',', matches)}&comps=1");
 
