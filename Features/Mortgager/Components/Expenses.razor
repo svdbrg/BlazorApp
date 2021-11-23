@@ -1,16 +1,17 @@
 @using Data
 @inject IJSRuntime js
 
+<div class="expenses">
     <h2>Monthly expenses</h2>
     <div>
         <div class="input">
             <label for="expenseName">Name</label>
-            <input id="expenseName" disabled=!@canEdit @bind="expenseName" @onkeydown="@Enter" class="form-control"
+            <input id="expenseName" disabled="@(!canEdit)" @bind="expenseName" @onkeydown="@Enter" class="form-control"
                 @bind:event="oninput" />
         </div>
         <div class="input">
             <label for="expenseCost">Cost SEK</label>
-            <input id="expenseCost" disabled=!@canEdit @bind="expenseCost" @onkeydown="@Enter" class="form-control"
+            <input id="expenseCost" disabled="@(!canEdit)" @bind="expenseCost" @onkeydown="@Enter" class="form-control"
                 @bind:event="oninput" />
         </div>
 
@@ -69,6 +70,7 @@
             </table>
         }
     </div>
+</div>
 
 @code {
     [Parameter]

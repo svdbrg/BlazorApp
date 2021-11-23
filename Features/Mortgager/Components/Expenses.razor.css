@@ -1,18 +1,17 @@
+div.expenses {
+    width: 30%;
+    float: left;
+    min-width: 500px;
+}
+
+div.expenses div.input {
+    width: 50%;
+    float: left;
+}
+
 table.expenses {
     width: 100%;
     margin-top: 20px;
-}
-
-table.expenses td:nth-child(3) {
-    width: 25px;
-}
-
-table.expenses tbody tr:last-child td {
-    padding-bottom: 10px;
-}
-
-table.expenses tfoot tr {
-    border-top: solid 1px #000;
 }
 
 .center {
@@ -21,4 +20,15 @@ table.expenses tfoot tr {
 
 .right {
     text-align: right;
+}
+
+
+@media (max-width: 1330px) {
+    div.expenses {
+        min-width: auto;
+        width: 100%;
+    }
+    div.expenses {
+        margin-top: 20px;
+    }
 }

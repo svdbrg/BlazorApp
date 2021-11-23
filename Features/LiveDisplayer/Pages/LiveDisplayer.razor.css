@@ -12,4 +12,8 @@
           float: none;
           width: 100%;
       }
+
+      #fixtures {
+        margin-top: 10px;
+      }
 }

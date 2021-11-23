@@ -2,15 +2,16 @@ table {
     width: 100%;
 }
 
-thead th:first-child,
-thead th:nth-child(3),
-thead th:nth-child(4),
 thead th:last-child,
-tbody td:first-child,
+tbody td:last-child,
+thead th:nth-child(3),
+thead th:first-child,
 tbody td:nth-child(3),
 tbody td:nth-child(4),
-tbody td:last-child {
-    text-align: right;
+thead th:nth-child(4),
+tbody td:first-child {
+    text-align: center;
+    width: 40px;
 }
 
 th:nth-child(2),
@@ -18,8 +19,19 @@ td:nth-child(2) {
     padding-left: 10px;
 }
 
+tbody tr:nth-child(1),
 tbody tr:nth-child(4),
 tbody tr:nth-child(5),
 tbody tr:nth-child(17) {
-    border-bottom: solid 1px black;
+    border-bottom: solid 1px #ccc;
+}
+
+tbody tr:nth-child(18),
+tbody tr:nth-child(19),
+tbody tr:last-child {
+    color: #999;
+}
+
+tbody tr:first-child {
+    font-weight: bold;
 }

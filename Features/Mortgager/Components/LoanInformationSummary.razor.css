@@ -1,0 +1,23 @@
+div.summary {
+    width: 100%;
+    float: left;
+}
+
+div.summary table {
+    width: 100%;
+    margin-top: 20px;
+}
+
+div.summary table td:nth-child(2) {
+    text-align: right;
+    font-weight: bold;
+    padding-left: 10px;
+}
+
+@media (max-width: 1330px) {
+    div.mortgage div.expenses,
+    div.mortgage div.form-group {
+        min-width: auto;
+        width: 100%;
+    }
+}

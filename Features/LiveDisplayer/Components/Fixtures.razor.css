@@ -21,3 +21,17 @@
 .day-wrapper .fixture .away {
     text-align: left;
 }
+
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 800px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+    .day-wrapper .fixture .home {
+        text-align: left;
+    }
+    
+    .day-wrapper .fixture .away {
+        text-align: right;
+    }
+}
