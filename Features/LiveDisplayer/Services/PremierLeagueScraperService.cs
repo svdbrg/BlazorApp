@@ -5,13 +5,13 @@ using HtmlAgilityPack;
 
 namespace BlazorApp.Features.LiveDisplayer.Services;
 
-public class PremierLeagueScraperService : IDataService
+public class PremierLeagueDataService : IFootballDataService
 {
-    private readonly ILogger<PremierLeagueScraperService> _logger;
+    private readonly ILogger<PremierLeagueDataService> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IMapper _mapper;
 
-    public PremierLeagueScraperService(ILogger<PremierLeagueScraperService> logger, IHttpClientFactory httpClientFactory, IMapper mapper)
+    public PremierLeagueDataService(ILogger<PremierLeagueDataService> logger, IHttpClientFactory httpClientFactory, IMapper mapper)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));

@@ -12,7 +12,7 @@ public static class LiveDisplayerConfigurator
             c.BaseAddress = new Uri("https://footballapi.pulselive.com/");
         });
 
-        services.AddTransient<IDataService, PremierLeagueScraperService>();
+        services.AddTransient<IFootballDataService, PremierLeagueDataService>();
 
         services.Configure<List<NavMenuItem>>(opt =>
         {

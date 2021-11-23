@@ -1,3 +1,5 @@
+using BlazorApp.Features.Shared;
+
 namespace BlazorApp.Features.Mortgager.Data;
 
 public class MortgageItem

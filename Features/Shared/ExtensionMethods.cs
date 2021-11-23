@@ -1,3 +1,5 @@
+namespace BlazorApp.Features.Shared;
+
 public static class ExtensionMethods
 {
     public static string RemoveWhitespace(this string input)
