@@ -27,10 +27,14 @@ public class GcmDataService : IDataService
 
         if (snapshot != null)
         {
+            _logger.LogInformation("Call to Firestore succeeded");
+
             var mortgageDto = snapshot.ConvertTo<MortgageItemDto>();
 
             return _mapper.Map<MortgageItem>(mortgageDto);
         }
+
+        _logger.LogWarning("Call to Firestore failed when getting data");
 
         return null;
     }
