@@ -1,0 +1,42 @@
+@using Data
+<div class="summary">
+    <table>
+        <tr>
+            <td>Purchase price: </td>
+            <td>@mortgage.PurchasePrice.ToString("C0")</td>
+        </tr>
+        <tr>
+            <td>Down payment: </td>
+            <td>@mortgage.DownPayment.ToString("C0")</td>
+        </tr>
+        <tr>
+            <td>Interest rate: </td>
+            <td>@mortgage.InterestRate%</td>
+        </tr>
+        <tr>
+            <td>Debt ratio</td>
+            <td>@mortgage.DebtRatio%</td>
+        </tr>
+        <tr>
+            <td>Loan: </td>
+            <td>@mortgage.Loan.ToString("C0")</td>
+        </tr>
+        <tr>
+            <td>Total salary to compare with: </td>
+            <td>@mortgage.TotalSalaryToCompareWith.ToString("C0")</td>
+        </tr>
+        <tr>
+            <td>Monthly installment rate</td>
+            <td>@mortgage.InstallmentRate%</td>
+        </tr>
+        <tr>
+            <td>Monthly loan costs</td>
+            <td>@mortgage.MonthlyLoanCost.ToString("C")</td>
+        </tr>
+    </table>
+</div>
+
+@code {
+    [Parameter]
+    public MortgageItem mortgage { get; set; } = new();
+}

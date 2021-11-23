@@ -1,0 +1,23 @@
+.day-wrapper {
+    margin-bottom: 10px;
+}
+    
+.day-wrapper .day {
+    text-align: center;
+}
+
+.day-wrapper .fixture .home, 
+.day-wrapper .fixture .result,
+.day-wrapper .fixture .away {
+    width: 33%;
+    float: left;
+    text-align: center;
+}
+
+.day-wrapper .fixture .home {
+    text-align: right;
+}
+
+.day-wrapper .fixture .away {
+    text-align: left;
+}

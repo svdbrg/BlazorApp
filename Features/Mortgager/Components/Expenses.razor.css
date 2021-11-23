@@ -1,0 +1,24 @@
+table.expenses {
+    width: 100%;
+    margin-top: 20px;
+}
+
+table.expenses td:nth-child(3) {
+    width: 25px;
+}
+
+table.expenses tbody tr:last-child td {
+    padding-bottom: 10px;
+}
+
+table.expenses tfoot tr {
+    border-top: solid 1px #000;
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}

@@ -1,4 +1,5 @@
 @page "/livedisplayer"
+@using BlazorApp.Features.LiveDisplayer.Components
 @using Data
 @using BlazorApp.Features.LiveDisplayer.Services
 
@@ -12,47 +13,10 @@
 }
 
 <div id="table">
-    <table>
-        <thead>
-            <tr>
-                <th>POS</th>
-                <th>Team</th>
-                <th>PL</th>
-                <th>GD</th>
-                <th>Points</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var team in table)
-            {
-                <tr>
-                    <td>@team.Position</td>
-                    <td>@team.Name</td>
-                    <td>@team.Played</td>
-                    <td>@team.GoalDifference</td>
-                    <td>@team.Points</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <Table footballTable="table" />
 </div>
 <div id="fixtures">
-    @foreach (var day in days)
-    {
-        <div class="day-wrapper">
-            <div class="day">@day.Date</div>
-            @foreach (var fixture in day.Fixtures)
-            {
-                <div class="fixture">
-                    <div class="home">@fixture.HomeTeam</div>
-                    <div class="result">@(fixture.Status == "U" ? fixture.DateAndTime.ToShortTimeString() : fixture.Result)
-                    </div>
-                    <div class="away">@fixture.AwayTeam</div>
-                </div>
-            }
-
-        </div>
-    }
+    <Fixtures days="days" />
 </div>
 
 @code {

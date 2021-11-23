@@ -1,0 +1,42 @@
+@using Data
+<div>
+    <div>
+        <label for="purchasePrice">Purchase price SEK</label>
+        <div class="input">
+            <input id="purchasePrice" disabled=!@canEdit class="form-control" @onchange="onSaveChanges"
+                @bind="mortgage.PurchasePrice" @bind:event="oninput" />
+        </div>
+    </div>
+    <div>
+        <label for="downPayment">Down payment SEK</label>
+        <div class="input">
+            <input id="downPayment" disabled=!@canEdit class="form-control" @bind="mortgage.DownPayment"
+                @bind:event="oninput" @onchange="onSaveChanges" />
+        </div>
+    </div>
+    <div>
+        <label for="interestRate">Interest rate %</label>
+        <div class="input">
+            <input id="interestRate" disabled=!@canEdit class="form-control" @bind="mortgage.InterestRate"
+                @bind:event="oninput" @onchange="onSaveChanges" />
+        </div>
+    </div>
+    <div>
+        <label for="totalSalary">Total monthly salary</label>
+        <div class="input">
+            <input id="totalSalary" disabled=!@canEdit class="form-control" @bind="mortgage.TotalSalary"
+                @bind:event="oninput" @onchange="onSaveChanges" />
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public MortgageItem mortgage { get; set; } = new();
+
+    [Parameter]
+    public bool canEdit { get; set; }
+
+    [Parameter]
+    public EventCallback onSaveChanges { get; set; }
+}

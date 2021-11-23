@@ -1,0 +1,29 @@
+@using Data
+<table>
+    <thead>
+        <tr>
+            <th>POS</th>
+            <th>Team</th>
+            <th>PL</th>
+            <th>GD</th>
+            <th>Points</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var team in footballTable)
+        {
+            <tr>
+                <td>@team.Position</td>
+                <td>@team.Name</td>
+                <td>@team.Played</td>
+                <td>@team.GoalDifference</td>
+                <td>@team.Points</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public IEnumerable<Team> footballTable { get; set; } = new List<Team>();
+}

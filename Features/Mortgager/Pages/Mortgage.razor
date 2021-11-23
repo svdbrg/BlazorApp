@@ -1,10 +1,10 @@
 @page "/mortgage"
 
+@using BlazorApp.Features.Mortgager.Components
 @using BlazorApp.Features.Mortgager.Data
 @using BlazorApp.Features.Mortgager.Services
 
 @inject IDataService _dataService
-@inject IJSRuntime js
 @inject ILogger<GcmDataService> _logger
 
 <PageTitle>Calculate your mortgage costs</PageTitle>
@@ -23,140 +23,11 @@
 <div class="mortgage">
     <div class="form-group">
         <h2>Loan information</h2>
-        <div>
-            <label for="purchasePrice">Purchase price SEK</label>
-            <div class="input">
-                <input id="purchasePrice" disabled=!@canEdit class="form-control" @onchange="saveChanges" @bind="mortgage.PurchasePrice"
-                    @bind:event="oninput" />
-            </div>
-        </div>
-        <div>
-            <label for="downPayment">Down payment SEK</label>
-            <div class="input">
-                <input id="downPayment" disabled=!@canEdit class="form-control" @bind="mortgage.DownPayment" @bind:event="oninput"
-                    @onchange="saveChanges" />
-            </div>
-        </div>
-        <div>
-            <label for="interestRate">Interest rate %</label>
-            <div class="input">
-                <input id="interestRate" disabled=!@canEdit class="form-control" @bind="mortgage.InterestRate" @bind:event="oninput"
-                    @onchange="saveChanges" />
-            </div>
-        </div>
-        <div>
-            <label for="totalSalary">Total monthly salary</label>
-            <div class="input">
-                <input id="totalSalary" disabled=!@canEdit class="form-control" @bind="mortgage.TotalSalary" @bind:event="oninput"
-                    @onchange="saveChanges" />
-            </div>
-        </div>
-        <div class="summary">
-            <table>
-                <tr>
-                    <td>Purchase price: </td>
-                    <td>@mortgage.PurchasePrice.ToString("C0")</td>
-                </tr>
-                <tr>
-                    <td>Down payment: </td>
-                    <td>@mortgage.DownPayment.ToString("C0")</td>
-                </tr>
-                <tr>
-                    <td>Interest rate: </td>
-                    <td>@mortgage.InterestRate%</td>
-                </tr>
-                <tr>
-                    <td>Debt ratio</td>
-                    <td>@mortgage.DebtRatio%</td>
-                </tr>
-                <tr>
-                    <td>Loan: </td>
-                    <td>@mortgage.Loan.ToString("C0")</td>
-                </tr>
-                <tr>
-                    <td>Total salary to compare with: </td>
-                    <td>@mortgage.TotalSalaryToCompareWith.ToString("C0")</td>
-                </tr>
-                <tr>
-                    <td>Monthly installment rate</td>
-                    <td>@mortgage.InstallmentRate%</td>
-                </tr>
-                <tr>
-                    <td>Monthly loan costs</td>
-                    <td>@mortgage.MonthlyLoanCost.ToString("C")</td>
-                </tr>
-            </table>
-        </div>
+        <LoanInformationInput canEdit="canEdit" mortgage="mortgage" onSaveChanges="saveChanges" />
+        <LoanInformationSummary mortgage="mortgage" />
     </div>
     <div class="expenses">
-        <h2>Monthly expenses</h2>
-        <div>
-            <div class="input">
-                <label for="expenseName">Name</label>
-                <input id="expenseName" disabled=!@canEdit @bind="expenseName" @onkeydown="@Enter" class="form-control"
-                    @bind:event="oninput" />
-            </div>
-            <div class="input">
-                <label for="expenseCost">Cost SEK</label>
-                <input id="expenseCost" disabled=!@canEdit @bind="expenseCost" @onkeydown="@Enter" class="form-control"
-                    @bind:event="oninput" />
-            </div>
-
-            @if (mortgage.Expenses != null)
-            {
-                <table class="expenses">
-                    <thead>
-                        <tr>
-                            <th>Expense</th>
-                            <th class="right">Cost</th>
-                            <th class="center"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var expense in mortgage.Expenses.OrderBy(e => e.Cost))
-                        {
-                            <tr>
-                                <td>@expense.Name</td>
-                                <td class="right">@expense.Cost.ToString("C0")</td>
-                                <td class="right">
-                                    <a class="text-decoration-none" @onclick="@(e => RemoveExpense(expense))">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-trash" viewBox="0 0 16 16">
-                                            <path
-                                        d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z">
-                                            </path>
-                                            <path fill-rule="evenodd"
-                                        d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z">
-                                            </path>
-                                        </svg>
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                        <tr>
-                            <td>
-                                Loan cost
-                            </td>
-                            <td class="right">
-                                @mortgage.MonthlyLoanCost.ToString("C0")
-                            </td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td>
-                                <b>Total</b>
-                            </td>
-                            <td class="right">
-                                <b>@((mortgage.Expenses.Select(e => e.Cost).Sum() +
-                                mortgage.MonthlyLoanCost).ToString("C0"))</b>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            }
-        </div>
+        <Expenses canEdit="canEdit" mortgage="mortgage" onSaveChanges="saveChanges" />
     </div>
 </div>
 
@@ -164,8 +35,6 @@
     private MortgageItem mortgage = new();
     private bool isLoading = true;
     private bool canEdit = true;
-    private string expenseName { get; set; } = string.Empty;
-    private int expenseCost { get; set; }
     private string saveCounterMessage = "";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -189,18 +58,6 @@
         }
     }
 
-    private async Task RemoveExpense(Expense expense)
-    {
-        if (!await js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete monthly expense '{expense.Name}'?"))
-        {
-            return;
-        }
-
-        mortgage.Expenses.Remove(expense);
-
-        await saveChanges();
-    }
-
     private async Task saveChanges()
     {
         saveCounterMessage = "Saving...";
@@ -216,33 +73,6 @@
         await Task.Delay(1500);
         saveCounterMessage = "";
         await InvokeAsync(StateHasChanged);
-    }
-
-    public async Task Enter(KeyboardEventArgs e)
-    {
-        if (e.Code == "Enter" || e.Code == "NumpadEnter")
-        {
-            await AddToExpenses();
-        }
-    }
-
-    private async Task AddToExpenses()
-    {
-        if (string.IsNullOrWhiteSpace(expenseName) || expenseCost < 1)
-        {
-            return;
-        }
-
-        mortgage.Expenses.Add(new Expense
-        {
-            Name = expenseName,
-            Cost = expenseCost
-        });
-
-        expenseName = "";
-        expenseCost = 0;
-
-        await saveChanges();
     }
 
     private string GetClassName()
