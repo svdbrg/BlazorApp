@@ -59,17 +59,21 @@
     private IEnumerable<Team> table = new List<Team>();
     private List<Day> days = new();
     private bool isLoading = true;
-    protected override async Task OnInitializedAsync()
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        table = await _dataFetcher.GetTableAsync();
-
-        await foreach (var day in _dataFetcher.GetDaysAndFixturesAsync())
+        if (firstRender)
         {
-            days.Add(day);
-            StateHasChanged();
-        }
+            table = await _dataFetcher.GetTableAsync();
 
-        isLoading = false;
-        StateHasChanged();
+            await foreach (var day in _dataFetcher.GetDaysAndFixturesAsync())
+            {
+                days.Add(day);
+                await InvokeAsync(StateHasChanged);
+            }
+
+            isLoading = false;
+            await InvokeAsync(StateHasChanged);
+        }
     }
 }
