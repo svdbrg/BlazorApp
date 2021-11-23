@@ -6,6 +6,11 @@
 
 <PageTitle>Live Display</PageTitle>
 
+@if (isLoading)
+{
+    <div class="loading">Loading...</div>
+}
+
 <div id="table">
     <table>
         <thead>
@@ -40,7 +45,8 @@
             {
                 <div class="fixture">
                     <div class="home">@fixture.HomeTeam</div>
-                    <div class="result">@(fixture.Status == "U" ? fixture.DateAndTime.ToShortTimeString() : fixture.Result)</div>
+                    <div class="result">@(fixture.Status == "U" ? fixture.DateAndTime.ToShortTimeString() : fixture.Result)
+                    </div>
                     <div class="away">@fixture.AwayTeam</div>
                 </div>
             }
@@ -52,6 +58,7 @@
 @code {
     private TableStandings table = new();
     private List<Day> days = new();
+    private bool isLoading = true;
     protected override async Task OnInitializedAsync()
     {
         table = await _dataFetcher.GetTableAsync();
@@ -61,5 +68,8 @@
             days.Add(day);
             StateHasChanged();
         }
+
+        isLoading = false;
+        StateHasChanged();
     }
 }

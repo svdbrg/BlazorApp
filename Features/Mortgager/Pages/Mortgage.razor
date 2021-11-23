@@ -1,12 +1,17 @@
 @page "/mortgage"
 
-<PageTitle>Calculate your mortgage costs</PageTitle>
-
 @using BlazorApp.Features.Mortgager.Data
 @using BlazorApp.Features.Mortgager.Services
 
 @inject IDataService _dataService
 @inject IJSRuntime js
+
+<PageTitle>Calculate your mortgage costs</PageTitle>
+
+@if (isLoading)
+{
+    <div class="loading">Loading...</div>
+}
 
 <h1>Mortgage all the things</h1>
 
@@ -156,6 +161,7 @@
 
 @code {
     private MortgageItem mortgage = new();
+    private bool isLoading = true;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -164,11 +170,13 @@
             mortgage = await _dataService.GetSavedData() ?? new();
             await InvokeAsync(StateHasChanged);
         }
+
+        isLoading = false;
+        await InvokeAsync(StateHasChanged);
     }
 
     private string expenseName { get; set; } = string.Empty;
     private int expenseCost { get; set; }
-
     private string saveCounterMessage = "";
 
     private async Task RemoveExpense(Expense expense)
