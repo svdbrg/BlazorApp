@@ -1,10 +1,5 @@
 namespace BlazorApp.Features.Shared;
 
-public class NavMenuItems
-{
-    public List<NavMenuItem> Items { get; set; } = new();
-}
-
 public class NavMenuItem
 {
     public string Href { get; set; } = string.Empty;

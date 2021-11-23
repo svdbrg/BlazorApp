@@ -45,7 +45,7 @@ public class PremierLeagueDataService : IFootballDataService
 
             if (!response.IsSuccessStatusCode)
             {
-                _logger.LogWarning("No table received", response.StatusCode, response.ReasonPhrase);
+                _logger.LogWarning("No table received", response.ReasonPhrase);
 
                 return new List<Team>();
             }
@@ -74,7 +74,7 @@ public class PremierLeagueDataService : IFootballDataService
 
             if (!response.IsSuccessStatusCode)
             {
-                _logger.LogWarning("No fixtures received", response.StatusCode, response.ReasonPhrase);
+                _logger.LogWarning("No fixtures received", response.ReasonPhrase);
                 return new RootDto();
             }
 
