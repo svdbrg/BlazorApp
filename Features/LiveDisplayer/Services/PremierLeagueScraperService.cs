@@ -65,73 +65,20 @@ public class PremierLeagueScraperService : IDataService
         }
     }
 
-    public async Task<TableStandings> GetTableAsync()
+    public async Task<IEnumerable<Team>> GetTableAsync()
     {
-        var tableToReturn = new TableStandings();
         using (var client = _httpClientFactory.CreateClient())
         {
-            var rawHtml = await client.GetStringAsync("https://www.premierleague.com/tables");
+            client.DefaultRequestHeaders.Add("Origin", "https://www.premierleague.com");
+            var response = await client.GetAsync("https://footballapi.pulselive.com/football/standings?compSeasons=418&altIds=true");
 
-            var htmlDoc = new HtmlDocument();
-            htmlDoc.LoadHtml(rawHtml);
+            var data = JsonSerializer.Deserialize<TableRootDto>(await response.Content.ReadAsStreamAsync()) ?? new TableRootDto();
 
-            var table = htmlDoc.DocumentNode
-                .Descendants("tbody")
-                ?.FirstOrDefault(t => t.HasClass("isPL"))
-                ?.SelectNodes("//tr")
-                .Where(tr => tr.GetAttributeValue("data-filtered-table-row-name", null) != null
-                && tr.GetAttributeValue("data-filtered-entry-size", "") == "20");
-
-            if (table == null)
-            {
-                throw new KeyNotFoundException();
-            }
-
-            foreach (var row in table)
-            {
-                if (row == null)
-                {
-                    continue;
-                }
-
-                var teamTds = row.ChildNodes
-                    ?.FirstOrDefault(c => c.HasClass("team"))
-                    ?.Descendants("span")
-                    .Where(s => s.HasClass("long") || s.HasClass("short")).ToArray();
-
-                if (teamTds == null)
-                {
-                    continue;
-                }
-
-                var position = row.GetAttributeValue<int>("data-position", 0);
-                var name = teamTds[0].InnerText;
-                var shortName = teamTds[1].InnerText;
-                var points = row.Descendants("td")
-                    ?.FirstOrDefault(d => d.HasClass("points"))
-                    ?.InnerText;
-
-                var gd = row
-                    .ChildNodes?[19]
-                    ?.InnerText
-                    .Trim();
-
-                var played = row
-                    .ChildNodes?[7]
-                    .InnerText;
-
-                tableToReturn.Teams.Add(new Team
-                {
-                    Position = position,
-                    Name = name,
-                    ShortName = shortName,
-                    Played = played != null ? int.Parse(played) : 0,
-                    GoalDifference = gd ?? "0",
-                    Points = points != null ? int.Parse(points) : 0
-                });
-            }
-
-            return tableToReturn;
+            return data.tables
+                .First()
+                .entries
+                .Select(_mapper.Map<Team>)
+                .OrderBy(t => t.Position);
         }
     }
 }

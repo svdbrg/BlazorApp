@@ -11,6 +11,6 @@ public class Team
     public string Name { get; set; } = string.Empty;
     public string ShortName { get; set; } = string.Empty;
     public int Played { get; set; }
-    public string GoalDifference { get; set; } = string.Empty;
+    public int GoalDifference { get; set; }
     public int Points { get; set; }
 }

@@ -1,4 +1,6 @@
 // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
+namespace BlazorApp.Features.LiveDisplayer.Data;
+
 public class PageInfoDto
 {
     public int page { get; set; }
@@ -133,5 +135,97 @@ public class RootDto
 {
     public PageInfoDto pageInfo { get; set; } = new();
     public List<FixtureDto> content { get; set; } = new();
+}
+
+
+
+
+
+
+// Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
+public class AltIdsDto
+{
+    public string opta { get; set; } = string.Empty;
+}
+
+public class TimestampDto
+{
+    public long millis { get; set; }
+    public string label { get; set; } = string.Empty;
+}
+
+public class OverallDto
+{
+    public int played { get; set; }
+    public int won { get; set; }
+    public int drawn { get; set; }
+    public int lost { get; set; }
+    public int goalsFor { get; set; }
+    public int goalsAgainst { get; set; }
+    public int goalsDifference { get; set; }
+    public int points { get; set; }
+}
+
+public class HomeDto
+{
+    public int played { get; set; }
+    public int won { get; set; }
+    public int drawn { get; set; }
+    public int lost { get; set; }
+    public int goalsFor { get; set; }
+    public int goalsAgainst { get; set; }
+    public int goalsDifference { get; set; }
+    public int points { get; set; }
+}
+
+public class AwayDto
+{
+    public int played { get; set; }
+    public int won { get; set; }
+    public int drawn { get; set; }
+    public int lost { get; set; }
+    public int goalsFor { get; set; }
+    public int goalsAgainst { get; set; }
+    public int goalsDifference { get; set; }
+    public int points { get; set; }
+}
+
+public class AnnotationDto
+{
+    public string type { get; set; } = string.Empty;
+    public string destination { get; set; } = string.Empty;
+}
+
+public class LocationDto
+{
+    public double latitude { get; set; }
+    public double longitude { get; set; }
+}
+
+public class EntryDto
+{
+    public Team2Dto team { get; set; } = new();
+    public int position { get; set; }
+    public int startingPosition { get; set; }
+    public OverallDto overall { get; set; } = new();
+    public HomeDto home { get; set; } = new();
+    public AwayDto away { get; set; } = new();
+    public List<AnnotationDto> annotations { get; set; } = new();
+    public GroundDto ground { get; set; } = new();
+}
+
+public class TableDto
+{
+    public int gameWeek { get; set; }
+    public List<EntryDto> entries { get; set; } = new();
+}
+
+public class TableRootDto
+{
+    public CompSeasonDto compSeason { get; set; } = new();
+    public TimestampDto timestamp { get; set; } = new();
+    public bool live { get; set; }
+    public bool dynamicallyGenerated { get; set; }
+    public List<TableDto> tables { get; set; } = new();
 }
 
