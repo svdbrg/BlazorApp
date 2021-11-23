@@ -1,6 +1,7 @@
-
 using AutoMapper;
 using BlazorApp.Features.LiveDisplayer.Data;
+
+namespace BlazorApp.Features.LiveDisplayer.Configuration;
 
 public class FixtureMapperProfile : Profile
 {

@@ -1,3 +1,5 @@
+namespace BlazorApp.Features.Mortgager.Configuration;
+
 public static class GcmCredentialsConfigurator
 {
     public static void AddGoogleCredentials(this WebApplication app)

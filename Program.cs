@@ -9,8 +9,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddLocalization();
 
-builder.Services.Configure<NavMenuItems>(opt => {
-    opt.Items = new List<NavMenuItem>();
+builder.Services.Configure<List<NavMenuItem>>(opt => {
+    opt = new List<NavMenuItem>();
 });
 
 builder.Services.ConfigureMortgager(builder);

@@ -1,4 +1,3 @@
-// Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
 namespace BlazorApp.Features.LiveDisplayer.Data;
 
 public class PageInfoDto

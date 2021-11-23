@@ -167,7 +167,7 @@
     {
         if (firstRender)
         {
-            mortgage = await _dataService.GetSavedData() ?? new();
+            mortgage = await _dataService.GetSavedDataAsync() ?? new();
             await InvokeAsync(StateHasChanged);
         }
 
@@ -198,7 +198,7 @@
         await InvokeAsync(StateHasChanged);
         await Task.Delay(3000);
 
-        await _dataService.SaveData(mortgage);
+        await _dataService.SaveDataAsync(mortgage);
 
         saveCounterMessage = "Data is saved!";
         await InvokeAsync(StateHasChanged);

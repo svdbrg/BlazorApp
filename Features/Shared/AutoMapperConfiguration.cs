@@ -1,6 +1,8 @@
 using System.Reflection;
 using AutoMapper;
 
+namespace BlazorApp.Features.Shared;
+
 public static class AutoMapperConfiguration
 {
     public static IServiceCollection ConfigureAutoMapper(this IServiceCollection services)

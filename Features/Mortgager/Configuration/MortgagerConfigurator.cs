@@ -9,9 +9,9 @@ public static class MortgagerConfigurator
     {
         services.AddTransient<IDataService, GcmDataService>();
 
-        services.Configure<NavMenuItems>(opt =>
+        services.Configure<List<NavMenuItem>>(opt =>
         {
-            opt.Items.Add(new NavMenuItem
+            opt.Add(new NavMenuItem
             {
                 Href = "mortgage",
                 Label = "Mortgage",

@@ -1,22 +1,23 @@
 using AutoMapper;
 using BlazorApp.Features.Mortgager.Data;
-using BlazorApp.Features.Shared;
 using Google.Cloud.Firestore;
-using Microsoft.Extensions.Options;
 
 namespace BlazorApp.Features.Mortgager.Services;
 
 public class GcmDataService : IDataService
 {
     private readonly IMapper _mapper;
-    public GcmDataService(IMapper mapper)
+    private readonly ILogger<GcmDataService> _logger;
+
+    public GcmDataService(IMapper mapper, ILogger<GcmDataService> logger)
     {
-        _mapper = mapper;
+        _mapper = mapper ?? throw new NullReferenceException(nameof(mapper));
+        _logger = logger ?? throw new NullReferenceException(nameof(logger));
     }
 
     private string documentSuffix = Environment.GetEnvironmentVariable("Environment") ?? "test";
 
-    public async Task<MortgageItem?> GetSavedData()
+    public async Task<MortgageItem?> GetSavedDataAsync()
     {
         var db = FirestoreDb.Create("mortgager");
 
@@ -34,7 +35,7 @@ public class GcmDataService : IDataService
         return null;
     }
 
-    public async Task<string> SaveData(MortgageItem item)
+    public async Task<string> SaveDataAsync(MortgageItem item)
     {
         var db = FirestoreDb.Create("mortgager");
 

@@ -20,9 +20,9 @@ public class PremierLeagueScraperService : IDataService
 
     public async IAsyncEnumerable<Day> GetDaysAndFixturesAsync()
     {
-        var days = new List<Day>();
-        var dtos = await GetFixturesWithApiAsync();
-        var dtosGrouped = dtos.content.GroupBy(c => c.kickoff.kickoffDay);
+        var gameweekId = await GetGameweekId();
+        var fixtureDtos = await GetFixturesWithApiAsync(gameweekId);
+        var dtosGrouped = fixtureDtos.content.GroupBy(c => c.kickoff.kickoffDay);
 
         foreach (var item in dtosGrouped)
         {
@@ -32,12 +32,58 @@ public class PremierLeagueScraperService : IDataService
                 Fixtures = dtosGrouped
                     .SelectMany(fix => fix)
                     .Where(d => d.kickoff.kickoffDay == item.Key)
-                    .Select(f => _mapper.Map<Fixture>(f))
+                    .Select(_mapper.Map<Fixture>)
             };
         }
     }
 
-    private async Task<RootDto> GetFixturesWithApiAsync()
+    public async Task<IEnumerable<Team>> GetTableAsync()
+    {
+        using (var client = _httpClientFactory.CreateClient("PL"))
+        {
+            var response = await client.GetAsync("/football/standings?compSeasons=418&altIds=true");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("No table received", response.StatusCode, response.ReasonPhrase);
+
+                return new List<Team>();
+            }
+
+            _logger.LogInformation("Received table from API");
+            var data = JsonSerializer.Deserialize<TableRootDto>(await response.Content.ReadAsStreamAsync()) ?? new TableRootDto();
+
+            return data.tables
+                .First()
+                .entries
+                .Select(_mapper.Map<Team>)
+                .OrderBy(t => t.Position);
+        }
+    }
+
+    private async Task<RootDto> GetFixturesWithApiAsync(string? gameweekId)
+    {
+        using (var client = _httpClientFactory.CreateClient("PL"))
+        {
+            if (gameweekId == null)
+            {
+                return new RootDto();
+            }
+
+            var response = await client.GetAsync($"/football/fixtures?pageSize=100&comps=1&gameweeks={gameweekId}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("No fixtures received", response.StatusCode, response.ReasonPhrase);
+                return new RootDto();
+            }
+
+            _logger.LogInformation("Received fixtures from API");
+            return JsonSerializer.Deserialize<RootDto>(await response.Content.ReadAsStreamAsync()) ?? new RootDto();
+        }
+    }
+
+    private async Task<string?> GetGameweekId()
     {
         using (var client = _httpClientFactory.CreateClient())
         {
@@ -46,39 +92,12 @@ public class PremierLeagueScraperService : IDataService
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(rawHtml);
 
-            var gameweekId = htmlDoc.DocumentNode
+            return htmlDoc.DocumentNode
                 ?.Descendants("div")
-                ?.Where(d => d.GetAttributeValue("data-widget", "miss") == "gameweek-matches")
+                ?.Where(d => d.GetAttributeValue("data-widget", null) == "gameweek-matches")
                 ?.First()
                 ?.GetDataAttribute("gameweek")
                 ?.Value;
-
-            if (gameweekId == null)
-            {
-                return new RootDto();
-            }
-
-            client.DefaultRequestHeaders.Add("Origin", "https://www.premierleague.com");
-            var response = await client.GetAsync($"https://footballapi.pulselive.com/football/fixtures?pageSize=100&comps=1&gameweeks={gameweekId}");
-
-            return JsonSerializer.Deserialize<RootDto>(await response.Content.ReadAsStreamAsync()) ?? new RootDto();
-        }
-    }
-
-    public async Task<IEnumerable<Team>> GetTableAsync()
-    {
-        using (var client = _httpClientFactory.CreateClient())
-        {
-            client.DefaultRequestHeaders.Add("Origin", "https://www.premierleague.com");
-            var response = await client.GetAsync("https://footballapi.pulselive.com/football/standings?compSeasons=418&altIds=true");
-
-            var data = JsonSerializer.Deserialize<TableRootDto>(await response.Content.ReadAsStreamAsync()) ?? new TableRootDto();
-
-            return data.tables
-                .First()
-                .entries
-                .Select(_mapper.Map<Team>)
-                .OrderBy(t => t.Position);
         }
     }
 }
