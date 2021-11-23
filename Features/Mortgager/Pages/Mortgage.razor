@@ -5,6 +5,7 @@
 
 @inject IDataService _dataService
 @inject IJSRuntime js
+@inject ILogger<GcmDataService> _logger
 
 <PageTitle>Calculate your mortgage costs</PageTitle>
 
@@ -25,28 +26,28 @@
         <div>
             <label for="purchasePrice">Purchase price SEK</label>
             <div class="input">
-                <input id="purchasePrice" class="form-control" @onchange="saveChanges" @bind="mortgage.PurchasePrice"
+                <input id="purchasePrice" disabled=!@canEdit class="form-control" @onchange="saveChanges" @bind="mortgage.PurchasePrice"
                     @bind:event="oninput" />
             </div>
         </div>
         <div>
             <label for="downPayment">Down payment SEK</label>
             <div class="input">
-                <input id="downPayment" class="form-control" @bind="mortgage.DownPayment" @bind:event="oninput"
+                <input id="downPayment" disabled=!@canEdit class="form-control" @bind="mortgage.DownPayment" @bind:event="oninput"
                     @onchange="saveChanges" />
             </div>
         </div>
         <div>
             <label for="interestRate">Interest rate %</label>
             <div class="input">
-                <input id="interestRate" class="form-control" @bind="mortgage.InterestRate" @bind:event="oninput"
+                <input id="interestRate" disabled=!@canEdit class="form-control" @bind="mortgage.InterestRate" @bind:event="oninput"
                     @onchange="saveChanges" />
             </div>
         </div>
         <div>
             <label for="totalSalary">Total monthly salary</label>
             <div class="input">
-                <input id="totalSalary" class="form-control" @bind="mortgage.TotalSalary" @bind:event="oninput"
+                <input id="totalSalary" disabled=!@canEdit class="form-control" @bind="mortgage.TotalSalary" @bind:event="oninput"
                     @onchange="saveChanges" />
             </div>
         </div>
@@ -92,12 +93,12 @@
         <div>
             <div class="input">
                 <label for="expenseName">Name</label>
-                <input id="expenseName" @bind="expenseName" @onkeydown="@Enter" class="form-control"
+                <input id="expenseName" disabled=!@canEdit @bind="expenseName" @onkeydown="@Enter" class="form-control"
                     @bind:event="oninput" />
             </div>
             <div class="input">
                 <label for="expenseCost">Cost SEK</label>
-                <input id="expenseCost" @bind="expenseCost" @onkeydown="@Enter" class="form-control"
+                <input id="expenseCost" disabled=!@canEdit @bind="expenseCost" @onkeydown="@Enter" class="form-control"
                     @bind:event="oninput" />
             </div>
 
@@ -162,22 +163,31 @@
 @code {
     private MortgageItem mortgage = new();
     private bool isLoading = true;
+    private bool canEdit = true;
+    private string expenseName { get; set; } = string.Empty;
+    private int expenseCost { get; set; }
+    private string saveCounterMessage = "";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            mortgage = await _dataService.GetSavedDataAsync() ?? new();
-            await InvokeAsync(StateHasChanged);
+            try
+            {
+                mortgage = await _dataService.GetSavedDataAsync() ?? new();
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError("Failed to fetch data", ex);
+                canEdit = false;
+            }
+            finally
+            {
+                isLoading = false;
+                await InvokeAsync(StateHasChanged);
+            }
         }
-
-        isLoading = false;
-        await InvokeAsync(StateHasChanged);
     }
-
-    private string expenseName { get; set; } = string.Empty;
-    private int expenseCost { get; set; }
-    private string saveCounterMessage = "";
 
     private async Task RemoveExpense(Expense expense)
     {
