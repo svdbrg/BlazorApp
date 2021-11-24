@@ -4,6 +4,7 @@ RUN apt-get update -y
 RUN apt-get install -y icu-devtools
 
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+ENV TZ=Europe/Stockholm
 
 WORKDIR /app
 
