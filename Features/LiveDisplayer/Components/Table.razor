@@ -13,7 +13,7 @@
     <tbody>
         @foreach (var team in footballTable)
         {
-            <tr>
+            <tr class="@GetClass(team.Status)">
                 <td>@team.Position</td>
                 <td>@team.Name</td>
                 <td>@team.Played</td>
@@ -28,4 +28,18 @@
 @code {
     [Parameter]
     public IEnumerable<Team> footballTable { get; set; } = new List<Team>();
+
+    private string GetClass(string status)
+    {
+        switch (status)
+        {
+            case "Playing": // Currently playing
+                return "team-is-playing";
+            case "Done": // Game is over
+                return "team-is-done";
+            case "U": // Not started
+            default:
+                return "";
+        }
+    }
 }

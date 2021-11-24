@@ -37,3 +37,11 @@ tbody tr:last-child {
 tbody tr:first-child {
     font-weight: bold;
 }
+
+.team-is-playing {
+    background-color: lightgreen;
+}
+
+.team-is-done {
+    background-color: lightgrey;
+}
