@@ -28,18 +28,23 @@
     {
         if (firstRender)
         {
-            table = await _dataFetcher.GetTableAsync();
+            await GetData();
+        }
+    }
 
-            await foreach (var day in _dataFetcher.GetDaysAndFixturesAsync())
-            {
-                days.Add(day);
-                await InvokeAsync(StateHasChanged);
-            }
+    private async Task GetData()
+    {
+        table = await _dataFetcher.GetTableAsync();
 
-            table = _dataFetcher.EnrichTableWithStatus(table, days);
-
-            isLoading = false;
+        await foreach (var day in _dataFetcher.GetDaysAndFixturesAsync())
+        {
+            days.Add(day);
             await InvokeAsync(StateHasChanged);
         }
+
+        table = _dataFetcher.EnrichTableWithStatus(table, days);
+
+        isLoading = false;
+        await InvokeAsync(StateHasChanged);
     }
 }

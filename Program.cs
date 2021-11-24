@@ -25,9 +25,7 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-}
-else
-{
+
     // For when docker container is running in Heroku
     app.Urls.Add("http://*:" + Environment.GetEnvironmentVariable("PORT"));
 }
