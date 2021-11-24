@@ -9,7 +9,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddLocalization();
 
-builder.Services.Configure<List<NavMenuItem>>(opt => {
+builder.Services.Configure<List<NavMenuItem>>(opt =>
+{
     opt = new List<NavMenuItem>();
 });
 
@@ -18,15 +19,17 @@ builder.Services.ConfigureLiveDisplayer(builder);
 
 builder.Services.ConfigureAutoMapper();
 
-
 var app = builder.Build();
-
-app.Urls.Add("http://*:" + Environment.GetEnvironmentVariable("PORT"));
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
+}
+else
+{
+    // For when docker container is running in Heroku
+    app.Urls.Add("http://*:" + Environment.GetEnvironmentVariable("PORT"));
 }
 
 app.AddGoogleCredentials();
