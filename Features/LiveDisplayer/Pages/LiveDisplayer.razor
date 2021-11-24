@@ -36,6 +36,8 @@
                 await InvokeAsync(StateHasChanged);
             }
 
+            table = _dataFetcher.EnrichTableWithStatus(table, days);
+
             isLoading = false;
             await InvokeAsync(StateHasChanged);
         }

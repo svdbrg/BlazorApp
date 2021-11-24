@@ -17,7 +17,7 @@ public class FixtureMapperProfile : Profile
         CreateMap<EntryDto, Team>()
             .ForMember(s => s.Position, opt => opt.MapFrom(d => d.position))
             .ForMember(s => s.Name, opt => opt.MapFrom(d => d.team.name))
-            .ForMember(s => s.ShortName, opt => opt.MapFrom(d => d.team.shortName))
+            .ForMember(s => s.ShortName, opt => opt.MapFrom(d => d.team.club.abbr))
             .ForMember(s => s.Played, opt => opt.MapFrom(d => d.overall.played))
             .ForMember(s => s.GoalDifference, opt => opt.MapFrom(d => d.overall.goalsDifference))
             .ForMember(s => s.Points, opt => opt.MapFrom(d => d.overall.points));

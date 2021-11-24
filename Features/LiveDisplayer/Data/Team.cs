@@ -8,4 +8,5 @@ public class Team
     public int Played { get; set; }
     public int GoalDifference { get; set; }
     public int Points { get; set; }
+    public string Status { get; set; } = string.Empty;
 }

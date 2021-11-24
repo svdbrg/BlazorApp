@@ -61,6 +61,20 @@ public class PremierLeagueDataService : IFootballDataService
         }
     }
 
+    public IEnumerable<Team> EnrichTableWithStatus(IEnumerable<Team> teams, IEnumerable<Day> days)
+    {
+        foreach (var team in teams)
+        {
+            var allFixtures = days.SelectMany(d => d.Fixtures);
+
+            team.Status = allFixtures
+                ?.FirstOrDefault(f => f.AwayTeam == team.ShortName || f.HomeTeam == team.ShortName)
+                ?.Status ?? "N/A";
+
+            yield return team;
+        }
+    }
+
     private async Task<RootDto> GetFixturesWithApiAsync(string? gameweekId)
     {
         using (var client = _httpClientFactory.CreateClient("PL"))
