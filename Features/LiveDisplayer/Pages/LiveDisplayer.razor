@@ -3,7 +3,6 @@
 @using Data
 @using BlazorApp.Features.LiveDisplayer.Services
 @using BlazorApp.Models
-@using System.Timers
 
 @inject IFootballDataService _dataFetcher
 @inject AppState appState
@@ -55,26 +54,17 @@
         await InvokeAsync(StateHasChanged);
     }
 
-
-
-    protected async override void OnAfterRender(bool firstRender)
+    protected override void OnInitialized()
     {
-
-
-        base.OnAfterRender(firstRender);
-    }
-
-    protected async override void OnInitialized()
-    {
-        appState.OnChange += MyEventHandler;
+        appState.OnChange += OnAppStateChange;
     }
 
     public void Dispose()
     {
-        appState.OnChange -= MyEventHandler;
+        appState.OnChange -= OnAppStateChange;
     }
 
-    private async void MyEventHandler()
+    private async void OnAppStateChange()
     {
         StateHasChanged();
 
@@ -83,8 +73,6 @@
 
             await Task.Delay(10000);
             await GetData();
-            Console.WriteLine("Data was refreshed");
         }
-
     }
 }
