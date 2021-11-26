@@ -5,9 +5,17 @@ namespace BlazorApp.Features.LiveDisplayer.Configuration;
 
 public static class LiveDisplayerConfigurator
 {
+    private static NavMenuItem MenuItem = new NavMenuItem
+    {
+        Href = "livedisplayer",
+        Label = "Live Displayer",
+        Icon = "oi oi-aperture"
+    };
+
     public static IServiceCollection ConfigureLiveDisplayer(this IServiceCollection services, WebApplicationBuilder builder)
     {
-        services.AddHttpClient("PL", c => {
+        services.AddHttpClient("PL", c =>
+        {
             c.DefaultRequestHeaders.Add("Origin", "https://www.premierleague.com");
             c.BaseAddress = new Uri("https://footballapi.pulselive.com/");
         });
@@ -16,12 +24,7 @@ public static class LiveDisplayerConfigurator
 
         services.Configure<List<NavMenuItem>>(opt =>
         {
-            opt.Add(new NavMenuItem
-            {
-                Href = "livedisplayer",
-                Label = "Live Displayer",
-                Icon = "oi oi-aperture"
-            });
+            opt.Add(MenuItem);
         });
 
         return services;

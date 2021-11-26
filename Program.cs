@@ -1,6 +1,7 @@
 using BlazorApp.Features.LiveDisplayer.Configuration;
 using BlazorApp.Features.Mortgager.Configuration;
 using BlazorApp.Features.Shared;
+using BlazorApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +10,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddLocalization();
 
-builder.Services.Configure<List<NavMenuItem>>(opt => {
+builder.Services.Configure<List<NavMenuItem>>(opt =>
+{
     opt = new List<NavMenuItem>();
 });
 
@@ -18,15 +20,17 @@ builder.Services.ConfigureLiveDisplayer(builder);
 
 builder.Services.ConfigureAutoMapper();
 
+builder.Services.AddSingleton<AppState>();
 
 var app = builder.Build();
-
-app.Urls.Add("http://*:" + Environment.GetEnvironmentVariable("PORT"));
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
+
+    // For when docker container is running in Heroku
+    app.Urls.Add("http://*:" + Environment.GetEnvironmentVariable("PORT"));
 }
 
 app.AddGoogleCredentials();

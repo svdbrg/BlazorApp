@@ -41,7 +41,7 @@ public class PremierLeagueDataService : IFootballDataService
     {
         using (var client = _httpClientFactory.CreateClient("PL"))
         {
-            var response = await client.GetAsync("/football/standings?compSeasons=418&altIds=true");
+            var response = await client.GetAsync("/football/standings?compSeasons=418&altIds=true&live=true");
 
             if (!response.IsSuccessStatusCode)
             {

@@ -1,4 +1,8 @@
-﻿@inherits LayoutComponentBase
+﻿@using BlazorApp.Models
+
+@inherits LayoutComponentBase
+@inject AppState appState
+@inject NavigationManager _navigationManager
 
 <PageTitle>BlazorApp</PageTitle>
 
@@ -6,10 +10,29 @@
     <div class="sidebar">
         <NavMenu />
     </div>
-
     <main>
         <article class="content px-4">
             @Body
         </article>
     </main>
 </div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        _navigationManager.LocationChanged += LocationChanged;
+    }
+
+    void LocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        if (_navigationManager.ToBaseRelativePath(_navigationManager.Uri).StartsWith("livedisplayer"))
+        {
+            appState.ToggleDisplayMode(true);
+        }
+        else
+        {
+            appState.ToggleAutoRefresh(false);
+            appState.ToggleDisplayMode(false);
+        }
+    }
+}

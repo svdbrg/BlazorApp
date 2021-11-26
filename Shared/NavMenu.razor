@@ -1,11 +1,20 @@
 ﻿@using Microsoft.Extensions.Options;
 @using BlazorApp.Features.Shared;
+@using BlazorApp.Models
 
 @inject IOptions<List<NavMenuItem>> _options;
+@inject AppState appState
+@implements IDisposable
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">BlazorApp</a>
+        @if (appState.ShouldDisplayToggler) { 
+            <input type="checkbox" id="switch" checked="@(appState.AutoRefresh)" />
+            <label for="switch" @onclick="appState.ToggleAutoRefresh">
+                Toggle
+            </label>
+        }
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -38,5 +47,15 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    protected override void OnInitialized()
+    {
+        appState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        appState.OnChange -= StateHasChanged;
     }
 }

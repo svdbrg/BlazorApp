@@ -2,8 +2,11 @@
 @using BlazorApp.Features.LiveDisplayer.Components
 @using Data
 @using BlazorApp.Features.LiveDisplayer.Services
+@using BlazorApp.Models
 
 @inject IFootballDataService _dataFetcher
+@inject AppState appState
+@implements IDisposable
 
 <PageTitle>Live Display</PageTitle>
 
@@ -11,6 +14,7 @@
 {
     <div class="loading">Loading...</div>
 }
+
 
 <div id="table">
     <Table footballTable="table" />
@@ -28,18 +32,47 @@
     {
         if (firstRender)
         {
-            table = await _dataFetcher.GetTableAsync();
+            appState.ToggleAutoRefresh(false);
+            await GetData();
+        }
+    }
 
-            await foreach (var day in _dataFetcher.GetDaysAndFixturesAsync())
-            {
-                days.Add(day);
-                await InvokeAsync(StateHasChanged);
-            }
+    private async Task GetData()
+    {
+        table = await _dataFetcher.GetTableAsync();
+        days.Clear();
 
-            table = _dataFetcher.EnrichTableWithStatus(table, days);
-
-            isLoading = false;
+        await foreach (var day in _dataFetcher.GetDaysAndFixturesAsync())
+        {
+            days.Add(day);
             await InvokeAsync(StateHasChanged);
+        }
+
+        table = _dataFetcher.EnrichTableWithStatus(table, days);
+
+        isLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    protected override void OnInitialized()
+    {
+        appState.OnChange += OnAppStateChange;
+    }
+
+    public void Dispose()
+    {
+        appState.OnChange -= OnAppStateChange;
+    }
+
+    private async void OnAppStateChange()
+    {
+        StateHasChanged();
+
+        while (appState.AutoRefresh)
+        {
+
+            await Task.Delay(10000);
+            await GetData();
         }
     }
 }

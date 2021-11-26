@@ -1,3 +1,4 @@
+using System.Globalization;
 using AutoMapper;
 using BlazorApp.Features.LiveDisplayer.Data;
 
@@ -12,7 +13,7 @@ public class FixtureMapperProfile : Profile
             .ForMember(s => s.AwayTeam, opt => opt.MapFrom(d => d.teams[1].team.club.abbr))
             .ForMember(s => s.Status, opt => opt.MapFrom(d => d.status))
             .ForMember(s => s.Result, opt => opt.MapFrom(d => $"{d.teams[0].score}-{d.teams[1].score}"))
-            .ForMember(s => s.DateAndTime, opt => opt.MapFrom(d => DateTime.Parse(d.kickoff.label)));
+            .ForMember(s => s.DateAndTime, opt => opt.MapFrom(d => DateTime.Parse(d.kickoff.label, CultureInfo.CreateSpecificCulture("sv-SE"))));
 
         CreateMap<EntryDto, Team>()
             .ForMember(s => s.Position, opt => opt.MapFrom(d => d.position))
