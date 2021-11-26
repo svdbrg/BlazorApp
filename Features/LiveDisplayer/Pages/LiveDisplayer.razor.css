@@ -1,6 +1,6 @@
 #fixtures, #table {
-    width: 50%;
-    float: left;
+  width: 50%;
+  float: left;
 }
 
 .refresh {
@@ -9,17 +9,13 @@
   right: 0;
 }
 
-@media only screen 
-  and (min-device-width: 320px) 
-  and (max-device-width: 800px)
-  and (-webkit-min-device-pixel-ratio: 2)
-  and (orientation: portrait) {
-    #fixtures, #table {
-          float: none;
-          width: 100%;
-      }
+@media only screen and (min-device-width: 320px) and (max-device-width: 800px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
+  #fixtures, #table {
+    float: none;
+    width: 100%;
+  }
 
-      #fixtures {
-        margin-top: 10px;
-      }
+  #fixtures {
+    margin-top: 10px;
+  }
 }

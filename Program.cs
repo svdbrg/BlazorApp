@@ -1,6 +1,7 @@
 using BlazorApp.Features.LiveDisplayer.Configuration;
 using BlazorApp.Features.Mortgager.Configuration;
 using BlazorApp.Features.Shared;
+using BlazorApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,8 @@ builder.Services.ConfigureMortgager(builder);
 builder.Services.ConfigureLiveDisplayer(builder);
 
 builder.Services.ConfigureAutoMapper();
+
+builder.Services.AddSingleton<AppState>();
 
 var app = builder.Build();
 
