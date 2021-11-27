@@ -22,6 +22,14 @@
     text-align: left;
 }
 
+.team-is-playing {
+    background-color: lightgreen;
+}
+
+.team-is-done {
+    background-color: lightgrey;
+}
+
 @media only screen 
   and (min-device-width: 320px) 
   and (max-device-width: 800px)

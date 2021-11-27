@@ -1,4 +1,5 @@
 @using Data
+@using Services
 <table>
     <thead>
         <tr>
@@ -6,16 +7,20 @@
             <th>Team</th>
             <th>PL</th>
             <th>GD</th>
-            <th>Points</th>
-            <th>Status</th>
+            <th>P</th>
+            <th>S</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var team in footballTable)
         {
-            <tr class="@GetClass(team.Status)">
+            <tr class="@HelperMethods.GetCssClassForCurrentStatus(team.Status)">
                 <td>@team.Position</td>
-                <td>@team.Name</td>
+                <td>
+                    <div>
+                        @team.Name
+                    </div>
+                </td>
                 <td>@team.Played</td>
                 <td>@team.GoalDifference</td>
                 <td>@team.Points</td>
@@ -28,18 +33,4 @@
 @code {
     [Parameter]
     public IEnumerable<Team> footballTable { get; set; } = new List<Team>();
-
-    private string GetClass(string status)
-    {
-        switch (status)
-        {
-            case "Playing": // Currently playing
-                return "team-is-playing";
-            case "Done": // Game is over
-                return "team-is-done";
-            case "U": // Not started
-            default:
-                return "";
-        }
-    }
 }

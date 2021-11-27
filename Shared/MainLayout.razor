@@ -23,7 +23,7 @@
         _navigationManager.LocationChanged += LocationChanged;
     }
 
-    void LocationChanged(object sender, LocationChangedEventArgs e)
+    void LocationChanged(object? sender, LocationChangedEventArgs e)
     {
         if (_navigationManager.ToBaseRelativePath(_navigationManager.Uri).StartsWith("livedisplayer"))
         {

@@ -68,7 +68,7 @@ public class PremierLeagueDataService : IFootballDataService
             var allFixtures = days.SelectMany(d => d.Fixtures);
 
             team.Status = allFixtures
-                ?.FirstOrDefault(f => f.AwayTeam == team.ShortName || f.HomeTeam == team.ShortName)
+                ?.FirstOrDefault(f => f.AwayTeam == team.Name || f.HomeTeam == team.Name)
                 ?.Status ?? "N/A";
 
             yield return team;
@@ -108,7 +108,7 @@ public class PremierLeagueDataService : IFootballDataService
 
             return htmlDoc.DocumentNode
                 ?.Descendants("div")
-                ?.Where(d => d.GetAttributeValue("data-widget", null) == "gameweek-matches")
+                ?.Where(d => d.HasClass("matchWeekLeagueTableContainer"))
                 ?.First()
                 ?.GetDataAttribute("gameweek")
                 ?.Value;
