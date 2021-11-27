@@ -68,7 +68,7 @@ public class PremierLeagueDataService : IFootballDataService
             var allFixtures = days.SelectMany(d => d.Fixtures);
 
             team.Status = allFixtures
-                ?.FirstOrDefault(f => f.AwayTeam == team.Name || f.HomeTeam == team.Name)
+                ?.FirstOrDefault(f => f.AwayTeam == team.ShortName || f.HomeTeam == team.ShortName)
                 ?.Status ?? "N/A";
 
             yield return team;
