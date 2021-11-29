@@ -109,7 +109,7 @@ public class PremierLeagueDataService : IFootballDataService
             return htmlDoc.DocumentNode
                 ?.Descendants("div")
                 ?.Where(d => d.HasClass("matchWeekLeagueTableContainer"))
-                ?.First()
+                ?.FirstOrDefault()
                 ?.GetDataAttribute("gameweek")
                 ?.Value;
         }
