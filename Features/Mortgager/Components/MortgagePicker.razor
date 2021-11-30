@@ -3,28 +3,41 @@
 @inject IDataService _dataService
 
 <div class="simple-form">
-    <ul>
-        @foreach (var item in ExistingMortgages)
-        {
-            <li>@item</li>
-        }
-    </ul>
     <div class="form-group">
-        <label for="movie-name">Mortgage Name</label>
-        <input @bind="@SelectedMortgage" type="text" class="form-control" id="mortgage-name" />
+        <label for="movie-name">Select mortgage</label>
+        <select class="form-select" @onchange="DoStuff">
+            <option value="Choose">-- Choose --</option>
+            @foreach (var item in ExistingMortgages)
+            {
+                <option value="@item">@item</option>
+            }
+            <option value="Other">New</option>
+        </select>
+        @if (SelectedMortgage == "Other")
+        {
+            <input @bind="@newMortgage" type="text" class="form-control" id="mortgage-name" />
+        }
     </div>
 
     <button @onclick="SetMortgage" class="btn btn-primary">Submit</button>
+    <button @onclick="ModalInstance.CancelAsync" class="btn btn-secondary">Cancel</button>
+    <div>@errorMessage</div>
 </div>
 
 @code {
 
-    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new();
 
-    [Parameter] public int MovieId { get; set; }
-
-    string SelectedMortgage { get; set; }
+    private string SelectedMortgage { get; set; } = string.Empty;
+    private string newMortgage { get; set; } = string.Empty;
+    private string errorMessage { get; set; } = string.Empty;
     List<string> ExistingMortgages { get; set; } = new();
+
+    private void DoStuff(ChangeEventArgs e)
+    {
+        errorMessage = string.Empty;
+        SelectedMortgage = e?.Value?.ToString() ?? string.Empty;
+    }
 
     protected override async void OnInitialized()
     {
@@ -34,7 +47,20 @@
 
     void SetMortgage()
     {
-        //MovieService.Save(Movie);
-        ModalInstance.CloseAsync(ModalResult.Ok<string>(SelectedMortgage));
+
+        if ((SelectedMortgage == "Other" && string.IsNullOrEmpty(newMortgage)) || SelectedMortgage == "Choose" ||
+        string.IsNullOrWhiteSpace(SelectedMortgage))
+        {
+            errorMessage = "Wrong selection";
+        }
+        else
+        {
+            if (SelectedMortgage == "Other")
+            {
+                SelectedMortgage = newMortgage;
+            }
+            
+            ModalInstance.CloseAsync(ModalResult.Ok<string>(SelectedMortgage));
+        }
     }
 }

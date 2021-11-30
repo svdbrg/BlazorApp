@@ -31,6 +31,15 @@ div.mortgage div.form-group {
     top: 0;
 }
 
+div#reset-documentsuffix {
+    width:100px;
+    height:50px;
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    text-align: right;
+}
+
 @media (max-width: 1330px) {
     div.mortgage div.form-group {
         min-width: auto;

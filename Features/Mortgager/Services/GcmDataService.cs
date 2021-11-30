@@ -24,7 +24,7 @@ public class GcmDataService : IDataService
 
         if (string.IsNullOrWhiteSpace(documentSuffix))
         {
-            _logger.LogInformation($"Did not find: {documentSuffix}");
+            _logger.LogInformation($"Did not find documentSuffix in local storage");
 
             return null;
         }
@@ -57,10 +57,12 @@ public class GcmDataService : IDataService
 
         if (string.IsNullOrWhiteSpace(documentSuffix))
         {
+            _logger.LogInformation($"Did not find documentSuffix in local storage");
+            
             return false;
         }
 
-        _logger.LogInformation($"Found store suffix: {documentSuffix}");
+        _logger.LogInformation($"Found stored suffix: {documentSuffix}");
 
         var db = FirestoreDb.Create("mortgager");
 

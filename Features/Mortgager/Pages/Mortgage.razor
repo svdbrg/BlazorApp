@@ -8,6 +8,7 @@
 @inject IDataService _dataService
 @inject ILogger<GcmDataService> _logger
 @inject ILocalStorage _localStorage
+@inject NavigationManager _navigationManager
 
 <PageTitle>Calculate your mortgage costs</PageTitle>
 
@@ -29,10 +30,18 @@
         <LoanInformationSummary mortgage="mortgage" />
     </div>
     <Expenses canEdit="canEdit" mortgage="mortgage" onSaveChanges="saveChanges" />
+    <div id="reset-documentsuffix">
+        <label @onclick="clickChange">
+            Change
+        </label>
+        <label @onclick="clickClear">
+            Clear
+        </label>
+    </div>
 </div>
 
 @code {
-    [CascadingParameter] public IModalService Modal { get; set; }
+    [CascadingParameter] public IModalService? Modal { get; set; }
     private MortgageItem mortgage = new();
     private bool isLoading = false;
     private bool canEdit = true;
@@ -44,31 +53,63 @@
         {
             isLoading = false;
 
-            try
+            await LoadData();
+        }
+    }
+
+    private async void clickChange()
+    {
+        await _localStorage.RemoveAsync("documentSuffix");
+        await SetDocumentSuffixInLocalStorage();
+        await LoadData();
+    }
+
+    private async void clickClear()
+    {
+        await _localStorage.RemoveAsync("documentSuffix");
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        try
+        {
+            await SetDocumentSuffixInLocalStorage();
+
+            mortgage = await _dataService.GetSavedDataAsync() ?? new();
+        }
+        catch (System.Exception ex)
+        {
+            _logger.LogError("Failed to fetch data", ex);
+            canEdit = false;
+        }
+        finally
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task SetDocumentSuffixInLocalStorage()
+    {
+        var documentSuffix = await _localStorage.GetStringAsync("documentSuffix");
+
+        if (string.IsNullOrWhiteSpace(documentSuffix))
+        {
+            var mortgageModal = Modal?.Show<MortgagePicker>("Select mortgage", new ModalOptions
             {
-                var documentSuffix = await _localStorage.GetStringAsync("documentSuffix");
+                DisableBackgroundCancel = true,
+                HideCloseButton = true
+            });
 
-                if (string.IsNullOrWhiteSpace(documentSuffix))
-                {
-                    var mortgageModal = Modal.Show<MortgagePicker>("Select mortgage");
-                    var result = await mortgageModal.Result;
+            var result = await mortgageModal.Result;
 
-                    if (!string.IsNullOrWhiteSpace((string)result.Data))
-                    {
-                        await _localStorage.SaveStringAsync("documentSuffix", result.Data.ToString());
-                    }
-                }
-
-                mortgage = await _dataService.GetSavedDataAsync() ?? new();
+            if (result.Cancelled)
+            {
+                _navigationManager.NavigateTo("/");
             }
-            catch (System.Exception ex)
+            else
             {
-                _logger.LogError("Failed to fetch data", ex);
-                canEdit = false;
-            }
-            finally
-            {
-                await InvokeAsync(StateHasChanged);
+                await _localStorage.SaveStringAsync("documentSuffix", result?.Data?.ToString() ?? (Guid.NewGuid().ToString()));
             }
         }
     }
