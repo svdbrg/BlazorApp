@@ -106,12 +106,24 @@ public class PremierLeagueDataService : IFootballDataService
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(rawHtml);
 
-            return htmlDoc.DocumentNode
+            var gameweek = htmlDoc.DocumentNode
                 ?.Descendants("div")
                 ?.Where(d => d.GetAttributeValue("data-widget", "not found").Equals("gameweek-matches"))
                 ?.FirstOrDefault()
                 ?.GetDataAttribute("gameweek")
                 ?.Value;
+
+            if (gameweek == null)
+            {
+                gameweek = htmlDoc.DocumentNode
+                    ?.Descendants("div")
+                    ?.Where(d => d.HasClass("matchWeekNavContainer"))
+                    ?.FirstOrDefault()
+                    ?.GetDataAttribute("gameweeks")
+                    ?.Value;
+            }
+
+            return gameweek;
         }
     }
 }
