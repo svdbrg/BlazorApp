@@ -17,7 +17,7 @@ public class LocalStorage : ILocalStorage
     /// <param name="key">The key previously used to save to local storage.</param>
     public async Task RemoveAsync(string key)
     {
-        await jsruntime.InvokeVoidAsync("localStorage.removeItem", key).ConfigureAwait(false);
+        await jsruntime.InvokeVoidAsync("localStorage.removeItem", key);
     }
 
     /// <summary>
@@ -27,7 +27,7 @@ public class LocalStorage : ILocalStorage
     /// <param name="value">The string value to save to local storage.</param>
     public async Task SaveStringAsync(string key, string value)
     {
-        await jsruntime.InvokeVoidAsync("localStorage.setItem", key, value).ConfigureAwait(false);
+        await jsruntime.InvokeVoidAsync("localStorage.setItem", key, value);
     }
 
     /// <summary>
@@ -37,7 +37,7 @@ public class LocalStorage : ILocalStorage
     /// <returns>The string previously saved to local storage.</returns>
     public async Task<string> GetStringAsync(string key)
     {
-        return await jsruntime.InvokeAsync<string>("localStorage.getItem", key).ConfigureAwait(false);
+        return await jsruntime.InvokeAsync<string>("localStorage.getItem", key);
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ public class LocalStorage : ILocalStorage
     public async Task SaveStringArrayAsync(string key, string[] values)
     {
         if (values != null)
-            await jsruntime.InvokeVoidAsync("localStorage.setItem", key, string.Join('\0', values)).ConfigureAwait(false);
+            await jsruntime.InvokeVoidAsync("localStorage.setItem", key, string.Join('\0', values));
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public class LocalStorage : ILocalStorage
     /// <returns>The array of string values previously saved to local storage.</returns>
     public async Task<string[]?> GetStringArrayAsync(string key)
     {
-        var data = await jsruntime.InvokeAsync<string>("localStorage.getItem", key).ConfigureAwait(false);
+        var data = await jsruntime.InvokeAsync<string>("localStorage.getItem", key);
         if (!string.IsNullOrEmpty(data))
             return data.Split('\0');
         return null;
