@@ -108,7 +108,7 @@ public class PremierLeagueDataService : IFootballDataService
 
             return htmlDoc.DocumentNode
                 ?.Descendants("div")
-                ?.Where(d => d.HasClass("matchWeekLeagueTableContainer"))
+                ?.Where(d => d.GetAttributeValue("data-widget", "not found").Equals("gameweek-matches"))
                 ?.FirstOrDefault()
                 ?.GetDataAttribute("gameweek")
                 ?.Value;
