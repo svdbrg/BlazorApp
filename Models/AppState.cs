@@ -9,8 +9,7 @@ public class AppState
 
     public void ToggleAutoRefresh()
     {
-        AutoRefresh = !AutoRefresh;
-        NotifyStateChanged();
+        ToggleAutoRefresh(!AutoRefresh);
     }
 
     public void ToggleAutoRefresh(bool toggle)
