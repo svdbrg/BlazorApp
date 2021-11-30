@@ -103,6 +103,13 @@
                 HideCloseButton = true
             });
 
+            if (mortgageModal?.Result == null)
+            {
+                _logger.LogError("Something went wrong with callback from modal");
+                
+                return;
+            }
+
             var result = await mortgageModal.Result;
 
             if (result.Cancelled)
