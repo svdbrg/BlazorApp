@@ -1,0 +1,15 @@
+button {
+    width: 48%;
+}
+
+button:last-child {
+    float: right;
+}
+
+div.buttons {
+    margin-top: 20px;
+}
+
+div#error-message {
+    margin-top: 20px;
+}

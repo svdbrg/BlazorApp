@@ -59,6 +59,7 @@
 
     private async void clickChange()
     {
+        mortgage = new();
         await _localStorage.RemoveAsync("documentSuffix");
         await SetDocumentSuffixInLocalStorage();
         await LoadData();
@@ -66,6 +67,7 @@
 
     private async void clickClear()
     {
+        mortgage = new();
         await _localStorage.RemoveAsync("documentSuffix");
         await LoadData();
     }
