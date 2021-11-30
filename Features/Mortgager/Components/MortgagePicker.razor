@@ -1,0 +1,40 @@
+@using BlazorApp.Features.Mortgager.Services.Abstractions
+
+@inject IDataService _dataService
+
+<div class="simple-form">
+    <ul>
+        @foreach (var item in ExistingMortgages)
+        {
+            <li>@item</li>
+        }
+    </ul>
+    <div class="form-group">
+        <label for="movie-name">Mortgage Name</label>
+        <input @bind="@SelectedMortgage" type="text" class="form-control" id="mortgage-name" />
+    </div>
+
+    <button @onclick="SetMortgage" class="btn btn-primary">Submit</button>
+</div>
+
+@code {
+
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+
+    [Parameter] public int MovieId { get; set; }
+
+    string SelectedMortgage { get; set; }
+    List<string> ExistingMortgages { get; set; } = new();
+
+    protected override async void OnInitialized()
+    {
+        ExistingMortgages = await _dataService.GetAllMortgageDocuments();
+        StateHasChanged();
+    }
+
+    void SetMortgage()
+    {
+        //MovieService.Save(Movie);
+        ModalInstance.CloseAsync(ModalResult.Ok<string>(SelectedMortgage));
+    }
+}

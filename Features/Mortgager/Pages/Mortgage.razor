@@ -2,10 +2,12 @@
 
 @using BlazorApp.Features.Mortgager.Components
 @using BlazorApp.Features.Mortgager.Data
+@using BlazorApp.Features.Mortgager.Services.Abstractions
 @using BlazorApp.Features.Mortgager.Services
 
 @inject IDataService _dataService
 @inject ILogger<GcmDataService> _logger
+@inject ILocalStorage _localStorage
 
 <PageTitle>Calculate your mortgage costs</PageTitle>
 
@@ -30,8 +32,9 @@
 </div>
 
 @code {
+    [CascadingParameter] public IModalService Modal { get; set; }
     private MortgageItem mortgage = new();
-    private bool isLoading = true;
+    private bool isLoading = false;
     private bool canEdit = true;
     private string saveCounterMessage = "";
 
@@ -39,8 +42,23 @@
     {
         if (firstRender)
         {
+            isLoading = false;
+
             try
             {
+                var documentSuffix = await _localStorage.GetStringAsync("documentSuffix");
+
+                if (string.IsNullOrWhiteSpace(documentSuffix))
+                {
+                    var mortgageModal = Modal.Show<MortgagePicker>("Select mortgage");
+                    var result = await mortgageModal.Result;
+
+                    if (!string.IsNullOrWhiteSpace((string)result.Data))
+                    {
+                        await _localStorage.SaveStringAsync("documentSuffix", result.Data.ToString());
+                    }
+                }
+
                 mortgage = await _dataService.GetSavedDataAsync() ?? new();
             }
             catch (System.Exception ex)
@@ -50,7 +68,6 @@
             }
             finally
             {
-                isLoading = false;
                 await InvokeAsync(StateHasChanged);
             }
         }
