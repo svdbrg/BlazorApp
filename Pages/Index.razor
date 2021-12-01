@@ -15,13 +15,17 @@
 @foreach (var item in _options.Value)
 {
     <div class="tool" @onclick="@(e => onClick(item.NavMenuItem.Href))">
-        <h3>@item.Name</h3>
-        <p>@item.Description</p>
+        <div class="information">
+            <h3>@item.Name</h3>
+            <p>@item.Description</p>
+        </div>
+        <div class="background-icon @item.NavMenuItem.Icon"></div>
     </div>
 }
 
 @code {
-    private void onClick(string href) {
+    private void onClick(string href)
+    {
         _navigationManager.NavigateTo(href);
     }
 }
