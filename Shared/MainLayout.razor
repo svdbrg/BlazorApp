@@ -20,21 +20,16 @@
 </div>
 
 @code {
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
         _navigationManager.LocationChanged += LocationChanged;
+        await IsAuthenticated();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private async void LocationChanged(object? sender, LocationChangedEventArgs e)
     {
-        if (firstRender)
-        {
-            await IsAuthenticated();
-        }
-    }
+        await IsAuthenticated();
 
-    void LocationChanged(object? sender, LocationChangedEventArgs e)
-    {
         if (_navigationManager.ToBaseRelativePath(_navigationManager.Uri).StartsWith("livedisplayer"))
         {
             appState.ToggleDisplayMode(true);
