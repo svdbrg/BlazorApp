@@ -7,12 +7,18 @@ namespace BlazorApp.Features.Mortgager.Configuration;
 
 public static class MortgagerConfigurator
 {
-    private static NavMenuItem MenuItem = new NavMenuItem
+    private static FeatureInformation featureInformation = new FeatureInformation
     {
-        Href = "mortgage",
-        Label = "Mortgage",
-        Icon = "oi oi-list-rich"
+        NavMenuItem = new NavMenuItem
+        {
+            Href = "mortgage",
+            Label = "Mortgage",
+            Icon = "oi oi-list-rich"
+        },
+        Name = "Mortgage",
+        Description = "A tool to calculate mortgage costs based on purchase price, down payment yearly salary etc."
     };
+
 
     public static IServiceCollection ConfigureMortgager(this IServiceCollection services, WebApplicationBuilder builder)
     {
@@ -20,9 +26,9 @@ public static class MortgagerConfigurator
         services.AddTransient<ILocalStorage, LocalStorage>();
         services.AddBlazoredModal();
 
-        services.Configure<List<NavMenuItem>>(opt =>
+        services.Configure<List<FeatureInformation>>(opt =>
         {
-            opt.Add(MenuItem);
+            opt.Add(featureInformation);
         });
 
         return services;

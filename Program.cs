@@ -10,9 +10,9 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddLocalization();
 
-builder.Services.Configure<List<NavMenuItem>>(opt =>
+builder.Services.Configure<List<FeatureInformation>>(opt =>
 {
-    opt = new List<NavMenuItem>();
+    opt = new List<FeatureInformation>();
 });
 
 builder.Services.ConfigureMortgager(builder);

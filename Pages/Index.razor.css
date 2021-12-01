@@ -1,0 +1,7 @@
+div.tool {
+    border: solid 1px #333;
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: rgb(232, 232, 232);
+    max-width: 800px;
+}

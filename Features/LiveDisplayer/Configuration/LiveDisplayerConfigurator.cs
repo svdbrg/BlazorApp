@@ -5,11 +5,16 @@ namespace BlazorApp.Features.LiveDisplayer.Configuration;
 
 public static class LiveDisplayerConfigurator
 {
-    private static NavMenuItem MenuItem = new NavMenuItem
+    private static FeatureInformation featureInformation = new FeatureInformation
     {
-        Href = "livedisplayer",
-        Label = "Live Displayer",
-        Icon = "oi oi-aperture"
+        NavMenuItem = new NavMenuItem
+        {
+            Href = "livedisplayer",
+            Label = "Live Displayer",
+            Icon = "oi oi-aperture"
+        },
+        Name = "Live Displayer",
+        Description = "A live display to get an overview of the current Premier League table and current and/or upcoming fixtures."
     };
 
     public static IServiceCollection ConfigureLiveDisplayer(this IServiceCollection services, WebApplicationBuilder builder)
@@ -22,9 +27,9 @@ public static class LiveDisplayerConfigurator
 
         services.AddTransient<IFootballDataService, PremierLeagueDataService>();
 
-        services.Configure<List<NavMenuItem>>(opt =>
+        services.Configure<List<FeatureInformation>>(opt =>
         {
-            opt.Add(MenuItem);
+            opt.Add(featureInformation);
         });
 
         return services;

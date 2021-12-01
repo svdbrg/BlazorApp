@@ -1,7 +1,26 @@
 ﻿@page "/"
+@using Microsoft.Extensions.Options;
+@using BlazorApp.Features.Shared;
 
-<PageTitle>Housing tools</PageTitle>
+@inject IOptions<List<FeatureInformation>> _options;
+@inject NavigationManager _navigationManager
+
+
+<PageTitle>Oscar's Playground</PageTitle>
 
 <h1>Hello, world!</h1>
 
-Welcome to your new app. Please select your tool in the left hand menu.
+<p>This is where I collect minor project ideas and technologies I want to try out.</p>
+@foreach (var item in _options.Value)
+{
+    <div class="tool" @onclick="@(e => onClick(item.NavMenuItem.Href))">
+        <h3>@item.Name</h3>
+        <p>@item.Description</p>
+    </div>
+}
+
+@code {
+    private void onClick(string href) {
+        _navigationManager.NavigateTo(href);
+    }
+}
