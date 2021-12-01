@@ -4,7 +4,7 @@
 
 <div class="simple-form">
     <div class="form-group">
-        <select class="form-select" @onchange="DoStuff">
+        <select class="form-select" @onchange="ChangeSelectedValue">
             <option value="Choose">-- Choose --</option>
             @foreach (var item in ExistingMortgages)
             {
@@ -18,7 +18,7 @@
         }
     </div>
     <div class="buttons">
-        <button @onclick="SetMortgage" class="btn btn-primary">Submit</button>
+        <button @onclick="SetMortgage" disabled="@(!CanSelect())" class="btn btn-primary">Submit</button>
         <button @onclick="ModalInstance.CancelAsync" class="btn btn-secondary">Cancel</button>
     </div>
     <div id="error-message">@errorMessage</div>
@@ -33,23 +33,34 @@
     private string errorMessage { get; set; } = string.Empty;
     List<string> ExistingMortgages { get; set; } = new();
 
-    private void DoStuff(ChangeEventArgs e)
-    {
-        errorMessage = string.Empty;
-        SelectedMortgage = e?.Value?.ToString() ?? string.Empty;
-    }
-
     protected override async void OnInitialized()
     {
         ExistingMortgages = await _dataService.GetAllMortgageDocuments();
         StateHasChanged();
     }
 
-    void SetMortgage()
+    private bool CanSelect()
     {
+        if ((SelectedMortgage == "Other" && string.IsNullOrEmpty(newMortgage))
+        || SelectedMortgage == "Choose"
+        || string.IsNullOrWhiteSpace(SelectedMortgage))
+        {
+            return false;
+        }
 
-        if ((SelectedMortgage == "Other" && string.IsNullOrEmpty(newMortgage)) || SelectedMortgage == "Choose" ||
-        string.IsNullOrWhiteSpace(SelectedMortgage))
+        return true;
+    }
+
+    private void ChangeSelectedValue(ChangeEventArgs e)
+    {
+        errorMessage = string.Empty;
+        SelectedMortgage = e?.Value?.ToString() ?? string.Empty;
+        StateHasChanged();
+    }
+
+    private void SetMortgage()
+    {
+        if (!CanSelect())
         {
             errorMessage = "Wrong selection";
         }
