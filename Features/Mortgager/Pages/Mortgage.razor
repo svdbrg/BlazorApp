@@ -19,7 +19,7 @@
 
 <h1>Mortgage all the things</h1>
 
-<p>This is a tool to help visualize your mortgage application and the costs that follow owning a home.</p>
+<p>This is a tool to help visualize your mortgage application and the costs that follow by owning a home.</p>
 <div class="message @GetClassName()">
     <b>@saveCounterMessage</b>
 </div>
@@ -54,8 +54,6 @@
     {
         if (firstRender)
         {
-            isLoading = false;
-
             await LoadData();
         }
     }
@@ -82,6 +80,7 @@
         }
         finally
         {
+            isLoading = false;
             await InvokeAsync(StateHasChanged);
         }
     }

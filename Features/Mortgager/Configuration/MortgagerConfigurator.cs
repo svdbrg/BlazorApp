@@ -19,7 +19,6 @@ public static class MortgagerConfigurator
         Description = "A tool to calculate mortgage costs based on purchase price, down payment yearly salary etc."
     };
 
-
     public static IServiceCollection ConfigureMortgager(this IServiceCollection services, WebApplicationBuilder builder)
     {
         services.AddTransient<IDataService, GcmDataService>();

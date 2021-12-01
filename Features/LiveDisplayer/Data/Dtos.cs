@@ -136,12 +136,6 @@ public class RootDto
     public List<FixtureDto> content { get; set; } = new();
 }
 
-
-
-
-
-
-// Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
 public class AltIdsDto
 {
     public string opta { get; set; } = string.Empty;
@@ -227,4 +221,3 @@ public class TableRootDto
     public bool dynamicallyGenerated { get; set; }
     public List<TableDto> tables { get; set; } = new();
 }
-

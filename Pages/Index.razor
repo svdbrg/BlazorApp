@@ -11,6 +11,7 @@
 <h1>Hello, world!</h1>
 
 <p>This is where I collect minor project ideas and technologies I want to try out.</p>
+
 @foreach (var item in _options.Value)
 {
     <div class="tool" @onclick="@(e => onClick(item.NavMenuItem.Href))">
