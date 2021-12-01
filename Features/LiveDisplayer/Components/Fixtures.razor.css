@@ -23,11 +23,11 @@
 }
 
 .team-is-playing {
-    background-color: lightgreen;
+    color: lime;
 }
 
 .team-is-done {
-    background-color: lightgrey;
+    color: #ccc;
 }
 
 @media only screen 
