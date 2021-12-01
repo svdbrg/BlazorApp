@@ -1,5 +1,5 @@
 using BlazorApp.Features.LiveDisplayer.Services;
-using BlazorApp.Features.Shared;
+using BlazorApp.Features.Shared.Models;
 
 namespace BlazorApp.Features.LiveDisplayer.Configuration;
 

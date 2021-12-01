@@ -1,7 +1,7 @@
 using BlazorApp.Features.LiveDisplayer.Configuration;
 using BlazorApp.Features.Mortgager.Configuration;
 using BlazorApp.Features.Shared;
-using BlazorApp.Models;
+using BlazorApp.Features.Shared.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

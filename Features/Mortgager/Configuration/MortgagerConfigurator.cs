@@ -1,6 +1,6 @@
 using BlazorApp.Features.Mortgager.Services;
 using BlazorApp.Features.Mortgager.Services.Abstractions;
-using BlazorApp.Features.Shared;
+using BlazorApp.Features.Shared.Models;
 using Blazored.Modal;
 
 namespace BlazorApp.Features.Mortgager.Configuration;

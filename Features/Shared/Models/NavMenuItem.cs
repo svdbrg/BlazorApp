@@ -1,4 +1,4 @@
-namespace BlazorApp.Features.Shared;
+namespace BlazorApp.Features.Shared.Models;
 
 public class FeatureInformation
 {
