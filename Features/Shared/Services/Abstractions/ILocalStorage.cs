@@ -1,4 +1,4 @@
-namespace BlazorApp.Features.Mortgager.Services.Abstractions;
+namespace BlazorApp.Features.Shared.Services.Abstractions;
 
 public interface ILocalStorage
 {

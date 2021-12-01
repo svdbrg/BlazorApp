@@ -22,7 +22,6 @@ public static class MortgagerConfigurator
     public static IServiceCollection ConfigureMortgager(this IServiceCollection services, WebApplicationBuilder builder)
     {
         services.AddTransient<IDataService, GcmDataService>();
-        services.AddTransient<ILocalStorage, LocalStorage>();
         services.AddBlazoredModal();
 
         services.Configure<List<FeatureInformation>>(opt =>

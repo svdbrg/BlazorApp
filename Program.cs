@@ -17,6 +17,7 @@ builder.Services.Configure<List<FeatureInformation>>(opt =>
 
 builder.Services.ConfigureMortgager(builder);
 builder.Services.ConfigureLiveDisplayer(builder);
+builder.Services.ConfigureSharedServices();
 
 builder.Services.ConfigureAutoMapper();
 

@@ -1,8 +1,10 @@
 ﻿@using BlazorApp.Features.Shared.Models
+@using BlazorApp.Features.Shared.Services.Abstractions;
 
 @inherits LayoutComponentBase
 @inject AppState appState
 @inject NavigationManager _navigationManager
+@inject ILocalStorage _localStorage;
 
 <PageTitle>BlazorApp</PageTitle>
 
@@ -23,6 +25,14 @@
         _navigationManager.LocationChanged += LocationChanged;
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await IsAuthenticated();
+        }
+    }
+
     void LocationChanged(object? sender, LocationChangedEventArgs e)
     {
         if (_navigationManager.ToBaseRelativePath(_navigationManager.Uri).StartsWith("livedisplayer"))
@@ -35,4 +45,27 @@
             appState.ToggleDisplayMode(false);
         }
     }
+
+    private async Task IsAuthenticated()
+    {
+        var authenticationToken = await _localStorage.GetStringAsync("auth");
+
+        if (string.IsNullOrWhiteSpace(authenticationToken))
+        {
+            if (!_navigationManager.ToBaseRelativePath(_navigationManager.Uri).Equals(""))
+            {
+                _navigationManager.NavigateTo("/", true);
+            }
+            else
+            {
+                var loginModal = Modal?.Show<LoginModal>("Login", new ModalOptions
+                {
+                    DisableBackgroundCancel = true,
+                    HideCloseButton = true
+                });
+            }
+        }
+    }
+
+    [CascadingParameter] public IModalService? Modal { get; set; }
 }

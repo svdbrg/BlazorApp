@@ -1,7 +1,7 @@
-using BlazorApp.Features.Mortgager.Services.Abstractions;
+using BlazorApp.Features.Shared.Services.Abstractions;
 using Microsoft.JSInterop;
 
-namespace BlazorApp.Features.Mortgager.Services;
+namespace BlazorApp.Features.Shared.Services;
 
 public class LocalStorage : ILocalStorage
 {

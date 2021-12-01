@@ -4,6 +4,7 @@
 @using BlazorApp.Features.Mortgager.Data
 @using BlazorApp.Features.Mortgager.Services.Abstractions
 @using BlazorApp.Features.Mortgager.Services
+@using BlazorApp.Features.Shared.Services.Abstractions;
 
 @inject IDataService _dataService
 @inject ILogger<GcmDataService> _logger
@@ -52,6 +53,8 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        await base.OnAfterRenderAsync(firstRender);
+
         if (firstRender)
         {
             await LoadData();

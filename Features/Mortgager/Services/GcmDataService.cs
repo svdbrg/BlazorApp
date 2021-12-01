@@ -1,6 +1,7 @@
 using AutoMapper;
 using BlazorApp.Features.Mortgager.Data;
 using BlazorApp.Features.Mortgager.Services.Abstractions;
+using BlazorApp.Features.Shared.Services.Abstractions;
 using Google.Cloud.Firestore;
 
 namespace BlazorApp.Features.Mortgager.Services;

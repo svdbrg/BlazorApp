@@ -1,0 +1,32 @@
+@using BlazorApp.Features.Shared.Services.Abstractions
+
+@inject ILocalStorage _localStorage
+
+<div class="simple-form">
+    <div class="form-group">
+        <input @bind="@input" type="password" class="form-control" />
+    </div>
+    <button @onclick="Login" class="btn btn-primary">Submit</button>
+    <div id="error-message">@errorMessage</div>
+</div>
+
+@code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new();
+
+    private string errorMessage { get; set; } = string.Empty;
+    private string input { get; set; } = string.Empty;
+
+    private void Login()
+    {
+        if (input == "solstigen")
+        {
+            errorMessage = "";
+            _localStorage.SaveStringAsync("auth", "yes");
+            ModalInstance.CloseAsync(ModalResult.Ok<bool>(true));
+        }
+        else
+        {
+            errorMessage = "Wrong password";
+        }
+    }
+}
