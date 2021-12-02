@@ -1,4 +1,5 @@
 @using BlazorApp.Features.Shared.Services.Abstractions
+@using Features.Shared.Services
 
 @inject ILocalStorage _localStorage
 
@@ -21,7 +22,8 @@
         if (input == "solstigen")
         {
             errorMessage = "";
-            _localStorage.SaveStringAsync("auth", "yes");
+            var token = HelperMethods.EncryptString($"{input}-{DateTime.Now.Ticks}-salt", "authorizationkey");
+            _localStorage.SaveStringAsync("auth", token);
             ModalInstance.CloseAsync(ModalResult.Ok<bool>(true));
         }
         else

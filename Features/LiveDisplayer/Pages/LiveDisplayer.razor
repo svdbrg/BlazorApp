@@ -22,8 +22,8 @@
 </div>
 <div id="fixtures">
     <Fixtures days="days" 
-        setCurrentlyPlayingDelegate="@((h, a) => plTable.setCurrentlyPlaying(h,a))"
-        removeCurrentlyPlayingDelegate="@((h, a) => plTable.removeCurrentlyPlaying(h,a))"
+        setCurrentlyPlayingDelegate="@((h, a) => plTable?.setCurrentlyPlaying(h,a))"
+        removeCurrentlyPlayingDelegate="@((h, a) => plTable?.removeCurrentlyPlaying(h,a))"
          />
 </div>
 
@@ -31,7 +31,7 @@
     private IEnumerable<Team> table = new List<Team>();
     private List<Day> days = new();
     private bool isLoading = true;
-    protected Table plTable;
+    protected Table plTable = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

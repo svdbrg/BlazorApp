@@ -24,7 +24,7 @@
     public List<Day> days { get; set; } = new();
 
     [Parameter]
-    public Action<string, string> setCurrentlyPlayingDelegate { get; set; }
+    public Action<string, string>? setCurrentlyPlayingDelegate { get; set; }
     [Parameter]
-    public Action<string, string> removeCurrentlyPlayingDelegate { get; set; }
+    public Action<string, string>? removeCurrentlyPlayingDelegate { get; set; }
 }
