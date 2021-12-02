@@ -1,5 +1,6 @@
 @using Data
 @using Services
+@inject IJSRuntime _js
 
 <table>
     <thead>
@@ -14,7 +15,7 @@
     <tbody>
         @foreach (var team in footballTable)
         {
-            <tr class="@HelperMethods.GetCssClassForCurrentStatus(team.Status)">
+            <tr id="@team.ShortName" class="@team.CssClass @HelperMethods.GetCssClassForCurrentStatus(team.Status)">
                 <td>@team.Position</td>
                 <td>
                     <div>
@@ -30,6 +31,15 @@
 </table>
 
 @code {
-    [Parameter]
-    public IEnumerable<Team> footballTable { get; set; } = new List<Team>();
+    [Parameter] public IEnumerable<Team> footballTable { get; set; } = new List<Team>();
+
+    public async void setCurrentlyPlaying(string home, string away)
+    {
+        await _js.InvokeVoidAsync($"PlTable.setClass", home, away);
+    }
+
+    public async void removeCurrentlyPlaying(string home, string away)
+    {
+        await _js.InvokeVoidAsync($"PlTable.removeClass", home, away);
+    }
 }
