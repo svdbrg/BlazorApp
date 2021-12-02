@@ -1,15 +1,19 @@
 ﻿@using Microsoft.Extensions.Options;
 @using BlazorApp.Features.Shared.Models
+@using BlazorApp.Features.Shared.Services.Abstractions
 
 @inject IOptions<List<FeatureInformation>> _options;
 @inject AppState appState
+@inject ILocalStorage _localStorage
+@inject NavigationManager _navigationManager
 
 @implements IDisposable
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">BlazorApp</a>
-        @if (appState.ShouldDisplayToggler) { 
+        @if (appState.ShouldDisplayToggler)
+        {
             <input type="checkbox" id="switch" checked="@(appState.AutoRefresh)" />
             <label for="switch" @onclick="appState.ToggleAutoRefresh">
                 Toggle
@@ -36,7 +40,11 @@
                 </NavLink>
             </div>
         }
+        <div class="logout" @onclick="logOut">
+            Log out
+        </div>
     </nav>
+
 </div>
 
 @code {
@@ -57,5 +65,11 @@
     public void Dispose()
     {
         appState.OnChange -= StateHasChanged;
+    }
+
+    private async void logOut()
+    {
+        await _localStorage.RemoveAsync("auth");
+        _navigationManager.NavigateTo("/", true);
     }
 }
