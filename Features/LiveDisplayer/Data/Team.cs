@@ -2,6 +2,7 @@ namespace BlazorApp.Features.LiveDisplayer.Data;
 
 public class Team
 {
+    public int Id { get; set; }
     public int Position { get; set; }
     public string Name { get; set; } = string.Empty;
     public string ShortName { get; set; } = string.Empty;

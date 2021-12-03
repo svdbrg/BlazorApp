@@ -68,10 +68,23 @@ public class PremierLeagueDataService : IFootballDataService
             var allFixtures = days.SelectMany(d => d.Fixtures);
 
             team.Status = allFixtures
-                ?.FirstOrDefault(f => f.AwayTeam == team.ShortName || f.HomeTeam == team.ShortName)
+                ?.FirstOrDefault(f => f.AwayTeamShortName == team.ShortName || f.HomeTeamShortName == team.ShortName)
                 ?.Status ?? "N/A";
 
             yield return team;
+        }
+    }
+
+    public async Task<IEnumerable<Fixture>> GetUpcomingFixtureForTeam(int teamId)
+    {
+        using (var client = _httpClientFactory.CreateClient("PL"))
+        {
+             var response = await client.GetAsync($"/football/fixtures?comps=1&compSeasons=418&page=0&pageSize=10&sort=asc&statuses=U,L&altIds=true&teams={teamId}");
+
+             _logger.LogInformation("Revieved upcoming fixtures for team with id {teamId}", teamId);
+             var data = JsonSerializer.Deserialize<FixtureRoot>(await response.Content.ReadAsStreamAsync()) ?? new FixtureRoot();
+
+             return data.content.Select(_mapper.Map<Fixture>);
         }
     }
 

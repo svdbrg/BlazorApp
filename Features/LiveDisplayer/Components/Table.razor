@@ -2,36 +2,40 @@
 @using Services
 @inject IJSRuntime _js
 
-<table>
-    <thead>
-        <tr>
-            <th>POS</th>
-            <th>Team</th>
-            <th>PL</th>
-            <th>GD</th>
-            <th>P</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var team in footballTable)
-        {
-            <tr id="@team.ShortName" class="@team.CssClass @HelperMethods.GetCssClassForCurrentStatus(team.Status)">
-                <td>@team.Position</td>
-                <td>
-                    <div>
-                        @team.Name
-                    </div>
-                </td>
-                <td>@team.Played</td>
-                <td>@team.GoalDifference</td>
-                <td>@team.Points</td>
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>POS</th>
+                <th>Team</th>
+                <th>PL</th>
+                <th>GD</th>
+                <th>P</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var team in footballTable)
+            {
+                <tr id="@team.ShortName" class="@team.CssClass @HelperMethods.GetCssClassForCurrentStatus(team.Status)"
+                @onclick="(() => ShowUpcomingFixturesForTeam(team.Id, team.Name))">
+                    <td>@team.Position</td>
+                    <td>
+                        <div>
+                            @team.Name
+                        </div>
+                    </td>
+                    <td>@team.Played</td>
+                    <td>@team.GoalDifference</td>
+                    <td>@team.Points</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 @code {
     [Parameter] public IEnumerable<Team> footballTable { get; set; } = new List<Team>();
+    [CascadingParameter] public IModalService? Modal { get; set; }
 
     public async void setCurrentlyPlaying(string home, string away)
     {
@@ -41,5 +45,19 @@
     public async void removeCurrentlyPlaying(string home, string away)
     {
         await _js.InvokeVoidAsync($"PlTable.removeClass", home, away);
+    }
+
+    private async void ShowUpcomingFixturesForTeam(int teamId, string teamName)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add("TeamId", teamId);
+        parameters.Add("TeamName", teamName);
+
+
+
+        Modal?.Show<UpcomingFixturesForTeam>("Upcoming fixtures", parameters, new ModalOptions
+        {
+            HideCloseButton = true
+        });
     }
 }

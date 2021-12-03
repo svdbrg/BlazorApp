@@ -1,0 +1,41 @@
+@using Data
+@using Services
+
+@inject IFootballDataService _dataService
+
+<div class="tooltip-wrapper">
+    <h3 class="team">
+        @TeamName
+    </h3>
+
+    @foreach (var fixture in Fixtures)
+    {
+        <div class="fixture">
+            <div class="date">
+                @fixture.DateAndTime.ToString("m")
+            </div>
+            <div class="teams">
+                <div class="home">@fixture.HomeTeam</div>
+                <div class="time">
+                    <span>
+                        @fixture.DateAndTime.ToString("t")
+                    </span>
+                </div>
+                <div class="away">@fixture.AwayTeam</div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public int TeamId { get; set; }
+    [Parameter] public string TeamName { get; set; } = string.Empty;
+
+    private IEnumerable<Fixture> Fixtures { get; set; } = new List<Fixture>();
+
+    protected override async void OnInitialized()
+    {
+        Fixtures = await _dataService.GetUpcomingFixtureForTeam(TeamId);
+        StateHasChanged();
+    }
+}

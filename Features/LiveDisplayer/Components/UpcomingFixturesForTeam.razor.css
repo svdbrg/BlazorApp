@@ -1,0 +1,30 @@
+.tooltip-wrapper {
+    text-align: center;
+}
+
+.home, .time, .away {
+    width: 33%;
+    float: left;
+    font-size: 12px;
+    padding-bottom: 15px;
+}
+
+.home {
+    text-align: right;
+}
+
+.away {
+    text-align: left;
+}
+
+.time span {
+    padding: 2px 5px 2px 5px;
+    border: solid 1px #ccc;
+    color: #666;
+}
+
+.date {
+    font-size: 12px;
+    font-weight: bold;
+    padding-bottom: 5px;
+}

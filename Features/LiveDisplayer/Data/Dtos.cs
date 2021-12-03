@@ -128,6 +128,7 @@ public class FixtureDto
     public List<object> penaltyShootouts { get; set; } = new();
     public bool behindClosedDoors { get; set; }
     public double id { get; set; }
+    public AltIdsDto altIds { get; set; } = new();
 }
 
 public class RootDto
@@ -195,6 +196,12 @@ public class LocationDto
     public double longitude { get; set; }
 }
 
+public class TableDto
+{
+    public int gameWeek { get; set; }
+    public List<EntryDto> entries { get; set; } = new();
+}
+
 public class EntryDto
 {
     public Team2Dto team { get; set; } = new();
@@ -207,12 +214,6 @@ public class EntryDto
     public GroundDto ground { get; set; } = new();
 }
 
-public class TableDto
-{
-    public int gameWeek { get; set; }
-    public List<EntryDto> entries { get; set; } = new();
-}
-
 public class TableRootDto
 {
     public CompSeasonDto compSeason { get; set; } = new();
@@ -220,4 +221,10 @@ public class TableRootDto
     public bool live { get; set; }
     public bool dynamicallyGenerated { get; set; }
     public List<TableDto> tables { get; set; } = new();
+}
+
+public class FixtureRoot
+{
+    public PageInfoDto pageInfo { get; set; } = new();
+    public List<FixtureDto> content { get; set; } = new();
 }

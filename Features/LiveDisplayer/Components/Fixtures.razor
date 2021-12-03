@@ -7,12 +7,12 @@
         <div class="day">@day.Date</div>
         @foreach (var fixture in day.Fixtures)
         {
-            <div class="fixture" @onmouseout="@(() => removeCurrentlyPlayingDelegate(fixture.HomeTeam, fixture.AwayTeam))" @onmouseover="@(() => setCurrentlyPlayingDelegate(fixture.HomeTeam, fixture.AwayTeam))">
-                <div class="home @HelperMethods.GetCssClassForCurrentStatus(fixture.Status)">@fixture.HomeTeam</div>
+            <div class="fixture" @onmouseout="@(() => removeCurrentlyPlayingDelegate(fixture.HomeTeamShortName, fixture.AwayTeamShortName))" @onmouseover="@(() => setCurrentlyPlayingDelegate(fixture.HomeTeamShortName, fixture.AwayTeamShortName))">
+                <div class="home @HelperMethods.GetCssClassForCurrentStatus(fixture.Status)">@fixture.HomeTeamShortName</div>
                 <div class="result @HelperMethods.GetCssClassForCurrentStatus(fixture.Status)">
                     @(fixture.Status == "U" ? fixture.DateAndTime.ToShortTimeString() : fixture.Result)
                 </div>
-                <div class="away @HelperMethods.GetCssClassForCurrentStatus(fixture.Status)">@fixture.AwayTeam</div>
+                <div class="away @HelperMethods.GetCssClassForCurrentStatus(fixture.Status)">@fixture.AwayTeamShortName</div>
             </div>
         }
 
