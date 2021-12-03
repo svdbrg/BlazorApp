@@ -47,7 +47,7 @@
         await _js.InvokeVoidAsync($"PlTable.removeClass", home, away);
     }
 
-    private async void ShowUpcomingFixturesForTeam(int teamId, string teamName)
+    private void ShowUpcomingFixturesForTeam(int teamId, string teamName)
     {
         var parameters = new ModalParameters();
         parameters.Add("TeamId", teamId);

@@ -7,7 +7,7 @@
         <div class="day">@day.Date</div>
         @foreach (var fixture in day.Fixtures)
         {
-            <div class="fixture" @onmouseout="@(() => removeCurrentlyPlayingDelegate(fixture.HomeTeamShortName, fixture.AwayTeamShortName))" @onmouseover="@(() => setCurrentlyPlayingDelegate(fixture.HomeTeamShortName, fixture.AwayTeamShortName))">
+            <div class="fixture" @onmouseout="@(() => removeCurrentlyPlayingDelegate!(fixture.HomeTeamShortName, fixture.AwayTeamShortName))" @onmouseover="@(() => setCurrentlyPlayingDelegate!(fixture.HomeTeamShortName, fixture.AwayTeamShortName))">
                 <div class="home @HelperMethods.GetCssClassForCurrentStatus(fixture.Status)">@fixture.HomeTeamShortName</div>
                 <div class="result @HelperMethods.GetCssClassForCurrentStatus(fixture.Status)">
                     @(fixture.Status == "U" ? fixture.DateAndTime.ToShortTimeString() : fixture.Result)
@@ -23,8 +23,7 @@
     [Parameter]
     public List<Day> days { get; set; } = new();
 
-    [Parameter]
-    public Action<string, string>? setCurrentlyPlayingDelegate { get; set; }
-    [Parameter]
-    public Action<string, string>? removeCurrentlyPlayingDelegate { get; set; }
+    [Parameter] public Action<string, string>? setCurrentlyPlayingDelegate { get; set; }
+
+    [Parameter] public Action<string, string>? removeCurrentlyPlayingDelegate { get; set; }
 }

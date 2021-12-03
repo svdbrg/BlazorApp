@@ -84,7 +84,7 @@ public class PremierLeagueDataService : IFootballDataService
              _logger.LogInformation("Revieved upcoming fixtures for team with id {teamId}", teamId);
              var data = JsonSerializer.Deserialize<FixtureRoot>(await response.Content.ReadAsStreamAsync()) ?? new FixtureRoot();
 
-             return data.content.Select(_mapper.Map<Fixture>);
+             return data.content.Where(c => c.kickoff.completeness > 0.0).Select(_mapper.Map<Fixture>);
         }
     }
 
