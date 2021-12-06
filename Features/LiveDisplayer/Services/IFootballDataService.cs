@@ -6,6 +6,6 @@ public interface IFootballDataService
 {
     Task<IEnumerable<Team>> GetTableAsync();
     IAsyncEnumerable<Day> GetDaysAndFixturesAsync();
-    IEnumerable<Team> EnrichTableWithStatus(IEnumerable<Team> teams, IEnumerable<Day> days);
+    IEnumerable<Team> EnrichTableWithStatus(IEnumerable<Team> teams, IEnumerable<Day> days, bool hideTeamsWithPlayedMatches);
     Task<IEnumerable<Fixture>> GetUpcomingFixtureForTeam(int teamId);
 }

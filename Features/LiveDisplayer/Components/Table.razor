@@ -1,6 +1,9 @@
 @using Data
 @using Services
+@using BlazorApp.Features.Shared.Models
+
 @inject IJSRuntime _js
+@inject AppState appState
 
 <div class="table-wrapper">
     <table>
@@ -53,11 +56,24 @@
         parameters.Add("TeamId", teamId);
         parameters.Add("TeamName", teamName);
 
-
-
         Modal?.Show<UpcomingFixturesForTeam>("Upcoming fixtures", parameters, new ModalOptions
         {
             HideCloseButton = true
         });
+    }
+
+    protected override void OnInitialized()
+    {
+        appState.OnChange += OnAppStateChange;
+    }
+
+    public void Dispose()
+    {
+        appState.OnChange -= OnAppStateChange;
+    }
+
+    private async void OnAppStateChange()
+    {
+        await InvokeAsync(StateHasChanged);
     }
 }

@@ -94,7 +94,7 @@ label:active:after {
     width: 130px;
 }
 
-.logout {
+.logout, .settings {
     cursor: pointer;
     width: 100%;
 }
@@ -109,9 +109,13 @@ label:active:after {
         display: block;
     }
 
-    .logout {
+    .logout, .settings {
         position: absolute;
         bottom: 0px;
         float: none;
+    }
+
+    .settings {
+        bottom: 65px;
     }
 }

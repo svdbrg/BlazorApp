@@ -40,6 +40,10 @@
                 </NavLink>
             </div>
         }
+        <div class="nav-item px-3 settings">
+            <a @onclick="appState.ToggleTeamVisibility" class="nav-link"><span class="oi oi-cog" aria-hidden="true"></span> Settings
+            </a>
+        </div>
         <div class="nav-item px-3 logout">
             <a @onclick="logOut" class="nav-link"><span class="oi oi-account-logout" aria-hidden="true"></span> Logout
             </a>
@@ -72,5 +76,9 @@
     {
         await _localStorage.RemoveAsync("auth");
         _navigationManager.NavigateTo("/", true);
+    }
+
+    private async void openSettings() {
+        appState.ToggleTeamVisibility();
     }
 }

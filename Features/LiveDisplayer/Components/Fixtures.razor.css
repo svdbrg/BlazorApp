@@ -31,6 +31,12 @@
     color: #ccc;
 }
 
+@media (max-width: 1000px) {
+    .day-wrapper .day {
+        width: 100%;
+    }
+}
+
 @media only screen 
   and (min-device-width: 320px) 
   and (max-device-width: 800px)
@@ -42,5 +48,9 @@
     
     .day-wrapper .fixture .away {
         text-align: right;
+    }
+
+    .day-wrapper .day {
+        width: 100%;
     }
 }

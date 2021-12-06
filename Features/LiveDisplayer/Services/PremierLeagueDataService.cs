@@ -61,7 +61,7 @@ public class PremierLeagueDataService : IFootballDataService
         }
     }
 
-    public IEnumerable<Team> EnrichTableWithStatus(IEnumerable<Team> teams, IEnumerable<Day> days)
+    public IEnumerable<Team> EnrichTableWithStatus(IEnumerable<Team> teams, IEnumerable<Day> days, bool hideTeamsWithPlayedMatches)
     {
         foreach (var team in teams)
         {
@@ -71,6 +71,11 @@ public class PremierLeagueDataService : IFootballDataService
                 ?.FirstOrDefault(f => f.AwayTeamShortName == team.ShortName || f.HomeTeamShortName == team.ShortName)
                 ?.Status ?? "N/A";
 
+            if (hideTeamsWithPlayedMatches && team.Status == "C")
+            {
+                continue;
+            }
+
             yield return team;
         }
     }
@@ -79,12 +84,12 @@ public class PremierLeagueDataService : IFootballDataService
     {
         using (var client = _httpClientFactory.CreateClient("PL"))
         {
-             var response = await client.GetAsync($"/football/fixtures?comps=1&compSeasons=418&page=0&pageSize=10&sort=asc&statuses=U,L&altIds=true&teams={teamId}");
+            var response = await client.GetAsync($"/football/fixtures?comps=1&compSeasons=418&page=0&pageSize=10&sort=asc&statuses=U,L&altIds=true&teams={teamId}");
 
-             _logger.LogInformation("Revieved upcoming fixtures for team with id {teamId}", teamId);
-             var data = JsonSerializer.Deserialize<FixtureRoot>(await response.Content.ReadAsStreamAsync()) ?? new FixtureRoot();
+            _logger.LogInformation("Revieved upcoming fixtures for team with id {teamId}", teamId);
+            var data = JsonSerializer.Deserialize<FixtureRoot>(await response.Content.ReadAsStreamAsync()) ?? new FixtureRoot();
 
-             return data.content.Where(c => c.kickoff.completeness > 0.0).Select(_mapper.Map<Fixture>);
+            return data.content.Where(c => c.kickoff.completeness > 0.0).Select(_mapper.Map<Fixture>);
         }
     }
 

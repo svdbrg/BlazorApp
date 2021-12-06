@@ -56,7 +56,7 @@
             await InvokeAsync(StateHasChanged);
         }
 
-        table = _dataFetcher.EnrichTableWithStatus(table, days);
+        table = _dataFetcher.EnrichTableWithStatus(table, days, appState.HideTeamsForPlayedMatches);
 
         isLoading = false;
         await InvokeAsync(StateHasChanged);
@@ -78,7 +78,6 @@
 
         while (appState.AutoRefresh)
         {
-
             await Task.Delay(10000);
             await GetData();
         }
