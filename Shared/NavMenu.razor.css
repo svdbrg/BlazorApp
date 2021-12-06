@@ -99,6 +99,7 @@ label:active:after {
     padding: 10px;
     text-align: right;
     float: right;
+    cursor: default;
 }
 
 @media (min-width: 820px) {
