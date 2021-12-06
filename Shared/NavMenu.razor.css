@@ -95,11 +95,16 @@ label:active:after {
 }
 
 .logout {
-    color: #fff;
+    color: #d7d7d7;
     padding: 10px;
     text-align: right;
-    float: right;
-    cursor: default;
+    cursor: pointer;
+    width: 100%;
+}
+
+.logout:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
 }
 
 @media (min-width: 820px) {

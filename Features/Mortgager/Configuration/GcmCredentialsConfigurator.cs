@@ -8,8 +8,8 @@ public static class GcmCredentialsConfigurator
         
         if (app.Environment.IsDevelopment())
         {
-            filePath = "C:\\Users\\svdbrg\\gcm\\mortgager.json";
-            // filePath = "C:\\Dev\\Local\\gcm.json";
+            // filePath = "C:\\Users\\svdbrg\\gcm\\mortgager.json";
+            filePath = "C:\\Dev\\Local\\gcm.json";
         }
         else
         {
