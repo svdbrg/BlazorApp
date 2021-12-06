@@ -40,8 +40,9 @@
                 </NavLink>
             </div>
         }
-        <div class="logout" @onclick="logOut">
-            <span class="oi oi-account-logout"></span> Log out
+        <div class="nav-item px-3 logout">
+            <a @onclick="logOut" class="nav-link"><span class="oi oi-account-logout" aria-hidden="true"></span> Logout
+            </a>
         </div>
     </nav>
 
