@@ -6,6 +6,11 @@ div.tool {
     max-width: 800px;
     position: relative;
     overflow: hidden;
+    cursor: default;
+}
+
+div.tool:hover {
+    background-color: rgb(213, 213, 213);
 }
 
 div.tool div.information {

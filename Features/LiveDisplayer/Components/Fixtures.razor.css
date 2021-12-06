@@ -1,5 +1,6 @@
 .day-wrapper {
     margin-bottom: 10px;
+    cursor: default;
 }
     
 .day-wrapper .day {

@@ -1,5 +1,6 @@
 table {
     width: 100%;
+    cursor: default;
 }
 
 thead th:first-child,
