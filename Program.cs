@@ -2,6 +2,7 @@ using BlazorApp.Features.LiveDisplayer.Configuration;
 using BlazorApp.Features.Mortgager.Configuration;
 using BlazorApp.Features.Shared;
 using BlazorApp.Features.Shared.Models;
+using BlazorApp.Features.TravelPlanner.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,7 @@ builder.Services.Configure<List<FeatureInformation>>(opt =>
 builder.Services.ConfigureMortgager(builder);
 builder.Services.ConfigureLiveDisplayer(builder);
 builder.Services.ConfigureSharedServices();
+builder.Services.ConfigureTravelPlanner(builder);
 
 builder.Services.ConfigureAutoMapper();
 
