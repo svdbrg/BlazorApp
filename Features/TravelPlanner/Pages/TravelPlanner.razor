@@ -1,4 +1,91 @@
 @page "/travelplanner"
 
+@using BlazorApp.Features.TravelPlanner.Services.Abstractions
+@using Models
+
+@inject ITravelPlanner _travelPlanner
+
 <PageTitle>Travel Planner</PageTitle>
 
+<ul>
+    @foreach (var item in travelPlan.Trip)
+    {
+        <li>@getFriendlyString(item)</li>
+    }
+</ul>
+
+<ul id="stations">
+    @foreach (var item in nearbyStops.stopLocationOrCoordLocation)
+    {
+        <li class="@((item.StopLocation.mainMastExtId == selectedStationOfOrigin) ? "selected" : "")"
+        @onclick="@(() => changeOrigin(item.StopLocation.mainMastExtId))">@item.StopLocation.name
+            (@item.StopLocation.dist m)</li>
+    }
+</ul>
+
+@code {
+    private TravelPlannerRoot travelPlan = new();
+    private NearbyStopsRoot nearbyStops = new();
+    private string selectedStationOfOrigin = "4014";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await setTravelPlan();
+            await setNearbyStops();
+        }
+    }
+
+    private async void changeOrigin(string newOrigin)
+    {
+        selectedStationOfOrigin = newOrigin;
+        await setTravelPlan();
+    }
+
+    private string getFriendlyString(Trip trip)
+    {
+        var departureTime = extractDepartureTime(trip);
+        var destinationTime = extractDestinationTime(trip);
+
+        return $@"{trip.LegList.Leg.First().Product.name} is leaving
+{trip.LegList.Leg.First().Origin.name} in
+{getFriendlyTimeSpanAsString(departureTime, DateTime.Now)}. The travel time to
+{trip.LegList.Leg.Last().Destination.name} is
+{getFriendlyTimeSpanAsString(destinationTime, departureTime)}. By then, the time is
+{destinationTime.ToShortTimeString()}";
+    }
+
+    private DateTime extractDepartureTime(Trip trip)
+    {
+        return DateTime.Parse($"{trip.LegList.Leg.First().Origin.date} {trip.LegList.Leg.First().Origin.time}");
+    }
+
+    private DateTime extractDestinationTime(Trip trip)
+    {
+        return DateTime.Parse($"{trip.LegList.Leg.Last().Destination.date} {trip.LegList.Leg.Last().Destination.time}");
+    }
+
+    private string getFriendlyTimeSpanAsString(DateTime start, DateTime end)
+    {
+        var minutes = start.Subtract(end);
+        if (minutes.TotalMinutes > 60)
+        {
+            return $"{(int)minutes.TotalHours} hours and {minutes.Minutes} minutes";
+        }
+
+        return $"{minutes.Minutes} minutes";
+    }
+
+    private async Task setNearbyStops()
+    {
+        nearbyStops = await _travelPlanner.GetNearbyStops();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task setTravelPlan()
+    {
+        travelPlan = await _travelPlanner.GetTravelPlan(selectedStationOfOrigin);
+        await InvokeAsync(StateHasChanged);
+    }
+}

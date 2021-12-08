@@ -1,4 +1,6 @@
 using BlazorApp.Features.Shared.Models;
+using BlazorApp.Features.TravelPlanner.Services;
+using BlazorApp.Features.TravelPlanner.Services.Abstractions;
 
 namespace BlazorApp.Features.TravelPlanner.Configuration;
 
@@ -18,10 +20,12 @@ public static class LiveDisplayerConfigurator
 
     public static IServiceCollection ConfigureTravelPlanner(this IServiceCollection services, WebApplicationBuilder builder)
     {
-        services.AddHttpClient("TP", c =>
+        services.AddTransient<ITravelPlanner, SlTravelPlanner>();
+        
+        services.AddHttpClient("TravelPlanner", c =>
         {
             // c.DefaultRequestHeaders.Add("Origin", "https://www.premierleague.com");
-            // c.BaseAddress = new Uri("https://footballapi.pulselive.com/");
+            c.BaseAddress = new Uri("https://api.sl.se/");
         });
 
         services.Configure<List<FeatureInformation>>(opt =>
