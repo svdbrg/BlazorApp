@@ -7,21 +7,28 @@
 
 <PageTitle>Travel Planner</PageTitle>
 
-<ul>
-    @foreach (var item in travelPlan.Trip)
+    @foreach (var item in travelPlan.Trip.Take(1))
     {
-        <li>@getFriendlyString(item)</li>
+        <div class="trip">
+            <div class="minutes">@getFriendlyTimeSpanAsString(extractDepartureTime(item), DateTime.Now)</div>
+            <div class="meta">
+                <div>mins</div>
+                <div>From:</div>
+                <div class="origin">@item.LegList.Leg.First().Origin.name</div>
+                <div>To:</div>
+                <div class="destination">@item.LegList.Leg.Last().Destination.name</div>
+            </div>
+        </div>
     }
-</ul>
 
-<ul id="stations">
+@* <ul id="stations">
     @foreach (var item in nearbyStops.stopLocationOrCoordLocation)
     {
         <li class="@((item.StopLocation.mainMastExtId == selectedStationOfOrigin) ? "selected" : "")"
         @onclick="@(() => changeOrigin(item.StopLocation.mainMastExtId))">@item.StopLocation.name
             (@item.StopLocation.dist m)</li>
     }
-</ul>
+</ul> *@
 
 @code {
     private TravelPlannerRoot travelPlan = new();
@@ -48,17 +55,19 @@
         var departureTime = extractDepartureTime(trip);
         var destinationTime = extractDestinationTime(trip);
 
-        return $@"{trip.LegList.Leg.First().Product.name} is leaving
+        @* return $@"{trip.LegList.Leg.First().Product.name} is leaving
 {trip.LegList.Leg.First().Origin.name} in
-{getFriendlyTimeSpanAsString(departureTime, DateTime.Now)}. The travel time to
+{getFriendlyTimedivAsString(departureTime, DateTime.Now)}. The travel time to
 {trip.LegList.Leg.Last().Destination.name} is
-{getFriendlyTimeSpanAsString(destinationTime, departureTime)}. By then, the time is
-{destinationTime.ToShortTimeString()}";
+{getFriendlyTimedivAsString(destinationTime, departureTime)}. By then, the time is
+{destinationTime.ToShortTimeString()}"; *@
+
+return "";
     }
 
     private DateTime extractDepartureTime(Trip trip)
     {
-        return DateTime.Parse($"{trip.LegList.Leg.First().Origin.date} {trip.LegList.Leg.First().Origin.time}");
+        return DateTime.Parse($"{trip.LegList.Leg.First().Origin.rtDate} {trip.LegList.Leg.First().Origin.rtTime}");
     }
 
     private DateTime extractDestinationTime(Trip trip)
@@ -71,10 +80,10 @@
         var minutes = start.Subtract(end);
         if (minutes.TotalMinutes > 60)
         {
-            return $"{(int)minutes.TotalHours} hours and {minutes.Minutes} minutes";
+            return $"{(int)minutes.TotalHours}:{minutes.Minutes}";
         }
 
-        return $"{minutes.Minutes} minutes";
+        return $"{minutes.Minutes}";
     }
 
     private async Task setNearbyStops()

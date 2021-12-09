@@ -2,6 +2,33 @@ li {
     cursor: default;
 }
 
+div.trip {
+    width: 300px;
+    border: solid 1px #333;
+    height: 150px;
+    clear: both;
+    color: #fff;
+    background-color: #666;
+}
+
+div.minutes {
+    font-size: 150px;
+    line-height: 140px;
+    width: 40%;
+    float: left;
+    padding-left: 15px;
+    color: orange;
+}
+
+div.meta {
+    padding-top: 20px;
+    font-size: 12px;
+    color: #ccc;
+}
+div.origin, div.destination {
+    font-weight: bold;
+}
+
 #stations li.selected {
     font-weight: bold;
 }
