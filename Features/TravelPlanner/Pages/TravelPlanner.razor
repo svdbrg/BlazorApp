@@ -7,31 +7,33 @@
 
 <PageTitle>Travel Planner</PageTitle>
 
-    @foreach (var item in travelPlan.Trip.Take(1))
-    {
-        <div class="trip">
-            <div class="minutes">@getFriendlyTimeSpanAsString(extractDepartureTime(item), DateTime.Now)</div>
-            <div class="meta">
-                <div>mins</div>
-                <div>From:</div>
-                <div class="origin">@item.LegList.Leg.First().Origin.name</div>
-                <div>To:</div>
-                <div class="destination">@item.LegList.Leg.Last().Destination.name</div>
+@foreach (var item in trips.Where(t => t.Legs.First().Origin.Time < DateTime.Now.AddHours(1)))
+{
+    <div class="trip">
+        <div class="minutes">@getFriendlyTimeSpanAsString(item.Legs.First().Origin.Time, DateTime.Now)</div>
+        <div class="meta">
+            <span>minutes</span>
+            <div class="origin">
+                @item.Legs.First().Origin.Name
+            </div>
+            <div class="destination">
+                @item.Legs.Last().Destination.Name
             </div>
         </div>
-    }
+    </div>
+}
 
 @* <ul id="stations">
     @foreach (var item in nearbyStops.stopLocationOrCoordLocation)
     {
-        <li class="@((item.StopLocation.mainMastExtId == selectedStationOfOrigin) ? "selected" : "")"
-        @onclick="@(() => changeOrigin(item.StopLocation.mainMastExtId))">@item.StopLocation.name
-            (@item.StopLocation.dist m)</li>
+    <li class="@((item.StopLocation.mainMastExtId == selectedStationOfOrigin) ? "selected" : "")"
+    @onclick="@(() => changeOrigin(item.StopLocation.mainMastExtId))">@item.StopLocation.name
+    (@item.StopLocation.dist m)</li>
     }
-</ul> *@
+    </ul> *@
 
 @code {
-    private TravelPlannerRoot travelPlan = new();
+    private IEnumerable<Trip> trips = new List<Trip>();
     private NearbyStopsRoot nearbyStops = new();
     private string selectedStationOfOrigin = "4014";
 
@@ -50,27 +52,34 @@
         await setTravelPlan();
     }
 
-    private string getFriendlyString(Trip trip)
+    private string getFriendlyString(TripDto trip)
     {
         var departureTime = extractDepartureTime(trip);
         var destinationTime = extractDestinationTime(trip);
 
         @* return $@"{trip.LegList.Leg.First().Product.name} is leaving
-{trip.LegList.Leg.First().Origin.name} in
-{getFriendlyTimedivAsString(departureTime, DateTime.Now)}. The travel time to
-{trip.LegList.Leg.Last().Destination.name} is
-{getFriendlyTimedivAsString(destinationTime, departureTime)}. By then, the time is
-{destinationTime.ToShortTimeString()}"; *@
+            {trip.LegList.Leg.First().Origin.name} in
+            {getFriendlyTimedivAsString(departureTime, DateTime.Now)}. The travel time to
+            {trip.LegList.Leg.Last().Destination.name} is
+            {getFriendlyTimedivAsString(destinationTime, departureTime)}. By then, the time is
+            {destinationTime.ToShortTimeString()}"; *@
 
-return "";
+        return "";
     }
 
-    private DateTime extractDepartureTime(Trip trip)
+    private DateTime extractDepartureTime(TripDto trip)
     {
-        return DateTime.Parse($"{trip.LegList.Leg.First().Origin.rtDate} {trip.LegList.Leg.First().Origin.rtTime}");
+        if (!string.IsNullOrWhiteSpace(trip.LegList.Leg.First().Origin.rtDate) &&
+        !string.IsNullOrWhiteSpace(trip.LegList.Leg.First().Origin.rtTime))
+        {
+            return DateTime.Parse($"{trip.LegList.Leg.First().Origin.date} {trip.LegList.Leg.First().Origin.time}");
+
+        }
+
+        return DateTime.Now;
     }
 
-    private DateTime extractDestinationTime(Trip trip)
+    private DateTime extractDestinationTime(TripDto trip)
     {
         return DateTime.Parse($"{trip.LegList.Leg.Last().Destination.date} {trip.LegList.Leg.Last().Destination.time}");
     }
@@ -94,7 +103,7 @@ return "";
 
     private async Task setTravelPlan()
     {
-        travelPlan = await _travelPlanner.GetTravelPlan(selectedStationOfOrigin);
+        trips = await _travelPlanner.GetTravelPlan(selectedStationOfOrigin);
         await InvokeAsync(StateHasChanged);
     }
 }

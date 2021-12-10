@@ -4,6 +4,6 @@ namespace BlazorApp.Features.TravelPlanner.Services.Abstractions;
 
 public interface ITravelPlanner
 {
-    Task<TravelPlannerRoot> GetTravelPlan(string selectedStationOfOrigin);
+    Task<IEnumerable<Trip>> GetTravelPlan(string selectedStationOfOrigin);
     Task<NearbyStopsRoot> GetNearbyStops();
 }

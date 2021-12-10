@@ -1,5 +1,5 @@
 namespace BlazorApp.Features.TravelPlanner.Models;
-public class ServiceDay
+public class ServiceDayDto
 {
     public string planningPeriodBegin { get; set; } = string.Empty;
     public string planningPeriodEnd { get; set; } = string.Empty;
@@ -8,7 +8,7 @@ public class ServiceDay
     public string sDaysB { get; set; } = string.Empty;
 }
 
-public class Origin
+public class OriginDto
 {
     public string name { get; set; } = string.Empty;
     public string type { get; set; } = string.Empty;
@@ -27,7 +27,7 @@ public class Origin
     public bool additional { get; set; }
 }
 
-public class Destination
+public class DestinationDto
 {
     public string name { get; set; } = string.Empty;
     public string type { get; set; } = string.Empty;
@@ -47,12 +47,12 @@ public class Destination
     public bool additional { get; set; }
 }
 
-public class JourneyDetailRef
+public class JourneyDetailRefDto
 {
     public string @ref { get; set; } = string.Empty;
 }
 
-public class Product
+public class ProductDto
 {
     public string name { get; set; } = string.Empty;
     public string num { get; set; } = string.Empty;
@@ -67,13 +67,13 @@ public class Product
     public string admin { get; set; } = string.Empty;
 }
 
-public class Leg
+public class LegDto
 {
-    public Origin Origin { get; set; } = new();
-    public Destination Destination { get; set; } = new();
-    public JourneyDetailRef JourneyDetailRef { get; set; } = new();
+    public OriginDto Origin { get; set; } = new();
+    public DestinationDto Destination { get; set; } = new();
+    public JourneyDetailRefDto JourneyDetailRef { get; set; } = new();
     public string JourneyStatus { get; set; } = string.Empty;
-    public Product Product { get; set; } = new();
+    public ProductDto Product { get; set; } = new();
     public object Stops { get; set; } = new();
     public string idx { get; set; } = string.Empty;
     public string name { get; set; } = string.Empty;
@@ -88,12 +88,12 @@ public class Leg
     public bool? hide { get; set; }
 }
 
-public class LegList
+public class LegListDto
 {
-    public List<Leg> Leg { get; set; } = new();
+    public List<LegDto> Leg { get; set; } = new();
 }
 
-public class FareItem
+public class FareItemDto
 {
     public string name { get; set; } = string.Empty;
     public string desc { get; set; } = string.Empty;
@@ -101,23 +101,23 @@ public class FareItem
     public string cur { get; set; } = string.Empty;
 }
 
-public class FareSetItem
+public class FareSetItemDto
 {
-    public List<FareItem> fareItem { get; set; } = new();
+    public List<FareItemDto> fareItem { get; set; } = new();
     public string name { get; set; } = string.Empty;
     public string desc { get; set; } = string.Empty;
 }
 
-public class TariffResult
+public class TariffResultDto
 {
-    public List<FareSetItem> fareSetItem { get; set; } = new();
+    public List<FareSetItemDto> fareSetItem { get; set; } = new();
 }
 
-public class Trip
+public class TripDto
 {
-    public List<ServiceDay> ServiceDays { get; set; } = new();
-    public LegList LegList { get; set; } = new();
-    public TariffResult TariffResult { get; set; } = new();
+    public List<ServiceDayDto> ServiceDays { get; set; } = new();
+    public LegListDto LegList { get; set; } = new();
+    public TariffResultDto TariffResult { get; set; } = new();
     public bool alternative { get; set; }
     public bool valid { get; set; }
     public int idx { get; set; }
@@ -129,9 +129,9 @@ public class Trip
     public int transferCount { get; set; }
 }
 
-public class TravelPlannerRoot
+public class TravelPlannerRootDto
 {
-    public List<Trip> Trip { get; set; } = new();
+    public List<TripDto> Trip { get; set; } = new();
     public string scrB { get; set; } = string.Empty;
     public string scrF { get; set; } = string.Empty;
     public string serverVersion { get; set; } = string.Empty;
@@ -139,7 +139,7 @@ public class TravelPlannerRoot
     public string requestId { get; set; } = string.Empty;
 }
 
-public class StopLocation
+public class StopLocationDto
 {
     public string id { get; set; } = string.Empty;
     public string extId { get; set; } = string.Empty;
@@ -154,14 +154,14 @@ public class StopLocation
     public int products { get; set; }
 }
 
-public class StopLocationOrCoordLocation
+public class StopLocationOrCoordLocationDto
 {
-    public StopLocation StopLocation { get; set; } = new();
+    public StopLocationDto StopLocation { get; set; } = new();
 }
 
 public class NearbyStopsRoot
 {
-    public List<StopLocationOrCoordLocation> stopLocationOrCoordLocation { get; set; } = new();
+    public List<StopLocationOrCoordLocationDto> stopLocationOrCoordLocation { get; set; } = new();
     public string serverVersion { get; set; } = string.Empty;
     public string dialectVersion { get; set; } = string.Empty;
     public string requestId { get; set; } = string.Empty;
