@@ -12,7 +12,7 @@ public static class LiveDisplayerConfigurator
         {
             Href = "travelplanner",
             Label = "Travel Planner",
-            Icon = "oi oi-headphones"
+            Icon = "oi oi-dashboard"
         },
         Name = "Travel Planner",
         Description = "Makes it a breeze to get an overview of when the next bus or train leaves."

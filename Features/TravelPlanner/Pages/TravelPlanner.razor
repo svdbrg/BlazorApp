@@ -7,35 +7,71 @@
 
 <PageTitle>Travel Planner</PageTitle>
 
-@foreach (var item in trips.Where(t => t.Legs.First().Origin.Time < DateTime.Now.AddHours(1)))
+@if (isLoading)
 {
-    <div class="trip">
-        <div class="minutes">@getFriendlyTimeSpanAsString(item.Legs.First().Origin.Time, DateTime.Now)</div>
-        <div class="meta">
-            <span>minutes</span>
-            <div class="origin">
-                @item.Legs.First().Origin.Name
-            </div>
-            <div class="destination">
-                @item.Legs.Last().Destination.Name
-            </div>
-        </div>
-    </div>
+    <div class="loading">Loading...</div>
 }
 
-@* <ul id="stations">
-    @foreach (var item in nearbyStops.stopLocationOrCoordLocation)
+<div class="switch-container">
+    <span class="oi oi-reload" @onclick="changeDirection"></span>
+</div>
+
+<div id="trips">
+    @foreach (var item in trips)
     {
-    <li class="@((item.StopLocation.mainMastExtId == selectedStationOfOrigin) ? "selected" : "")"
-    @onclick="@(() => changeOrigin(item.StopLocation.mainMastExtId))">@item.StopLocation.name
-    (@item.StopLocation.dist m)</li>
+        <div class="trip">
+            <div class="prefix">@getRoute(item)</div>
+            <div class="minutes">@getFriendlyTimeSpanAsString(item.Legs.First().Origin.Time, DateTime.Now)</div>
+            <div class="meta">
+                <div class="line">@(string.Join(", ", item.Legs.Where(l => !string.IsNullOrEmpty(l.Line)).Select(l =>
+                l.Line)))
+                </div>
+                <div class="origin">
+                    @item.Legs.First().Origin.Time.ToShortTimeString()<br />
+                    @item.Legs.First().Origin.Name
+                </div>
+                <div class="destination">
+                    @item.Legs.Last().Destination.Time.ToShortTimeString()<br />
+                    @item.Legs.Last().Destination.Name
+                </div>
+            </div>
+        </div>
     }
-    </ul> *@
+</div>
+<div id="stops">
+    <div class="from">
+        <span>From</span>
+        <ul>
+            @foreach (var item in homeLocation.NearbyStops)
+            {
+                <li class="@((item.MainMastExtId == homeStation) ? "selected" : "")" @onclick="@(() => changeOrigin(item.MainMastExtId))">@item.Name</li>
+            }
+        </ul>
+    </div>
+
+    <div class="to">
+        @foreach (var item in nearbyStopLocations)
+        {
+            <span>@item.Name</span>
+            <ul>
+                @foreach (var stop in item.NearbyStops)
+                {
+                    <li class="@((stop.MainMastExtId == destinationStation) ? "selected" : "")" @onclick="@(() => changeDestination(stop.MainMastExtId))">@stop.Name</li>
+                }
+            </ul>
+        }
+    </div>
+</div>
+
 
 @code {
     private IEnumerable<Trip> trips = new List<Trip>();
-    private NearbyStopsRoot nearbyStops = new();
-    private string selectedStationOfOrigin = "4014";
+    private List<NearbyStopLocation> nearbyStopLocations = new List<NearbyStopLocation>();
+    private NearbyStopLocation homeLocation = new();
+
+    private string homeStation = "4014";
+    private string destinationStation = "9192";
+    private bool isLoading = true;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -43,28 +79,58 @@
         {
             await setTravelPlan();
             await setNearbyStops();
+
+            homeLocation = new NearbyStopLocation
+            {
+                Name = Places.Home.Name,
+                NearbyStops = await _travelPlanner.GetNearbyStops(Places.Home.Longitude, Places.Home.Latitude).ToListAsync()
+            };
         }
+
+        isLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void changeDirection()
+    {
+        isLoading = true;
+        await InvokeAsync(StateHasChanged);
+
+        var h = homeStation;
+        homeStation = destinationStation;
+        destinationStation = h;
+
+        await setTravelPlan();
+
+        isLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private string getRoute(Trip trip)
+    {
+        if (trip.Legs.Count() == 1)
+        {
+            return string.Empty;
+        }
+
+        var stops = string.Join(", ", trip.Legs.Skip(1).Where(t => !string.IsNullOrWhiteSpace(t.Line)).Select(t =>
+        t.Origin.Name));
+
+        return $"Via {stops}";
+    }
+
+    private async void changeDestination(string newDestination)
+    {
+        destinationStation = newDestination;
+        await setTravelPlan();
+        await InvokeAsync(StateHasChanged);
     }
 
     private async void changeOrigin(string newOrigin)
     {
-        selectedStationOfOrigin = newOrigin;
+        homeStation = newOrigin;
         await setTravelPlan();
-    }
-
-    private string getFriendlyString(TripDto trip)
-    {
-        var departureTime = extractDepartureTime(trip);
-        var destinationTime = extractDestinationTime(trip);
-
-        @* return $@"{trip.LegList.Leg.First().Product.name} is leaving
-            {trip.LegList.Leg.First().Origin.name} in
-            {getFriendlyTimedivAsString(departureTime, DateTime.Now)}. The travel time to
-            {trip.LegList.Leg.Last().Destination.name} is
-            {getFriendlyTimedivAsString(destinationTime, departureTime)}. By then, the time is
-            {destinationTime.ToShortTimeString()}"; *@
-
-        return "";
+        await InvokeAsync(StateHasChanged);
     }
 
     private DateTime extractDepartureTime(TripDto trip)
@@ -79,31 +145,27 @@
         return DateTime.Now;
     }
 
-    private DateTime extractDestinationTime(TripDto trip)
-    {
-        return DateTime.Parse($"{trip.LegList.Leg.Last().Destination.date} {trip.LegList.Leg.Last().Destination.time}");
-    }
-
-    private string getFriendlyTimeSpanAsString(DateTime start, DateTime end)
+    private int getFriendlyTimeSpanAsString(DateTime start, DateTime end)
     {
         var minutes = start.Subtract(end);
-        if (minutes.TotalMinutes > 60)
-        {
-            return $"{(int)minutes.TotalHours}:{minutes.Minutes}";
-        }
 
-        return $"{minutes.Minutes}";
+        return (int)minutes.Minutes;
     }
 
     private async Task setNearbyStops()
     {
-        nearbyStops = await _travelPlanner.GetNearbyStops();
-        await InvokeAsync(StateHasChanged);
+        foreach (var item in Places.PlacesOfInterest)
+        {
+            nearbyStopLocations.Add(new NearbyStopLocation
+            {
+                Name = item.Name,
+                NearbyStops = await _travelPlanner.GetNearbyStops(item.Longitude, item.Latitude).ToListAsync()
+            });
+        }
     }
 
     private async Task setTravelPlan()
     {
-        trips = await _travelPlanner.GetTravelPlan(selectedStationOfOrigin);
-        await InvokeAsync(StateHasChanged);
+        trips = await _travelPlanner.GetTravelPlan(homeStation, destinationStation);
     }
 }

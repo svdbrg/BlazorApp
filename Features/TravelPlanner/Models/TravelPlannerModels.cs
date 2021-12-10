@@ -3,13 +3,13 @@ namespace BlazorApp.Features.TravelPlanner.Models;
 public class Trip
 {
     public IEnumerable<Leg> Legs { get; set; } = new List<Leg>();
-    public string Line { get; set; } = string.Empty;
 }
 
 public class Leg
 {
     public Stop Origin { get; set; } = new();
     public Stop Destination { get; set; } = new();
+    public string Line { get; set; } = string.Empty;
 }
 
 public class Stop

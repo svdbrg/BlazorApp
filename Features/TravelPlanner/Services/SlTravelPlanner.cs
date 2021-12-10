@@ -16,25 +16,31 @@ public class SlTravelPlanner : ITravelPlanner
         _mapper = mapper ?? throw new NullReferenceException(nameof(mapper));
     }
 
-    public async Task<NearbyStopsRoot> GetNearbyStops()
+    public async IAsyncEnumerable<NearbyStop> GetNearbyStops(double lon, double lat)
     {
         using (var client = _httpClientFactory.CreateClient("TravelPlanner"))
         {
-            var response = await client.GetAsync($"/api2/nearbystopsv2.json?key=195841a58631431ebec7649bc57d98aa&originCoordLat=59.32315313171132&originCoordLong=18.20933732771809&maxNo=10&r=500&products=8");
+            var response = await client.GetAsync($"/api2/nearbystopsv2.json?key=195841a58631431ebec7649bc57d98aa&originCoordLat={lat.ToString().Replace(",",".")}&originCoordLong={lon.ToString().Replace(",",".")}&maxNo=10&r=500&products=10");
             var data = JsonSerializer.Deserialize<NearbyStopsRoot>(await response.Content.ReadAsStreamAsync());
 
-            return data ?? new();
+            foreach (var item in data?.stopLocationOrCoordLocation?.DistinctBy(s => s.StopLocation.mainMastExtId) ?? new List<StopLocationOrCoordLocationDto>())
+            {
+                yield return _mapper.Map<NearbyStop>(item.StopLocation);
+            }
         }
     }
 
-    public async Task<IEnumerable<Trip>> GetTravelPlan(string selectedStationOfOrigin)
+    public async Task<IEnumerable<Trip>> GetTravelPlan(string selectedStationOfOrigin, string workStation)
     {
         using (var client = _httpClientFactory.CreateClient("TravelPlanner"))
         {
-            var response = await client.GetAsync($"/api2/TravelplannerV3_1/trip.json?key=73b55d6e552c482cb7785110d34c22e8&destId=9192&originId={selectedStationOfOrigin}");
+            var response = await client.GetAsync($"/api2/TravelplannerV3_1/trip.json?key=73b55d6e552c482cb7785110d34c22e8&destId={workStation}&originId={selectedStationOfOrigin}");
             var data = JsonSerializer.Deserialize<TravelPlannerRootDto>(await response.Content.ReadAsStreamAsync());
+            var trips = data?.Trip?.Select(_mapper.Map<Trip>) ?? new List<Trip>();
 
-            return data?.Trip?.Select(_mapper.Map<Trip>) ?? new List<Trip>();
+            return trips.Where(t =>
+                t.Legs.First().Origin.Time >= DateTime.Now &&
+                t.Legs.First().Origin.Time < DateTime.Now.AddHours(1));
         }
     }
 }
