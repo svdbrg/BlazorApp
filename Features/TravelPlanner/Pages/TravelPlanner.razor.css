@@ -16,7 +16,9 @@ div.trip {
     position: relative;
     margin-right: 20px;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px #333 ;
+    box-shadow: 0px 0px 10px #333;
+    overflow: hidden;
+    height: 190px;
 }
 
 div.prefix {
@@ -24,19 +26,26 @@ div.prefix {
     padding-left: 5px;
     padding-top: 5px;
     height: 23px;
+    z-index: 10;
+    position: relative;
 }
 
 div.minutes {
-    font-size: 150px;
+    font-size: 300px;
+    position: absolute;
+    left: 0px;
     line-height: 140px;
-    text-align: center;
-    color: orange;
+    color: lightsalmon;
+    letter-spacing: -40pt;
 }
 
 div.meta {
     padding-top: 10px;
     font-size: 12px;
-    color: #ccc;
+    bottom: 0px;
+    z-index: 10;
+    position: absolute;
+    width: 100%;
 }
 
 div.origin, div.destination {
