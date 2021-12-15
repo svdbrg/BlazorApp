@@ -13,7 +13,11 @@
 }
 
 <div class="switch-container">
-    <span class="oi oi-reload" @onclick="changeDirection"></span>
+    <span @onclick="changeDirection"><svg width="24px" height="24px" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M7.72 21.78a.75.75 0 001.06-1.06L5.56 17.5h14.69a.75.75 0 000-1.5H5.56l3.22-3.22a.75.75 0 10-1.06-1.06l-4.5 4.5a.75.75 0 000 1.06l4.5 4.5zm8.56-9.5a.75.75 0 11-1.06-1.06L18.44 8H3.75a.75.75 0 010-1.5h14.69l-3.22-3.22a.75.75 0 011.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5z" />
+        </svg></span>
 </div>
 
 <div id="trips">
@@ -40,11 +44,12 @@
 </div>
 <div id="stops">
     <div class="from">
-        <span>From</span>
+        <span>From Solstigen 49</span>
         <ul>
             @foreach (var item in homeLocation.NearbyStops)
             {
-                <li class="@((item.MainMastExtId == homeStation) ? "selected" : "")" @onclick="@(() => changeOrigin(item.MainMastExtId))">@item.Name</li>
+                <li class="@((item.MainMastExtId == homeStation) ? "selected" : "")"
+                @onclick="@(() => changeOrigin(item.MainMastExtId))">@item.Name</li>
             }
         </ul>
     </div>
@@ -56,7 +61,8 @@
             <ul>
                 @foreach (var stop in item.NearbyStops)
                 {
-                    <li class="@((stop.MainMastExtId == destinationStation) ? "selected" : "")" @onclick="@(() => changeDestination(stop.MainMastExtId))">@stop.Name</li>
+                    <li class="@((stop.MainMastExtId == destinationStation) ? "selected" : "")"
+                @onclick="@(() => changeDestination(stop.MainMastExtId))">@stop.Name</li>
                 }
             </ul>
         }
@@ -85,25 +91,21 @@
                 Name = Places.Home.Name,
                 NearbyStops = await _travelPlanner.GetNearbyStops(Places.Home.Longitude, Places.Home.Latitude).ToListAsync()
             };
-        }
 
-        isLoading = false;
-        await InvokeAsync(StateHasChanged);
+            await toggleLoading();
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     private async void changeDirection()
     {
-        isLoading = true;
-        await InvokeAsync(StateHasChanged);
+        await toggleLoading();
 
-        var h = homeStation;
-        homeStation = destinationStation;
-        destinationStation = h;
+        (homeStation, destinationStation) = (destinationStation, homeStation);
 
         await setTravelPlan();
 
-        isLoading = false;
-        await InvokeAsync(StateHasChanged);
+        await toggleLoading();
     }
 
     private string getRoute(Trip trip)
@@ -133,18 +135,6 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    private DateTime extractDepartureTime(TripDto trip)
-    {
-        if (!string.IsNullOrWhiteSpace(trip.LegList.Leg.First().Origin.rtDate) &&
-        !string.IsNullOrWhiteSpace(trip.LegList.Leg.First().Origin.rtTime))
-        {
-            return DateTime.Parse($"{trip.LegList.Leg.First().Origin.date} {trip.LegList.Leg.First().Origin.time}");
-
-        }
-
-        return DateTime.Now;
-    }
-
     private int getFriendlyTimeSpanAsString(DateTime start, DateTime end)
     {
         var minutes = start.Subtract(end);
@@ -167,5 +157,11 @@
     private async Task setTravelPlan()
     {
         trips = await _travelPlanner.GetTravelPlan(homeStation, destinationStation);
+    }
+
+    private async Task toggleLoading()
+    {
+        isLoading = !isLoading;
+        await InvokeAsync(StateHasChanged);
     }
 }
