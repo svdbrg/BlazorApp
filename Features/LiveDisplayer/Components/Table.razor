@@ -16,8 +16,11 @@
         <tbody>
             @foreach (var team in footballTable)
             {
-                <tr id="@team.ShortName" class="@team.CssClass @HelperMethods.GetCssClassForCurrentStatus(team.Status)"
-                @onclick="(() => ShowUpcomingFixturesForTeam(team.Id, team.Name))">
+                <tr 
+                    @onmouseover="@(() => setCurrentlyPlayingDelegate!(team.ShortName))"
+                    @onmouseout="@(() => removeCurrentlyPlayingDelegate!(team.ShortName))"
+                    id="@team.ShortName" class="@team.CssClass @HelperMethods.GetCssClassForCurrentStatus(team.Status)"
+                    @onclick="(() => ShowUpcomingFixturesForTeam(team.Id, team.Name))">
                     <td>@team.Position</td>
                     <td>
                         <div>
@@ -36,6 +39,9 @@
 @code {
     [Parameter] public IEnumerable<Team> footballTable { get; set; } = new List<Team>();
     [CascadingParameter] public IModalService? Modal { get; set; }
+    [Parameter] public Action<string>? setCurrentlyPlayingDelegate { get; set; }
+
+    [Parameter] public Action<string>? removeCurrentlyPlayingDelegate { get; set; }
 
     public async void setCurrentlyPlaying(string home, string away)
     {
