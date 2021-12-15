@@ -14,6 +14,7 @@ public class FixtureMapperProfile : Profile
             .ForMember(s => s.AwayTeamShortName, opt => opt.MapFrom(d => d.teams[1].team.club.abbr))
             .ForMember(s => s.AwayTeam, opt => opt.MapFrom(d => d.teams[1].team.shortName))
             .ForMember(s => s.Status, opt => opt.MapFrom(d => d.status))
+            .ForMember(s => s.Phase, opt => opt.MapFrom(d => d.phase))
             .ForMember(s => s.Result, opt => opt.MapFrom(d => $"{d.teams[0].score}-{d.teams[1].score}"))
             .ForMember(s => s.DateAndTime, opt => opt.MapFrom((src, dest) =>
             {

@@ -1,5 +1,6 @@
 @using Data
 @using Services
+@inject IJSRuntime _js
 
 @foreach (var day in days)
 {
@@ -7,12 +8,14 @@
         <div class="day">@day.Date</div>
         @foreach (var fixture in day.Fixtures)
         {
-            <div class="fixture" @onmouseout="@(() => removeCurrentlyPlayingDelegate!(fixture.HomeTeamShortName, fixture.AwayTeamShortName))" @onmouseover="@(() => setCurrentlyPlayingDelegate!(fixture.HomeTeamShortName, fixture.AwayTeamShortName))">
-                <div class="home @HelperMethods.GetCssClassForCurrentStatus(fixture.Status)">@fixture.HomeTeamShortName</div>
-                <div class="result @HelperMethods.GetCssClassForCurrentStatus(fixture.Status)">
-                    @(fixture.Status == "U" ? fixture.DateAndTime.ToShortTimeString() : fixture.Result)
+            <div class="fixture @HelperMethods.GetCssClassForCurrentStatus(fixture.Status, fixture.Phase)"
+        @onmouseout="@(() => removeCurrentlyPlayingDelegate!(fixture.HomeTeamShortName, fixture.AwayTeamShortName))"
+        @onmouseover="@(() => setCurrentlyPlayingDelegate!(fixture.HomeTeamShortName, fixture.AwayTeamShortName))">
+                <div id="f-@fixture.HomeTeamShortName" class="home">@fixture.HomeTeamShortName</div>
+                <div class="result">
+                    @(getTimeOrStatus(fixture))
                 </div>
-                <div class="away @HelperMethods.GetCssClassForCurrentStatus(fixture.Status)">@fixture.AwayTeamShortName</div>
+                <div id="f-@fixture.AwayTeamShortName" class="away">@fixture.AwayTeamShortName</div>
             </div>
         }
 
@@ -26,4 +29,24 @@
     [Parameter] public Action<string, string>? setCurrentlyPlayingDelegate { get; set; }
 
     [Parameter] public Action<string, string>? removeCurrentlyPlayingDelegate { get; set; }
+
+    private string getTimeOrStatus(Fixture fixture)
+    {
+        if (fixture.Phase == "P")
+        {
+            return "N/A";
+        }
+
+        return fixture.Status == "U" ? fixture.DateAndTime.ToShortTimeString() : fixture.Result;
+    }
+
+    public async void setActiveTeam(string team)
+    {
+        await _js.InvokeVoidAsync($"Fixture.setClass", team);
+    }
+
+    public async void removeActiveTeam(string team)
+    {
+        await _js.InvokeVoidAsync($"Fixture.removeClass", team);
+    }
 }

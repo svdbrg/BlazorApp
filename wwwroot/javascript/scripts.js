@@ -9,4 +9,13 @@
             document.getElementById(awayTeam).classList.remove('mouse-over');
         }
     };
+
+    window.Fixture = {
+        setClass: (team) => {
+            document.getElementById('f-' + team).parentElement.classList.add('mouse-over');
+        },
+        removeClass: (team) => {
+            document.getElementById('f-' + team).parentElement.classList.remove('mouse-over');
+        }
+    };
 })();
