@@ -24,7 +24,6 @@ public static class LiveDisplayerConfigurator
         
         services.AddHttpClient("TravelPlanner", c =>
         {
-            // c.DefaultRequestHeaders.Add("Origin", "https://www.premierleague.com");
             c.BaseAddress = new Uri("https://api.sl.se/");
         });
 

@@ -24,8 +24,8 @@
     @foreach (var item in trips)
     {
         <div class="trip">
-            <div class="prefix">@getRoute(item)</div>
-            <div class="minutes">@getFriendlyTimeSpanAsString(item.Legs.First().Origin.Time, DateTime.Now)</div>
+            <div class="prefix">@getLayoverStops(item)</div>
+            <div class="minutes">@((int)(item.Legs.First().Origin.Time.Subtract(DateTime.Now).Minutes))</div>
             <div class="meta">
                 <div class="line">@(string.Join(", ", item.Legs.Where(l => !string.IsNullOrEmpty(l.Line)).Select(l =>
                 l.Line)))
@@ -45,11 +45,11 @@
 <div id="stops">
     <div class="from">
         <span>From Solstigen 49</span>
-        <ul>
+        <ul class="list-group">
             @foreach (var item in homeLocation.NearbyStops)
             {
-                <li class="@((item.MainMastExtId == homeStation) ? "selected" : "")"
-                @onclick="@(() => changeOrigin(item.MainMastExtId))">@item.Name</li>
+                <li class="list-group-item @((item.MainMastExtId == homeStation) ? "active" : "")"
+                @onclick="@(() => setOrigin(item.MainMastExtId))">@item.Name</li>
             }
         </ul>
     </div>
@@ -58,11 +58,11 @@
         @foreach (var item in nearbyStopLocations)
         {
             <span>@item.Name</span>
-            <ul>
+            <ul class="list-group">
                 @foreach (var stop in item.NearbyStops)
                 {
-                    <li class="@((stop.MainMastExtId == destinationStation) ? "selected" : "")"
-                @onclick="@(() => changeDestination(stop.MainMastExtId))">@stop.Name</li>
+                    <li class="list-group-item @((stop.MainMastExtId == destinationStation) ? "active" : "")"
+                @onclick="@(() => setDestination(stop.MainMastExtId))">@stop.Name</li>
                 }
             </ul>
         }
@@ -75,8 +75,8 @@
     private List<NearbyStopLocation> nearbyStopLocations = new List<NearbyStopLocation>();
     private NearbyStopLocation homeLocation = new();
 
-    private string homeStation = "4014";
-    private string destinationStation = "9192";
+    private string homeStation = "300104014";
+    private string destinationStation = "300109192";
     private bool isLoading = true;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -108,7 +108,7 @@
         await toggleLoading();
     }
 
-    private string getRoute(Trip trip)
+    private string getLayoverStops(Trip trip)
     {
         if (trip.Legs.Count() == 1)
         {
@@ -121,25 +121,18 @@
         return $"Via {stops}";
     }
 
-    private async void changeDestination(string newDestination)
+    private async void setDestination(string newDestination)
     {
         destinationStation = newDestination;
         await setTravelPlan();
         await InvokeAsync(StateHasChanged);
     }
 
-    private async void changeOrigin(string newOrigin)
+    private async void setOrigin(string newOrigin)
     {
         homeStation = newOrigin;
         await setTravelPlan();
         await InvokeAsync(StateHasChanged);
-    }
-
-    private int getFriendlyTimeSpanAsString(DateTime start, DateTime end)
-    {
-        var minutes = start.Subtract(end);
-
-        return (int)minutes.Minutes;
     }
 
     private async Task setNearbyStops()
@@ -152,6 +145,15 @@
                 NearbyStops = await _travelPlanner.GetNearbyStops(item.Longitude, item.Latitude).ToListAsync()
             });
         }
+
+        nearbyStopLocations.Add(new NearbyStopLocation
+        {
+            Name = "Other",
+            NearbyStops = new List<NearbyStop>
+            {
+                new() { Name = "Slussen", MainMastExtId="300109192" }
+            }
+        });
     }
 
     private async Task setTravelPlan()
