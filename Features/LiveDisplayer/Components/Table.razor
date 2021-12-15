@@ -3,7 +3,7 @@
 @using BlazorApp.Features.Shared.Models
 
 @inject IJSRuntime _js
-@inject AppState appState
+@inject AppState _appState
 
 <div class="table-wrapper">
     <table>
@@ -70,12 +70,12 @@
 
     protected override void OnInitialized()
     {
-        appState.OnChange += OnAppStateChange;
+        _appState.OnChange += OnAppStateChange;
     }
 
     public void Dispose()
     {
-        appState.OnChange -= OnAppStateChange;
+        _appState.OnChange -= OnAppStateChange;
     }
 
     private async void OnAppStateChange()

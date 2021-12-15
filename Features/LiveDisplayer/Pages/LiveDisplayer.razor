@@ -6,7 +6,7 @@
 @using BlazorApp.Features.LiveDisplayer.Services
 
 @inject IFootballDataService _dataFetcher
-@inject AppState appState
+@inject AppState _appState
 
 @implements IDisposable
 
@@ -44,7 +44,7 @@
     {
         if (firstRender)
         {
-            appState.ToggleAutoRefresh(false);
+            _appState.ToggleAutoRefresh(false);
             await GetData();
         }
     }
@@ -68,19 +68,19 @@
 
     protected override void OnInitialized()
     {
-        appState.OnChange += OnAppStateChange;
+        _appState.OnChange += OnAppStateChange;
     }
 
     public void Dispose()
     {
-        appState.OnChange -= OnAppStateChange;
+        _appState.OnChange -= OnAppStateChange;
     }
 
     private async void OnAppStateChange()
     {
         StateHasChanged();
 
-        while (appState.AutoRefresh)
+        while (_appState.AutoRefresh)
         {
             await Task.Delay(10000);
             await GetData();

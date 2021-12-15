@@ -3,11 +3,8 @@
 @using BlazorApp.Features.Shared.Services.Abstractions
 
 @inject IOptions<List<FeatureInformation>> _options;
-@inject AppState appState
 @inject ILocalStorage _localStorage
 @inject NavigationManager _navigationManager
-
-@implements IDisposable
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
@@ -53,16 +50,6 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
-    }
-
-    protected override void OnInitialized()
-    {
-        appState.OnChange += StateHasChanged;
-    }
-
-    public void Dispose()
-    {
-        appState.OnChange -= StateHasChanged;
     }
 
     private async void logOut()
