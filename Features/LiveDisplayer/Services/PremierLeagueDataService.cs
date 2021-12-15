@@ -61,7 +61,7 @@ public class PremierLeagueDataService : IFootballDataService
         }
     }
 
-    public IEnumerable<Team> EnrichTableWithStatus(IEnumerable<Team> teams, IEnumerable<Day> days, bool hideTeamsWithPlayedMatches)
+    public IEnumerable<Team> EnrichTableWithStatus(IEnumerable<Team> teams, IEnumerable<Day> days)
     {
         foreach (var team in teams)
         {
@@ -70,11 +70,6 @@ public class PremierLeagueDataService : IFootballDataService
             team.Status = allFixtures
                 ?.FirstOrDefault(f => f.AwayTeamShortName == team.ShortName || f.HomeTeamShortName == team.ShortName)
                 ?.Status ?? "N/A";
-
-            if (hideTeamsWithPlayedMatches && team.Status == "C")
-            {
-                continue;
-            }
 
             yield return team;
         }

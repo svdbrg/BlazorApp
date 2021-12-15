@@ -1,0 +1,131 @@
+@using BlazorApp.Features.Mortgager.Services.Abstractions
+@using BlazorApp.Features.Shared.Services.Abstractions
+@using BlazorApp.Features.Shared.Models
+
+@inject IDataService _dataService
+@inject ILocalStorage _localStorage
+@inject AppState _appState
+
+<table>
+    <tbody>
+        <tr>
+            <td colspan="2"><h4>Mortgage</h4></td>
+        </tr>
+        <tr>
+            <td>
+                Selected mortgage
+            </td>
+            <td>
+                <select class="form-select" @onchange="changeSelectedValue">
+                    <option value="Choose">-- Choose --</option>
+                    @foreach (var item in ExistingMortgages)
+                    {
+                        <option value="@item" selected="@(item == SelectedMortgage)">@item</option>
+                    }
+                    <option value="Other">Create new</option>
+                </select>
+                @if (SelectedMortgage == "Other")
+                {
+                    <input @bind="@newMortgage" type="text" class="form-control" id="mortgage-name" />
+                }
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><h4>Live Displayer</h4></td>
+        </tr>
+        <tr>
+            <td>
+                Live updates
+            </td>
+            <td>
+                <input type="checkbox" id="switch" checked="@(autoRefresh)" />
+                <label for="switch" @onclick="@changeAutoRefresh">
+                    Toggle
+                </label>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<div class="buttons">
+    <button @onclick="saveChanges" class="btn btn-primary">Save</button>
+    <button @onclick="ModalInstance.CancelAsync" class="btn btn-secondary">Cancel</button>
+</div>
+<div id="error-message">@errorMessage</div>
+
+@code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new();
+    private string SelectedMortgage { get; set; } = string.Empty;
+    private string newMortgage { get; set; } = string.Empty;
+    private string errorMessage { get; set; } = string.Empty;
+    List<string> ExistingMortgages { get; set; } = new();
+    private bool autoRefresh { get; set; }
+
+    protected override async void OnInitialized()
+    {
+        ExistingMortgages = await _dataService.GetAllMortgageDocuments();
+        SelectedMortgage = await _localStorage.GetStringAsync("documentSuffix");
+        autoRefresh = _appState.AutoRefresh;
+        StateHasChanged();
+    }
+
+    private async void saveChanges()
+    {
+        await saveMortgageSettings();
+        saveLiveDisplayerSettings();
+    }
+
+    private void saveLiveDisplayerSettings()
+    {
+        if (_appState.AutoRefresh != autoRefresh)
+        {
+            _appState.ToggleAutoRefresh();
+        }
+    }
+
+    private async Task saveMortgageSettings()
+    {
+        if (!canSelect())
+        {
+            errorMessage = "Please select a valid mortgage in the list";
+        }
+        else
+        {
+            if (SelectedMortgage == "Other")
+            {
+                SelectedMortgage = newMortgage;
+            }
+
+            await _localStorage.SaveStringAsync("documentSuffix", SelectedMortgage ?? (Guid.NewGuid().ToString()));
+
+            await InvokeAsync(StateHasChanged);
+            _appState.ChangeMortageSetting();
+
+            await ModalInstance.CloseAsync(ModalResult.Ok<string>(SelectedMortgage ?? string.Empty));
+        }
+    }
+
+    private void changeAutoRefresh()
+    {
+        autoRefresh = !autoRefresh;
+        StateHasChanged();
+    }
+
+    private bool canSelect()
+    {
+        if ((SelectedMortgage == "Other" && string.IsNullOrEmpty(newMortgage))
+        || SelectedMortgage == "Choose"
+        || string.IsNullOrWhiteSpace(SelectedMortgage))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private void changeSelectedValue(ChangeEventArgs e)
+    {
+        errorMessage = string.Empty;
+        SelectedMortgage = e?.Value?.ToString() ?? string.Empty;
+        StateHasChanged();
+    }
+}

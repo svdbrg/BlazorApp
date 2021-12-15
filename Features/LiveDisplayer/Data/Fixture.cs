@@ -14,5 +14,6 @@ public class Fixture
     public string AwayTeamShortName { get; set; } = string.Empty;
     public string Result { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
+    public string Phase { get; set; }= string.Empty;
     public DateTime DateAndTime { get; set; }
 }

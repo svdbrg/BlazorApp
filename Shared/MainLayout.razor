@@ -29,16 +29,6 @@
     private async void LocationChanged(object? sender, LocationChangedEventArgs e)
     {
         await IsAuthenticated();
-
-        if (_navigationManager.ToBaseRelativePath(_navigationManager.Uri).StartsWith("livedisplayer"))
-        {
-            appState.ToggleDisplayMode(true);
-        }
-        else
-        {
-            appState.ToggleAutoRefresh(false);
-            appState.ToggleDisplayMode(false);
-        }
     }
 
     private async Task IsAuthenticated()

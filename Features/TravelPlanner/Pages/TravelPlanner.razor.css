@@ -1,0 +1,90 @@
+li {
+    cursor: default;
+}
+
+div#stops {
+    clear: both;
+}
+
+div.trip {
+    width: 300px;
+    border: solid 1px #333;
+    color: #fff;
+    background-color: #666;
+    float: left;
+    margin-bottom: 20px;
+    position: relative;
+    margin-right: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px #333;
+    overflow: hidden;
+    height: 190px;
+}
+
+div.prefix {
+    font-size: 12px;
+    padding-left: 5px;
+    padding-top: 5px;
+    height: 23px;
+    z-index: 10;
+    position: relative;
+}
+
+div.minutes {
+    font-size: 300px;
+    position: absolute;
+    left: 0px;
+    line-height: 140px;
+    color: lightsalmon;
+    letter-spacing: -40pt;
+}
+
+div.meta {
+    padding-top: 10px;
+    font-size: 12px;
+    bottom: 0px;
+    z-index: 10;
+    position: absolute;
+    width: 100%;
+}
+
+div.origin, div.destination {
+    width: 50%;
+    float: left;
+    padding-left: 10px;
+    padding-right: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+div.destination {
+    text-align: right;
+    float: right;
+}
+
+div.line {
+    text-align: center;
+}
+
+div#stops {
+    max-width: 900px;
+}
+
+div#stops span {
+    font-weight: bold;
+}
+
+div.from, div.to {
+    width: 40%;
+    float: left;
+    margin-right: 20px;
+}
+
+
+@media only screen and (min-device-width: 320px) and (max-device-width: 800px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
+    div.trip {
+        width: 100%;
+        margin-right: 0;
+    }
+}

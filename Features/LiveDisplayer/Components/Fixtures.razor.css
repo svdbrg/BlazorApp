@@ -31,10 +31,12 @@
     color: #ccc;
 }
 
-@media (max-width: 1000px) {
-    .day-wrapper .day {
-        width: 100%;
-    }
+.mouse-over div {
+    background-color: chartreuse;
+}
+
+.fixture-postoned div.home, .fixture-postoned div.result, .fixture-postoned div.away {
+    text-decoration: line-through;
 }
 
 @media only screen 
