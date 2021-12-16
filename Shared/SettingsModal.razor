@@ -2,8 +2,11 @@
 @using BlazorApp.Features.Shared.Services.Abstractions
 @using BlazorApp.Features.Shared.Models
 @using Features.Shared.Services
+@using Features.TravelPlanner.Models
+@using Features.TravelPlanner.Services.Abstractions
 
 @inject IDataService _mortgageDataService
+@inject ITravelPlanner _travelPlannerService;
 @inject ILocalStorage _localStorage
 @inject AppState _appState
 @inject IJSRuntime _js
@@ -38,6 +41,10 @@
                 }
             </td>
         </tr>
+    </tbody>
+</table>
+<table>
+    <tbody>
         <tr>
             <td colspan="2">
                 <h4>Live Displayer</h4>
@@ -56,6 +63,36 @@
         </tr>
     </tbody>
 </table>
+<div id="travel-planner-settings">
+    <h4>Travel Planner</h4>
+    <div id="stops">
+        <div class="from">
+            <span>From Solstigen 49</span>
+            <ul class="list-group">
+                @foreach (var item in homeLocation.NearbyStops)
+                {
+                    <li class="list-group-item @((item.MainMastExtId == _appState.HomeStation) ? "active" : "")"
+                    @onclick="@(() => setOrigin(item.MainMastExtId))">@item.Name</li>
+                }
+            </ul>
+        </div>
+
+        <div class="to">
+            @foreach (var item in nearbyStopLocations)
+            {
+                <span>@item.Name</span>
+                <ul class="list-group">
+                    @foreach (var stop in item.NearbyStops)
+                    {
+                        <li class="list-group-item @((stop.MainMastExtId == _appState.DestinationStation) ? "active" : "")"
+                    @onclick="@(() => setDestination(stop.MainMastExtId))">@stop.Name</li>
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+</div>
+
 <div class="buttons">
     <button @onclick="saveChanges" class="btn btn-primary">Save</button>
     <button @onclick="ModalInstance.CancelAsync" class="btn btn-secondary">Cancel</button>
@@ -69,14 +106,17 @@
     private string errorMessage { get; set; } = string.Empty;
     List<string> ExistingMortgages { get; set; } = new();
     private bool autoRefresh { get; set; }
+    private List<NearbyStopLocation> nearbyStopLocations = new List<NearbyStopLocation>();
+    private NearbyStopLocation homeLocation = new();
 
     protected override async void OnInitialized()
     {
-        await loadData();
+        await loadMortgageData();
+        await loadTravelPlannerData();
         StateHasChanged();
     }
 
-    private async Task loadData()
+    private async Task loadMortgageData()
     {
         var encryptedMortgage = await _localStorage.GetStringAsync("documentSuffix");
 
@@ -86,10 +126,48 @@
         autoRefresh = _appState.AutoRefresh;
     }
 
+    private async Task loadTravelPlannerData()
+    {
+        foreach (var item in Places.PlacesOfInterest)
+        {
+            nearbyStopLocations.Add(new NearbyStopLocation
+            {
+                Name = item.Name,
+                NearbyStops = await _travelPlannerService.GetNearbyStops(item.Longitude, item.Latitude).ToListAsync()
+            });
+        }
+
+        nearbyStopLocations.Add(new NearbyStopLocation
+        {
+            Name = "Other",
+            NearbyStops = new List<NearbyStop>
+{
+new() { Name = "Slussen", MainMastExtId="300109192" }
+}
+        });
+
+        homeLocation = new NearbyStopLocation
+        {
+            Name = Places.Home.Name,
+            NearbyStops = await _travelPlannerService.GetNearbyStops(Places.Home.Longitude, Places.Home.Latitude).ToListAsync()
+        };
+    }
+
+    private void setOrigin(string newOrigin)
+    {
+        _appState.SetHomeStation(newOrigin);
+    }
+
+    private void setDestination(string newDestination)
+    {
+        _appState.SetDestination(newDestination);
+    }
+
     private async void saveChanges()
     {
         await saveMortgageSettings();
         saveLiveDisplayerSettings();
+        saveTravelPlannerSettings();
     }
 
     private void saveLiveDisplayerSettings()
@@ -123,6 +201,11 @@
         }
     }
 
+    private void saveTravelPlannerSettings()
+    {
+        
+    }
+
     private void changeAutoRefresh()
     {
         autoRefresh = !autoRefresh;
@@ -149,7 +232,7 @@
         }
 
         await _mortgageDataService.DeleteMortgageAsync(SelectedMortgage);
-        await loadData();
+        await loadMortgageData();
     }
 
     private void changeSelectedValue(ChangeEventArgs e)

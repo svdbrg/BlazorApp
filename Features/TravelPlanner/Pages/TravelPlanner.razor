@@ -2,8 +2,10 @@
 
 @using BlazorApp.Features.TravelPlanner.Services.Abstractions
 @using Models
+@using BlazorApp.Features.Shared.Models
 
 @inject ITravelPlanner _travelPlanner
+@inject AppState _appState
 
 <PageTitle>Travel Planner</PageTitle>
 
@@ -42,41 +44,12 @@
         </div>
     }
 </div>
-<div id="stops">
-    <div class="from">
-        <span>From Solstigen 49</span>
-        <ul class="list-group">
-            @foreach (var item in homeLocation.NearbyStops)
-            {
-                <li class="list-group-item @((item.MainMastExtId == homeStation) ? "active" : "")"
-                @onclick="@(() => setOrigin(item.MainMastExtId))">@item.Name</li>
-            }
-        </ul>
-    </div>
-
-    <div class="to">
-        @foreach (var item in nearbyStopLocations)
-        {
-            <span>@item.Name</span>
-            <ul class="list-group">
-                @foreach (var stop in item.NearbyStops)
-                {
-                    <li class="list-group-item @((stop.MainMastExtId == destinationStation) ? "active" : "")"
-                @onclick="@(() => setDestination(stop.MainMastExtId))">@stop.Name</li>
-                }
-            </ul>
-        }
-    </div>
-</div>
 
 
 @code {
     private IEnumerable<Trip> trips = new List<Trip>();
     private List<NearbyStopLocation> nearbyStopLocations = new List<NearbyStopLocation>();
     private NearbyStopLocation homeLocation = new();
-
-    private string homeStation = "300104014";
-    private string destinationStation = "300109192";
     private bool isLoading = true;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -84,13 +57,6 @@
         if (firstRender)
         {
             await setTravelPlan();
-            await setNearbyStops();
-
-            homeLocation = new NearbyStopLocation
-            {
-                Name = Places.Home.Name,
-                NearbyStops = await _travelPlanner.GetNearbyStops(Places.Home.Longitude, Places.Home.Latitude).ToListAsync()
-            };
 
             await toggleLoading();
             await InvokeAsync(StateHasChanged);
@@ -99,13 +65,13 @@
 
     private async void changeDirection()
     {
-        await toggleLoading();
+        @* await toggleLoading();
 
         (homeStation, destinationStation) = (destinationStation, homeStation);
 
         await setTravelPlan();
 
-        await toggleLoading();
+        await toggleLoading(); *@
     }
 
     private string getLayoverStops(Trip trip)
@@ -121,44 +87,9 @@
         return $"Via {stops}";
     }
 
-    private async void setDestination(string newDestination)
-    {
-        destinationStation = newDestination;
-        await setTravelPlan();
-        await InvokeAsync(StateHasChanged);
-    }
-
-    private async void setOrigin(string newOrigin)
-    {
-        homeStation = newOrigin;
-        await setTravelPlan();
-        await InvokeAsync(StateHasChanged);
-    }
-
-    private async Task setNearbyStops()
-    {
-        foreach (var item in Places.PlacesOfInterest)
-        {
-            nearbyStopLocations.Add(new NearbyStopLocation
-            {
-                Name = item.Name,
-                NearbyStops = await _travelPlanner.GetNearbyStops(item.Longitude, item.Latitude).ToListAsync()
-            });
-        }
-
-        nearbyStopLocations.Add(new NearbyStopLocation
-        {
-            Name = "Other",
-            NearbyStops = new List<NearbyStop>
-            {
-                new() { Name = "Slussen", MainMastExtId="300109192" }
-            }
-        });
-    }
-
     private async Task setTravelPlan()
     {
-        trips = await _travelPlanner.GetTravelPlan(homeStation, destinationStation);
+        trips = await _travelPlanner.GetTravelPlan(_appState.HomeStation, _appState.DestinationStation);
     }
 
     private async Task toggleLoading()
