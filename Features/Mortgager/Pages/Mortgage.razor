@@ -55,6 +55,7 @@
         try
         {
             mortgage = await _dataService.GetSavedDataAsync() ?? new();
+            canEdit = true;
         }
         catch (System.Exception ex)
         {

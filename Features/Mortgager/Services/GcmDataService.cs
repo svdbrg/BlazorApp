@@ -1,6 +1,7 @@
 using AutoMapper;
 using BlazorApp.Features.Mortgager.Data;
 using BlazorApp.Features.Mortgager.Services.Abstractions;
+using BlazorApp.Features.Shared.Services;
 using BlazorApp.Features.Shared.Services.Abstractions;
 using Google.Cloud.Firestore;
 
@@ -21,13 +22,13 @@ public class GcmDataService : IDataService
 
     public async Task<MortgageItem?> GetSavedDataAsync()
     {
-        var documentSuffix = await _localStorage.GetStringAsync("documentSuffix");
+        var encryptedDocumentSuffix = await _localStorage.GetStringAsync("documentSuffix");
+        var documentSuffix = HelperMethods.DecryptString(encryptedDocumentSuffix, "documentSuffix45");
 
         if (string.IsNullOrWhiteSpace(documentSuffix))
         {
             _logger.LogInformation($"Did not find documentSuffix in local storage");
-
-            return null;
+            throw new FileNotFoundException("Did not find documentSuffix in local storage");
         }
 
         _logger.LogInformation($"Found store suffix: {documentSuffix}");
@@ -49,17 +50,18 @@ public class GcmDataService : IDataService
 
         _logger.LogWarning("Call to Firestore failed when getting data");
 
-        return null;
+        throw new FileNotFoundException("Call to Firestore failed when getting data");
     }
 
     public async Task<bool> SaveDataAsync(MortgageItem item)
     {
-        var documentSuffix = await _localStorage.GetStringAsync("documentSuffix");
+        var encryptedDocumentSuffix = await _localStorage.GetStringAsync("documentSuffix");
+        var documentSuffix = HelperMethods.DecryptString(encryptedDocumentSuffix, "documentSuffix45");
 
         if (string.IsNullOrWhiteSpace(documentSuffix))
         {
             _logger.LogInformation($"Did not find documentSuffix in local storage");
-            
+
             return false;
         }
 
@@ -81,5 +83,12 @@ public class GcmDataService : IDataService
         var db = FirestoreDb.Create("mortgager");
         var collection = db.Collection("mortgages");
         return await collection.ListDocumentsAsync().Select(d => d.Id.Replace("mortgage-", "")).ToListAsync();
+    }
+
+    public async Task DeleteMortgageAsync(string suffix)
+    {
+        var db = FirestoreDb.Create("mortgager");
+        var document = db.Collection("mortgages").Document($"mortgage-{suffix}");
+        await document.DeleteAsync();
     }
 }

@@ -1,19 +1,23 @@
 @using BlazorApp.Features.Mortgager.Services.Abstractions
 @using BlazorApp.Features.Shared.Services.Abstractions
 @using BlazorApp.Features.Shared.Models
+@using Features.Shared.Services
 
-@inject IDataService _dataService
+@inject IDataService _mortgageDataService
 @inject ILocalStorage _localStorage
 @inject AppState _appState
+@inject IJSRuntime _js
 
 <table>
     <tbody>
         <tr>
-            <td colspan="2"><h4>Mortgage</h4></td>
+            <td colspan="2">
+                <h4>Mortgage</h4>
+            </td>
         </tr>
         <tr>
             <td>
-                Selected mortgage
+                Mortgages
             </td>
             <td>
                 <select class="form-select" @onchange="changeSelectedValue">
@@ -24,6 +28,10 @@
                     }
                     <option value="Other">Create new</option>
                 </select>
+                @if (SelectedMortgage != "Other" && SelectedMortgage != "Choose")
+                {
+                    <span @onclick="deleteMortgage" class="delete-mortgage">Delete mortgage</span>
+                }
                 @if (SelectedMortgage == "Other")
                 {
                     <input @bind="@newMortgage" type="text" class="form-control" id="mortgage-name" />
@@ -31,7 +39,9 @@
             </td>
         </tr>
         <tr>
-            <td colspan="2"><h4>Live Displayer</h4></td>
+            <td colspan="2">
+                <h4>Live Displayer</h4>
+            </td>
         </tr>
         <tr>
             <td>
@@ -62,10 +72,18 @@
 
     protected override async void OnInitialized()
     {
-        ExistingMortgages = await _dataService.GetAllMortgageDocuments();
-        SelectedMortgage = await _localStorage.GetStringAsync("documentSuffix");
-        autoRefresh = _appState.AutoRefresh;
+        await loadData();
         StateHasChanged();
+    }
+
+    private async Task loadData()
+    {
+        var encryptedMortgage = await _localStorage.GetStringAsync("documentSuffix");
+
+        ExistingMortgages = await _mortgageDataService.GetAllMortgageDocuments();
+        SelectedMortgage = string.IsNullOrWhiteSpace(encryptedMortgage) ? "" : HelperMethods.DecryptString(encryptedMortgage,
+        "documentSuffix45");
+        autoRefresh = _appState.AutoRefresh;
     }
 
     private async void saveChanges()
@@ -95,7 +113,8 @@
                 SelectedMortgage = newMortgage;
             }
 
-            await _localStorage.SaveStringAsync("documentSuffix", SelectedMortgage ?? (Guid.NewGuid().ToString()));
+            var encryptedMortgage = HelperMethods.EncryptString(SelectedMortgage, "documentSuffix45");
+            await _localStorage.SaveStringAsync("documentSuffix", encryptedMortgage ?? (Guid.NewGuid().ToString()));
 
             await InvokeAsync(StateHasChanged);
             _appState.ChangeMortageSetting();
@@ -120,6 +139,17 @@
         }
 
         return true;
+    }
+
+    private async Task deleteMortgage()
+    {
+        if (!await _js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete the mortgage '{SelectedMortgage}'?"))
+        {
+            return;
+        }
+
+        await _mortgageDataService.DeleteMortgageAsync(SelectedMortgage);
+        await loadData();
     }
 
     private void changeSelectedValue(ChangeEventArgs e)

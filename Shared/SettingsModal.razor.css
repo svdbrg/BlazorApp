@@ -2,6 +2,11 @@ table {
     min-width: 600px;
 }
 
+span.delete-mortgage {
+    float: right;
+    cursor: default;
+}
+
 input[type=checkbox] {
     height: 0;
     width: 0;

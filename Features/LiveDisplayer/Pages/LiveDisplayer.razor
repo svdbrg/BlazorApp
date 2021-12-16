@@ -18,19 +18,12 @@
 }
 
 <div id="table">
-    <Table 
-        footballTable="table" 
-        @ref="plTable"
-        setCurrentlyPlayingDelegate="@((t) => fixtures?.setActiveTeam(t))"
-        removeCurrentlyPlayingDelegate="@((t) => fixtures?.removeActiveTeam(t))"
-        />
+    <Table footballTable="table" @ref="plTable" setCurrentlyPlayingDelegate="@((t) => fixtures?.setActiveTeam(t))"
+        removeCurrentlyPlayingDelegate="@((t) => fixtures?.removeActiveTeam(t))" />
 </div>
 <div id="fixtures">
-    <Fixtures days="days"
-        @ref="fixtures"
-        setCurrentlyPlayingDelegate="@((h, a) => plTable?.setCurrentlyPlaying(h,a))"
-        removeCurrentlyPlayingDelegate="@((h, a) => plTable?.removeCurrentlyPlaying(h,a))"
-         />
+    <Fixtures days="days" @ref="fixtures" setCurrentlyPlayingDelegate="@((h, a) => plTable?.setCurrentlyPlaying(h,a))"
+        removeCurrentlyPlayingDelegate="@((h, a) => plTable?.removeCurrentlyPlaying(h,a))" />
 </div>
 
 @code {
@@ -53,11 +46,24 @@
     {
         table = await _dataFetcher.GetTableAsync();
         days.Clear();
+        Day dayWithPostponedGames = new();
 
         await foreach (var day in _dataFetcher.GetDaysAndFixturesAsync())
         {
+            if (string.IsNullOrEmpty(day.Date))
+            {
+                dayWithPostponedGames = day;
+                continue;
+            }
+
             days.Add(day);
             await InvokeAsync(StateHasChanged);
+        }
+
+        if (dayWithPostponedGames != default)
+        {
+            dayWithPostponedGames.Date = "Postponed";
+            days.Add(dayWithPostponedGames);
         }
 
         table = _dataFetcher.EnrichTableWithStatus(table, days);

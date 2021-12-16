@@ -68,4 +68,12 @@ tr.mouse-over {
     tbody td:nth-child(2) {
         max-width: 150px;
     }
+
+    thead th:first-child, tbody td:first-child {
+        text-align: left;
+    }
+
+    thead th:last-child, tbody td:last-child {
+        text-align: right;
+    }
 }
