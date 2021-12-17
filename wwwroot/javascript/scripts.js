@@ -12,10 +12,14 @@
 
     window.Fixture = {
         setClass: (team) => {
-            document.getElementById('f-' + team).parentElement.classList.add('mouse-over');
+            if (document.getElementById('f-' + team) != undefined) {
+                document.getElementById('f-' + team).parentElement.classList.add('mouse-over');
+            }
         },
         removeClass: (team) => {
-            document.getElementById('f-' + team).parentElement.classList.remove('mouse-over');
+            if (document.getElementById('f-' + team) != undefined) {
+                document.getElementById('f-' + team).parentElement.classList.remove('mouse-over');
+            }
         }
     };
 })();

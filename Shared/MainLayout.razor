@@ -1,9 +1,11 @@
 ﻿@using BlazorApp.Features.Shared.Models
-@using BlazorApp.Features.Shared.Services.Abstractions;
+@using BlazorApp.Features.Shared.Services.Abstractions
 
 @inherits LayoutComponentBase
 @inject NavigationManager _navigationManager
-@inject ILocalStorage _localStorage;
+@inject ILocalStorage _localStorage
+@inject AppState _appState
+@inject LoadingState _loadingState
 
 <PageTitle>BlazorApp</PageTitle>
 
@@ -13,6 +15,10 @@
     </div>
     <main>
         <article class="content px-4">
+            @if (_loadingState.IsLoading)
+            {
+                <div class="loading">Loading...</div>
+            }
             @Body
         </article>
     </main>
@@ -22,6 +28,14 @@
     protected override void OnInitialized()
     {
         _navigationManager.LocationChanged += LocationChanged;
+        _appState.OnChange += OnAppStateChange;
+        _loadingState.OnChange += OnAppStateChange;
+    }
+
+    public void Dispose()
+    {
+        _appState.OnChange -= OnAppStateChange;
+        _loadingState.OnChange -= OnAppStateChange;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -56,6 +70,11 @@
                 });
             }
         }
+    }
+
+    private async void OnAppStateChange()
+    {
+        await InvokeAsync(StateHasChanged);
     }
 
     [CascadingParameter] public IModalService? Modal { get; set; }

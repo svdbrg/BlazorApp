@@ -37,3 +37,22 @@ public class AppState
 
     private void NotifyStateChanged() => OnChange?.Invoke();
 }
+
+public class LoadingState
+{
+    public bool IsLoading { get; private set; }
+    public event Action? OnChange;
+
+    public void ToggleLoading(bool isLoading)
+    {
+        IsLoading = isLoading;
+        NotifyStateChanged();
+    }
+
+    public void ToggleLoading()
+    {
+        ToggleLoading(!IsLoading);
+    }
+
+    private void NotifyStateChanged() => OnChange?.Invoke();
+}

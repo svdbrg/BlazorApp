@@ -31,6 +31,11 @@
                     }
                     <option value="Other">Create new</option>
                 </select>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
                 @if (SelectedMortgage != "Other" && SelectedMortgage != "Choose")
                 {
                     <span @onclick="deleteMortgage" class="delete-mortgage">Delete mortgage</span>
@@ -54,7 +59,7 @@
             <td>
                 Live updates
             </td>
-            <td>
+            <td class="live-switch">
                 <input type="checkbox" id="switch" checked="@(autoRefresh)" />
                 <label for="switch" @onclick="@changeAutoRefresh">
                     Toggle
@@ -67,7 +72,7 @@
     <h4>Travel Planner</h4>
     <div id="stops">
         <div class="from">
-            <span>From Solstigen 49</span>
+            <strong>From Solstigen 49</strong>
             <ul class="list-group">
                 @foreach (var item in homeLocation.NearbyStops)
                 {
@@ -80,7 +85,7 @@
         <div class="to">
             @foreach (var item in nearbyStopLocations)
             {
-                <span>@item.Name</span>
+                <strong>@item.Name</strong>
                 <ul class="list-group">
                     @foreach (var stop in item.NearbyStops)
                     {
@@ -148,10 +153,7 @@
         nearbyStopLocations.Add(new NearbyStopLocation
         {
             Name = "Other",
-            NearbyStops = new List<NearbyStop>
-{
-new() { Name = "Slussen", MainMastExtId="300109192" }
-}
+            NearbyStops = new List<NearbyStop> { new() { Name = "Slussen", MainMastExtId = "300109192" } }
         });
 
         homeLocation = new NearbyStopLocation
@@ -218,7 +220,6 @@ new() { Name = "Slussen", MainMastExtId="300109192" }
     private void changeAutoRefresh()
     {
         autoRefresh = !autoRefresh;
-        @* StateHasChanged(); *@
     }
 
     private bool canSelect()

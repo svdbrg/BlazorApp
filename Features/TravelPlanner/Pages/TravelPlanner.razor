@@ -6,13 +6,11 @@
 
 @inject ITravelPlanner _travelPlanner
 @inject AppState _appState
+@inject LoadingState _loadingState
+
+@implements IDisposable
 
 <PageTitle>Travel Planner</PageTitle>
-
-@if (isLoading)
-{
-    <div class="loading">Loading...</div>
-}
 
 <div class="switch-container">
     <span @onclick="changeDirection"><svg width="24px" height="24px" viewBox="0 0 24 24"
@@ -50,28 +48,22 @@
     private IEnumerable<Trip> trips = new List<Trip>();
     private List<NearbyStopLocation> nearbyStopLocations = new List<NearbyStopLocation>();
     private NearbyStopLocation homeLocation = new();
-    private bool isLoading = true;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             await setTravelPlan();
-
-            await toggleLoading();
-            await InvokeAsync(StateHasChanged);
         }
     }
 
     private async void changeDirection()
     {
-        @* await toggleLoading();
-
-        (homeStation, destinationStation) = (destinationStation, homeStation);
+        var homeTemp = _appState.HomeStation;
+        _appState.SetHomeStation(_appState.DestinationStation);
+        _appState.SetDestination(homeTemp);
 
         await setTravelPlan();
-
-        await toggleLoading(); *@
     }
 
     private string getLayoverStops(Trip trip)
@@ -89,13 +81,12 @@
 
     private async Task setTravelPlan()
     {
+        _loadingState.ToggleLoading(true);
+        
         trips = await _travelPlanner.GetTravelPlan(_appState.HomeStation, _appState.DestinationStation);
-    }
-
-    private async Task toggleLoading()
-    {
-        isLoading = !isLoading;
         await InvokeAsync(StateHasChanged);
+
+        _loadingState.ToggleLoading(false);
     }
 
     protected override void OnInitialized()

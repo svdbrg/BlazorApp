@@ -3,6 +3,28 @@ table {
     margin-bottom: 30px;
 }
 
+table td {
+    vertical-align: middle;
+}
+
+.buttons {
+    margin-top: 10px;
+}
+
+.buttons button {
+    width: 49%;
+}
+
+.buttons button:last-child {
+    float: right;
+}
+
+td.live-switch input, 
+td.live-switch label,
+.form-select {
+    float: right;
+}
+
 span.delete-mortgage {
     float: right;
     cursor: default;
@@ -49,3 +71,14 @@ input:checked+label:after {
 label:active:after {
     width: 130px;
 }
+
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 800px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+      table {
+          width: 100%;
+          min-width: 0;
+      }
+  }

@@ -12,13 +12,11 @@
 @inject ILocalStorage _localStorage
 @inject NavigationManager _navigationManager
 @inject AppState _appState
+@inject LoadingState _loadingState
+
+@implements IDisposable
 
 <PageTitle>Calculate your mortgage costs</PageTitle>
-
-@if (isLoading)
-{
-    <div class="loading">Loading...</div>
-}
 
 <h1>Mortgage all the things</h1>
 
@@ -38,7 +36,6 @@
 @code {
     [CascadingParameter] public IModalService? Modal { get; set; }
     private MortgageItem mortgage = new();
-    private bool isLoading = false;
     private bool canEdit = true;
     private string saveCounterMessage = "";
 
@@ -52,6 +49,8 @@
 
     private async Task loadData()
     {
+        _loadingState.ToggleLoading(true);
+
         try
         {
             mortgage = await _dataService.GetSavedDataAsync() ?? new();
@@ -64,7 +63,7 @@
         }
         finally
         {
-            isLoading = false;
+            _loadingState.ToggleLoading(false);
             await InvokeAsync(StateHasChanged);
         }
     }

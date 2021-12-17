@@ -7,15 +7,11 @@
 
 @inject IFootballDataService _dataFetcher
 @inject AppState _appState
+@inject LoadingState _loadingState
 
 @implements IDisposable
 
 <PageTitle>Live Display</PageTitle>
-
-@if (isLoading)
-{
-    <div class="loading">Loading...</div>
-}
 
 <div id="table">
     <Table footballTable="table" @ref="plTable" setCurrentlyPlayingDelegate="@((t) => fixtures?.setActiveTeam(t))"
@@ -29,7 +25,6 @@
 @code {
     private IEnumerable<Team> table = new List<Team>();
     private List<Day> days = new();
-    private bool isLoading = true;
     protected Table plTable = new();
     protected Fixtures fixtures = new();
 
@@ -43,6 +38,8 @@
 
     private async Task GetData()
     {
+        _loadingState.ToggleLoading(true);
+
         table = await _dataFetcher.GetTableAsync();
         days.Clear();
         Day dayWithPostponedGames = new();
@@ -67,8 +64,7 @@
 
         table = _dataFetcher.EnrichTableWithStatus(table, days);
 
-        isLoading = false;
-        await InvokeAsync(StateHasChanged);
+        _loadingState.ToggleLoading(false);
     }
 
     protected override void OnInitialized()

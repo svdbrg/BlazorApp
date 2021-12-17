@@ -24,6 +24,7 @@ builder.Services.ConfigureTravelPlanner(builder);
 builder.Services.ConfigureAutoMapper();
 
 builder.Services.AddSingleton<AppState>();
+builder.Services.AddSingleton<LoadingState>();
 
 var app = builder.Build();
 

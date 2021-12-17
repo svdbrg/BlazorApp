@@ -62,7 +62,9 @@
     {
         var settingsModal = Modal?.Show<SettingsModal>("Settings", new ModalOptions
         {
-            HideCloseButton = true
+            HideCloseButton = true,
+            ContentScrollable = true,
+            HideHeader = true
         });
     }
 }
