@@ -71,7 +71,7 @@
             <ul class="list-group">
                 @foreach (var item in homeLocation.NearbyStops)
                 {
-                    <li class="list-group-item @((item.MainMastExtId == _appState.HomeStation) ? "active" : "")"
+                    <li class="list-group-item @((item.MainMastExtId == tempOrigin) ? "active" : "")"
                     @onclick="@(() => setOrigin(item.MainMastExtId))">@item.Name</li>
                 }
             </ul>
@@ -84,7 +84,7 @@
                 <ul class="list-group">
                     @foreach (var stop in item.NearbyStops)
                     {
-                        <li class="list-group-item @((stop.MainMastExtId == _appState.DestinationStation) ? "active" : "")"
+                        <li class="list-group-item @((stop.MainMastExtId == tempDestination) ? "active" : "")"
                     @onclick="@(() => setDestination(stop.MainMastExtId))">@stop.Name</li>
                     }
                 </ul>
@@ -101,13 +101,18 @@
 
 @code {
     [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new();
+
     private string SelectedMortgage { get; set; } = string.Empty;
     private string newMortgage { get; set; } = string.Empty;
     private string errorMessage { get; set; } = string.Empty;
     List<string> ExistingMortgages { get; set; } = new();
+
     private bool autoRefresh { get; set; }
+
     private List<NearbyStopLocation> nearbyStopLocations = new List<NearbyStopLocation>();
     private NearbyStopLocation homeLocation = new();
+    private string tempOrigin { get; set; } = string.Empty;
+    private string tempDestination { get; set; } = string.Empty;
 
     protected override async void OnInitialized()
     {
@@ -128,6 +133,9 @@
 
     private async Task loadTravelPlannerData()
     {
+        tempDestination = _appState.DestinationStation;
+        tempOrigin = _appState.HomeStation;
+
         foreach (var item in Places.PlacesOfInterest)
         {
             nearbyStopLocations.Add(new NearbyStopLocation
@@ -155,12 +163,12 @@ new() { Name = "Slussen", MainMastExtId="300109192" }
 
     private void setOrigin(string newOrigin)
     {
-        _appState.SetHomeStation(newOrigin);
+        tempOrigin = newOrigin;
     }
 
     private void setDestination(string newDestination)
     {
-        _appState.SetDestination(newDestination);
+        tempDestination = newDestination;
     }
 
     private async void saveChanges()
@@ -203,13 +211,14 @@ new() { Name = "Slussen", MainMastExtId="300109192" }
 
     private void saveTravelPlannerSettings()
     {
-        
+        _appState.SetDestination(tempDestination);
+        _appState.SetHomeStation(tempOrigin);
     }
 
     private void changeAutoRefresh()
     {
         autoRefresh = !autoRefresh;
-        StateHasChanged();
+        @* StateHasChanged(); *@
     }
 
     private bool canSelect()

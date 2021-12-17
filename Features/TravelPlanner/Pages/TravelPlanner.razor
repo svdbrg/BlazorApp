@@ -97,4 +97,20 @@
         isLoading = !isLoading;
         await InvokeAsync(StateHasChanged);
     }
+
+    protected override void OnInitialized()
+    {
+        _appState.OnChange += OnAppStateChange;
+    }
+
+    public void Dispose()
+    {
+        _appState.OnChange -= OnAppStateChange;
+    }
+
+    private async void OnAppStateChange()
+    {
+        await setTravelPlan();
+        await InvokeAsync(StateHasChanged);
+    }
 }

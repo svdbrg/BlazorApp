@@ -19,10 +19,17 @@
 </div>
 
 @code {
-    protected override async void OnInitialized()
+    protected override void OnInitialized()
     {
         _navigationManager.LocationChanged += LocationChanged;
-        await IsAuthenticated();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await IsAuthenticated();
+        }
     }
 
     private async void LocationChanged(object? sender, LocationChangedEventArgs e)
