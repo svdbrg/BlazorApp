@@ -19,14 +19,16 @@
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
 
     <MudNavMenu Bordered="true">
-        <MudNavLink Href="">Home</MudNavLink>
+        @* <MudNavLink Href="">Home</MudNavLink> *@
         @foreach (var item in _options.Value.Select(v => v.NavMenuItem))
         {
             <MudNavLink Href="@item.Href">@item.Label</MudNavLink>
         }
-        <MudNavLink @onclick="logOut">Log out</MudNavLink>
-        <MudNavLink @onclick="openSettings">Settings</MudNavLink>
     </MudNavMenu>
+    <div class="logout">
+        <MudNavLink @onclick="openSettings">Settings</MudNavLink>
+        <MudNavLink @onclick="logOut">Log out</MudNavLink>
+    </div>
 
 </div>
 

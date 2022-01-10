@@ -1,35 +1,15 @@
 @using Data
 
-<div>
-    <div>
-        <label for="purchasePrice">Purchase price SEK</label>
-        <div class="input">
-            <input id="purchasePrice" disabled="@(!canEdit)" class="form-control" @onchange="onSaveChanges"
-                @bind="mortgage.PurchasePrice" @bind:event="oninput" />
-        </div>
-    </div>
-    <div>
-        <label for="downPayment">Down payment SEK</label>
-        <div class="input">
-            <input id="downPayment" disabled="@(!canEdit)" class="form-control" @bind="mortgage.DownPayment"
-                @bind:event="oninput" @onchange="onSaveChanges" />
-        </div>
-    </div>
-    <div>
-        <label for="interestRate">Interest rate %</label>
-        <div class="input">
-            <input id="interestRate" disabled="@(!canEdit)" class="form-control" @bind="mortgage.InterestRate"
-                @bind:event="oninput" @onchange="onSaveChanges" />
-        </div>
-    </div>
-    <div>
-        <label for="totalSalary">Total monthly salary</label>
-        <div class="input">
-            <input id="totalSalary" disabled="@(!canEdit)" class="form-control" @bind="mortgage.TotalSalary"
-                @bind:event="oninput" @onchange="onSaveChanges" />
-        </div>
-    </div>
-</div>
+<MudCard>
+    <MudCardContent>
+        <MudForm>
+            <MudTextField T="int" Disabled="@(!canEdit)" OnBlur="onSaveChanges" Label="Purchase price SEK" @bind-Value="mortgage.PurchasePrice" />
+            <MudTextField T="int" Disabled="@(!canEdit)" OnBlur="onSaveChanges" Label="Down payment SEK" @bind-Value="mortgage.DownPayment" />
+            <MudTextField T="double" Disabled="@(!canEdit)" OnBlur="onSaveChanges" Label="Interest rate %" @bind-Value="mortgage.InterestRate" />
+            <MudTextField T="int" Disabled="@(!canEdit)" OnBlur="onSaveChanges" Label="Total monthly salary" @bind-Value="mortgage.TotalSalary" />
+        </MudForm>
+    </MudCardContent>
+</MudCard>
 
 @code {
     [Parameter]

@@ -3,18 +3,15 @@
 
 <div class="expenses">
     <h2>Monthly expenses</h2>
+    <MudGrid>
+        <MudItem xs="12" sm="6" md="6">
+            <MudTextField T="string" Disabled="@(!canEdit)" OnKeyDown="Enter" Label="Name" @bind-Value="expenseName" />
+        </MudItem>
+        <MudItem xs="12" sm="6" md="6">
+            <MudTextField T="int" Disabled="@(!canEdit)" OnKeyDown="Enter" Label="Cost SEK" @bind-Value="expenseCost" />
+        </MudItem>
+    </MudGrid>
     <div>
-        <div class="input">
-            <label for="expenseName">Name</label>
-            <input id="expenseName" disabled="@(!canEdit)" @bind="expenseName" @onkeydown="@Enter" class="form-control"
-                @bind:event="oninput" />
-        </div>
-        <div class="input">
-            <label for="expenseCost">Cost SEK</label>
-            <input id="expenseCost" disabled="@(!canEdit)" @bind="expenseCost" @onkeydown="@Enter" class="form-control"
-                @bind:event="oninput" />
-        </div>
-
         @if (mortgage.Expenses != null)
         {
             <table class="expenses">
@@ -107,6 +104,7 @@
 
     private async Task AddToExpenses()
     {
+        Console.WriteLine($"Hit! {expenseName} {expenseCost}");
         if (string.IsNullOrWhiteSpace(expenseName) || expenseCost < 1)
         {
             return;
