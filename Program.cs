@@ -36,7 +36,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
 
     // For when docker container is running in Heroku
-    app.Urls.Add("http://*:" + Environment.GetEnvironmentVariable("PORT"));
+    app.Urls.Add("https://*:" + Environment.GetEnvironmentVariable("PORT"));
 }
 
 app.AddGoogleCredentials();
