@@ -11,101 +11,113 @@
 @inject AppState _appState
 @inject IJSRuntime _js
 
-<table>
-    <tbody>
-        <tr>
-            <td colspan="2">
-                <h4>Mortgage</h4>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Mortgages
-            </td>
-            <td>
-                <select class="form-select" @onchange="changeSelectedValue">
-                    <option value="Choose">-- Choose --</option>
-                    @foreach (var item in ExistingMortgages)
+<MudDialog DisableSidePadding="true">
+    <DialogContent>
+        <table>
+            <tbody>
+                <tr>
+                    <td colspan="2">
+                        <h4>Mortgage</h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Mortgages
+                    </td>
+                    <td>
+                        <select class="form-select" @onchange="changeSelectedValue">
+                            <option value="Choose">-- Choose --</option>
+                            @foreach (var item in ExistingMortgages)
+                            {
+                                <option value="@item" selected="@(item == SelectedMortgage)">@item</option>
+                            }
+                            <option value="Other">Create new</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        @if (SelectedMortgage != "Other" && SelectedMortgage != "Choose")
+                        {
+                            <span @onclick="deleteMortgage" class="delete-mortgage">Delete mortgage</span>
+                        }
+                        @if (SelectedMortgage == "Other")
+                        {
+                            <input @bind="@newMortgage" type="text" class="form-control" id="mortgage-name" />
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table>
+            <tbody>
+                <tr>
+                    <td colspan="2">
+                        <h4>Live Displayer</h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Live updates
+                    </td>
+                    <td class="live-switch">
+                        <input type="checkbox" id="switch" checked="@(autoRefresh)" />
+                        <label for="switch" @onclick="@changeAutoRefresh">
+                            Toggle
+                        </label>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="travel-planner-settings">
+            <h4>Travel Planner</h4>
+            <div id="stops">
+                <div class="from">
+                    <strong>From Solstigen 49</strong>
+                    <ul class="list-group">
+                        @foreach (var item in homeLocation.NearbyStops)
+                        {
+                            <li class="list-group-item @((item.MainMastExtId == tempOrigin) ? "active" : "")"
+                            @onclick="@(() => setOrigin(item.MainMastExtId))">@item.Name</li>
+                        }
+                    </ul>
+                </div>
+
+                <div class="to">
+                    @foreach (var item in nearbyStopLocations)
                     {
-                        <option value="@item" selected="@(item == SelectedMortgage)">@item</option>
+                        <strong>@item.Name</strong>
+                        <ul class="list-group">
+                            @foreach (var stop in item.NearbyStops)
+                            {
+                                <li class="list-group-item @((stop.MainMastExtId == tempDestination) ? "active" : "")"
+                            @onclick="@(() => setDestination(stop.MainMastExtId))">@stop.Name</li>
+                            }
+                        </ul>
                     }
-                    <option value="Other">Create new</option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>
-                @if (SelectedMortgage != "Other" && SelectedMortgage != "Choose")
-                {
-                    <span @onclick="deleteMortgage" class="delete-mortgage">Delete mortgage</span>
-                }
-                @if (SelectedMortgage == "Other")
-                {
-                    <input @bind="@newMortgage" type="text" class="form-control" id="mortgage-name" />
-                }
-            </td>
-        </tr>
-    </tbody>
-</table>
-<table>
-    <tbody>
-        <tr>
-            <td colspan="2">
-                <h4>Live Displayer</h4>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Live updates
-            </td>
-            <td class="live-switch">
-                <input type="checkbox" id="switch" checked="@(autoRefresh)" />
-                <label for="switch" @onclick="@changeAutoRefresh">
-                    Toggle
-                </label>
-            </td>
-        </tr>
-    </tbody>
-</table>
-<div id="travel-planner-settings">
-    <h4>Travel Planner</h4>
-    <div id="stops">
-        <div class="from">
-            <strong>From Solstigen 49</strong>
-            <ul class="list-group">
-                @foreach (var item in homeLocation.NearbyStops)
-                {
-                    <li class="list-group-item @((item.MainMastExtId == tempOrigin) ? "active" : "")"
-                    @onclick="@(() => setOrigin(item.MainMastExtId))">@item.Name</li>
-                }
-            </ul>
+                </div>
+            </div>
         </div>
 
-        <div class="to">
-            @foreach (var item in nearbyStopLocations)
-            {
-                <strong>@item.Name</strong>
-                <ul class="list-group">
-                    @foreach (var stop in item.NearbyStops)
-                    {
-                        <li class="list-group-item @((stop.MainMastExtId == tempDestination) ? "active" : "")"
-                    @onclick="@(() => setDestination(stop.MainMastExtId))">@stop.Name</li>
-                    }
-                </ul>
-            }
-        </div>
-    </div>
-</div>
-
-<div class="buttons">
-    <button @onclick="saveChanges" class="btn btn-primary">Save</button>
-    <button @onclick="ModalInstance.CancelAsync" class="btn btn-secondary">Cancel</button>
-</div>
-<div id="error-message">@errorMessage</div>
+        <div id="error-message">@errorMessage</div>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
 
 @code {
-    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new();
+    @* [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new(); *@
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    private async void Submit() {
+        await saveChanges();
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+    
+    void Cancel() => MudDialog.Cancel();
 
     private string SelectedMortgage { get; set; } = string.Empty;
     private string newMortgage { get; set; } = string.Empty;
@@ -173,7 +185,7 @@
         tempDestination = newDestination;
     }
 
-    private async void saveChanges()
+    private async Task saveChanges()
     {
         await saveMortgageSettings();
         saveLiveDisplayerSettings();
@@ -207,7 +219,7 @@
             await InvokeAsync(StateHasChanged);
             _appState.ChangeMortageSetting();
 
-            await ModalInstance.CloseAsync(ModalResult.Ok<string>(SelectedMortgage ?? string.Empty));
+            @* await ModalInstance.CloseAsync(ModalResult.Ok<string>(SelectedMortgage ?? string.Empty)); *@
         }
     }
 

@@ -12,7 +12,7 @@
 </div>
 
 @code {
-    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new();
+    @* [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new(); *@
 
     private string errorMessage { get; set; } = string.Empty;
     private string input { get; set; } = string.Empty;
@@ -24,7 +24,7 @@
             errorMessage = "";
             var token = HelperMethods.EncryptString($"{input}-{DateTime.Now.Ticks}-salt", "authorizationkey");
             _localStorage.SaveStringAsync("auth", token);
-            ModalInstance.CloseAsync(ModalResult.Ok<bool>(true));
+            @* ModalInstance.CloseAsync(ModalResult.Ok<bool>(true)); *@
         }
         else
         {

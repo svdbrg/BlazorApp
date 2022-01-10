@@ -9,6 +9,10 @@
 
 <PageTitle>BlazorApp</PageTitle>
 
+<MudThemeProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -63,11 +67,11 @@
             }
             else
             {
-                Modal?.Show<LoginModal>("Login", new ModalOptions
+                @* Modal?.Show<LoginModal>("Login", new ModalOptions
                 {
                     DisableBackgroundCancel = true,
                     HideCloseButton = true
-                });
+                }); *@
             }
         }
     }
@@ -77,5 +81,5 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    [CascadingParameter] public IModalService? Modal { get; set; }
+    @* [CascadingParameter] public IModalService? Modal { get; set; } *@
 }
