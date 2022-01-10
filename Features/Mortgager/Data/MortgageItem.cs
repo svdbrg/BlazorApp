@@ -64,16 +64,6 @@ public class MortgageItem
         }
     }
 
-    public double MonthlyLoanCostWithDeeds
-    {
-        get
-        {
-            var totalDeedCost = this.TitleDeed + this.MortgageDeed;
-            return ((Loan + totalDeedCost) * (this.InterestRate / 100) / 12) + ((double)Loan * ((double)this.InstallmentRate / 100) / 12);
-
-        }
-    }
-
     public int DebtRatio
     {
         get
