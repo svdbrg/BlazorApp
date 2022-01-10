@@ -28,6 +28,8 @@ builder.Services.AddSingleton<LoadingState>();
 
 var app = builder.Build();
 
+app.UseHttpsRedirection();
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -38,8 +40,6 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.AddGoogleCredentials();
-
-app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
