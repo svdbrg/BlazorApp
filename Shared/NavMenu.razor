@@ -17,34 +17,20 @@
 </div>
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
+
+    <MudNavMenu Bordered="true">
+        <MudNavLink Href="">Home</MudNavLink>
         @foreach (var item in _options.Value.Select(v => v.NavMenuItem))
         {
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="@item.Href">
-                    <span class="@item.Icon" aria-hidden="true"></span> @item.Label
-                </NavLink>
-            </div>
+            <MudNavLink Href="@item.Href">@item.Label</MudNavLink>
         }
-        <div class="nav-item px-3 settings">
-            <a @onclick="openSettings" class="nav-link"><span class="oi oi-cog" aria-hidden="true"></span> Settings
-            </a>
-        </div>
-        <div class="nav-item px-3 logout">
-            <a @onclick="logOut" class="nav-link"><span class="oi oi-account-logout" aria-hidden="true"></span> Logout
-            </a>
-        </div>
-    </nav>
+        <MudNavLink @onclick="logOut">Log out</MudNavLink>
+        <MudNavLink @onclick="openSettings">Settings</MudNavLink>
+    </MudNavMenu>
 
 </div>
 
 @code {
-    @* [CascadingParameter] public IModalService? Modal { get; set; } *@
     private bool collapseNavMenu = true;
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
@@ -66,12 +52,7 @@
             CloseOnEscapeKey = true,
             FullScreen = true
         };
-        DialogService.Show<SettingsModal>("Settings", options);
 
-        @* var settingsModal = Modal?.Show<SettingsModal>("Settings", new ModalOptions
-            {
-            HideCloseButton = true,
-            HideHeader = true
-            }); *@
+        DialogService.Show<SettingsModal>("Settings", options);
     }
 }
