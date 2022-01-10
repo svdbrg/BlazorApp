@@ -8,7 +8,11 @@ public class MortgageItem
     public int DownPayment { get; set; }
     public int TotalSalary { get; set; }
     public double InterestRate { get; set; }
+    public double TitleDeed { get => (this.PurchasePrice * 0.015) + 825; }
+    public double MortgageDeed { get => (this.Loan * 0.02) + 375; }
+    public double PriceIncludingDeeds { get => (this.PurchasePrice + this.TitleDeed + this.MortgageDeed); }
     public List<Expense> Expenses { get; set; } = new();
+    public bool IsHouse { get; set; }
 
     public string PurchasePriceString
     {
@@ -57,6 +61,16 @@ public class MortgageItem
             return
             (Loan * (this.InterestRate / 100) / 12)
             + ((double)Loan * ((double)this.InstallmentRate / 100) / 12);
+        }
+    }
+
+    public double MonthlyLoanCostWithDeeds
+    {
+        get
+        {
+            var totalDeedCost = this.TitleDeed + this.MortgageDeed;
+            return ((Loan + totalDeedCost) * (this.InterestRate / 100) / 12) + ((double)Loan * ((double)this.InstallmentRate / 100) / 12);
+
         }
     }
 

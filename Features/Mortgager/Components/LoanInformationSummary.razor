@@ -3,6 +3,34 @@
 <div class="summary">
     <table>
         <tr>
+            <td>Is a house:</td>
+            <td>
+                <input type="checkbox" id="switch" @onchange="setIsHouse" checked="@(mortgage.IsHouse)" />
+                <label for="switch"></label>
+            </td>
+        </tr>
+        @if (mortgage.IsHouse)
+        {
+            <tr>
+                <td>- Title deed:</td>
+                <td>
+                    @mortgage.TitleDeed.ToString("C0")
+                </td>
+            </tr>
+            <tr>
+                <td>- Mortgage deed:</td>
+                <td>
+                    @mortgage.MortgageDeed.ToString("C0")
+                </td>
+            </tr>
+            <tr>
+                <td>- Price including deeds:</td>
+                <td>
+                    @mortgage.PriceIncludingDeeds.ToString("C0")
+                </td>
+            </tr>
+        }
+        <tr>
             <td>Purchase price: </td>
             <td>@mortgage.PurchasePrice.ToString("C0")</td>
         </tr>
@@ -40,4 +68,13 @@
 @code {
     [Parameter]
     public MortgageItem mortgage { get; set; } = new();
+
+    [Parameter]
+    public EventCallback onSaveChanges { get; set; }
+
+    private async void setIsHouse()
+    {
+        mortgage.IsHouse = !mortgage.IsHouse;
+        await onSaveChanges.InvokeAsync();
+    }
 }
