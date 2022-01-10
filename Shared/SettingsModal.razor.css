@@ -72,6 +72,11 @@ label:active:after {
     width: 130px;
 }
 
+#travel-planner-settings {
+    overflow-y: scroll;
+    max-height: 500px;
+}
+
 @media only screen 
   and (min-device-width: 320px) 
   and (max-device-width: 800px)
@@ -81,4 +86,17 @@ label:active:after {
           width: 100%;
           min-width: 0;
       }
+  }
+
+  @media only screen 
+  and (orientation: landscape) {
+      table {
+          width: 100%;
+          min-width: 0;
+      }
+
+      #travel-planner-settings {
+        overflow-y: scroll;
+        max-height: 100px;
+    }
   }
