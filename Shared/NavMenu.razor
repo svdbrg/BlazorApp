@@ -7,29 +7,16 @@
 @inject NavigationManager _navigationManager
 @inject IDialogService DialogService
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">BlazorApp</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
-
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-
-    <MudNavMenu Bordered="true">
-        @* <MudNavLink Href="">Home</MudNavLink> *@
-        @foreach (var item in _options.Value.Select(v => v.NavMenuItem))
-        {
-            <MudNavLink Href="@item.Href">@item.Label</MudNavLink>
-        }
-    </MudNavMenu>
-    <div class="logout">
-        <MudNavLink @onclick="openSettings">Settings</MudNavLink>
-        <MudNavLink @onclick="logOut">Log out</MudNavLink>
-    </div>
-
+<MudNavMenu Bordered="true">
+    <MudNavLink Icon="@Icons.Filled.Home" Href="/#">Home</MudNavLink>
+    @foreach (var item in _options.Value.Select(v => v.NavMenuItem))
+    {
+        <MudNavLink Icon="@item.Icon" Href="@item.Href">@item.Label</MudNavLink>
+    }
+</MudNavMenu>
+<div class="logout">
+    <MudNavLink Icon="@Icons.Filled.Settings" @onclick="openSettings">Settings</MudNavLink>
+    <MudNavLink Icon="@Icons.Filled.Logout" @onclick="logOut">Log out</MudNavLink>
 </div>
 
 @code {

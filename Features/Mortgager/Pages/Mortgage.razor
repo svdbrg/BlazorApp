@@ -18,17 +18,22 @@
 
 <PageTitle>Calculate your mortgage costs</PageTitle>
 
-<h1>Mortgage all the things</h1>
+<MudText Typo="Typo.h2">Mortgage all the things</MudText>
 
-<p>This is a tool to help visualize your mortgage application and the costs that follow by owning a home.</p>
+<MudText Typo="Typo.body1">This is a tool to help visualize your mortgage application and the costs that follow by
+    owning a home.</MudText>
 <div class="message @getClassName()">
     <b>@saveCounterMessage</b>
 </div>
 <div class="mortgage">
     <div class="form-group">
-        <h2>Loan information</h2>
-        <LoanInformationInput canEdit="canEdit" mortgage="mortgage" onSaveChanges="saveChanges" />
-        <LoanInformationSummary onSaveChanges="saveChanges" mortgage="mortgage" />
+        <MudText Typo="Typo.h4">Loan information</MudText>
+        <MudCard>
+            <MudCardContent>
+                <LoanInformationInput canEdit="canEdit" mortgage="mortgage" onSaveChanges="saveChanges" />
+                <LoanInformationSummary onSaveChanges="saveChanges" mortgage="mortgage" />
+            </MudCardContent>
+        </MudCard>
     </div>
     <Expenses canEdit="canEdit" mortgage="mortgage" onSaveChanges="saveChanges" />
 </div>

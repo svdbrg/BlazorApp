@@ -15,21 +15,38 @@
 <MudSnackbarProvider />
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+
+
     <main>
-        <article class="content px-4">
-            @if (_loadingState.IsLoading)
-            {
-                <div class="loading">Loading...</div>
-            }
-            @Body
-        </article>
+        <MudLayout>
+            <MudAppBar Color="Color.Primary" Fixed="false">
+                <MudIconButton Icon="@Icons.Material.Filled.Menu" OnClick="@(() => ToggleDrawer())" Color="Color.Inherit" Edge="Edge.Start" />
+                <MudSpacer />
+                <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Link="http://github.com/svdbrg" Target="_blank" Color="Color.Inherit" />
+            </MudAppBar>
+
+            <MudDrawer @bind-Open="@open" Elevation="1" Variant="@DrawerVariant.Temporary">
+                <MudDrawerHeader>
+                    <MudText Typo="Typo.h6">My App</MudText>
+                </MudDrawerHeader>
+                <NavMenu />
+
+            </MudDrawer>
+            <article class="content px-4">
+                @if (_loadingState.IsLoading)
+                {
+                    <div class="loading">Loading...</div>
+                }
+                @Body
+            </article>
+        </MudLayout>
+
     </main>
 </div>
 
 @code {
+    bool open = false;
+
     protected override void OnInitialized()
     {
         _navigationManager.LocationChanged += LocationChanged;
@@ -49,6 +66,10 @@
         {
             await IsAuthenticated();
         }
+    }
+    void ToggleDrawer()
+    {
+        open = !open;
     }
 
     private async void LocationChanged(object? sender, LocationChangedEventArgs e)

@@ -18,7 +18,7 @@ div.summary table td:first-child {
     vertical-align: bottom;
 }
 
-div.summary table td:nth-child(2) {
+div.summary table td:nth-child(2) div {
     float: right;
 }
 

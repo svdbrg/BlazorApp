@@ -40,7 +40,7 @@ div#reset-documentsuffix {
     text-align: right;
 }
 
-@media (max-width: 1330px) {
+@media (max-width: 1085px) {
     div.mortgage div.form-group {
         min-width: auto;
         width: 100%;

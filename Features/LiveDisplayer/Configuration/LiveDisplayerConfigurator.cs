@@ -1,5 +1,6 @@
 using BlazorApp.Features.LiveDisplayer.Services;
 using BlazorApp.Features.Shared.Models;
+using MudBlazor;
 
 namespace BlazorApp.Features.LiveDisplayer.Configuration;
 
@@ -11,7 +12,7 @@ public static class LiveDisplayerConfigurator
         {
             Href = "livedisplayer",
             Label = "Live Displayer",
-            Icon = "oi oi-aperture"
+            Icon = Icons.Filled.SportsSoccer
         },
         Name = "Live Displayer",
         Description = "A live display to get an overview of the current Premier League table and current and/or upcoming fixtures."
