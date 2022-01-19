@@ -8,13 +8,13 @@
 
 <PageTitle>Oscar's Playground</PageTitle>
 
-<MudText Typo="Typo.h1">Hello, world!</MudText>
+<MudText Typo="Typo.h2">Hello, world!</MudText>
 
 <MudText Typo="Typo.body1">This is where I collect minor project ideas and technologies I want to try out.</MudText>
 
 @foreach (var item in _options.Value)
 {
-    <MudCard Style="max-width:500px; margin-bottom:20px;">
+    <MudCard Style="max-width:550px; margin-bottom:20px;">
         <MudCardContent>
             <MudText Typo="Typo.h5">@item.Name</MudText>
             <MudText Typo="Typo.body2">@item.Description</MudText>

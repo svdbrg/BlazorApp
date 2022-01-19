@@ -1,6 +1,7 @@
 #fixtures, #table {
   width: 50%;
   float: left;
+  min-width: 400px;
 }
 
 .refresh {
@@ -9,7 +10,7 @@
   right: 0;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 860px) {
   #fixtures, #table {
     float: none;
     width: 100%;

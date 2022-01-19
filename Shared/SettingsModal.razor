@@ -11,40 +11,38 @@
 @inject AppState _appState
 @inject IJSRuntime _js
 
-<MudDialog DisableSidePadding="true">
+<MudDialog>
     <DialogContent>
         <table>
             <tbody>
                 <tr>
                     <td colspan="2">
-                        <h4>Mortgage</h4>
+                        <MudText Typo="Typo.h6">Mortgage</MudText>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        Mortgages
-                    </td>
-                    <td>
-                        <select class="form-select" @onchange="changeSelectedValue">
-                            <option value="Choose">-- Choose --</option>
+                        <MudSelect T="string" Label="Mortgage" @bind-Value="SelectedMortgage" Variant="Variant.Outlined"
+                            AnchorOrigin="Origin.BottomCenter">
                             @foreach (var item in ExistingMortgages)
                             {
-                                <option value="@item" selected="@(item == SelectedMortgage)">@item</option>
+                                <MudSelectItem T="string" value="@item" />
                             }
-                            <option value="Other">Create new</option>
-                        </select>
+                            <MudSelectItem T="string" Value="@("Other")" />
+                        </MudSelect>
                     </td>
                 </tr>
                 <tr>
-                    <td></td>
                     <td>
                         @if (SelectedMortgage != "Other" && SelectedMortgage != "Choose")
                         {
-                            <span @onclick="deleteMortgage" class="delete-mortgage">Delete mortgage</span>
+                            <MudButton Variant="Variant.Text" OnClick="deleteMortgage" Color="Color.Secondary">Delete
+                                mortgage</MudButton>
                         }
                         @if (SelectedMortgage == "Other")
                         {
-                            <input @bind="@newMortgage" type="text" class="form-control" id="mortgage-name" />
+                            <MudTextField @bind-Value="newMortgage" Label="New mortgage" Variant="Variant.Text">
+                            </MudTextField>
                         }
                     </td>
                 </tr>
@@ -54,7 +52,7 @@
             <tbody>
                 <tr>
                     <td colspan="2">
-                        <h4>Live Displayer</h4>
+                        <MudText Typo="Typo.h6">Live Displayer</MudText>
                     </td>
                 </tr>
                 <tr>
@@ -62,43 +60,30 @@
                         Live updates
                     </td>
                     <td class="live-switch">
-                        <input type="checkbox" id="switch" checked="@(autoRefresh)" />
-                        <label for="switch" @onclick="@changeAutoRefresh">
-                            Toggle
-                        </label>
+                        <MudSwitch @bind-Checked="@autoRefresh" Color="Color.Success" />
                     </td>
                 </tr>
             </tbody>
         </table>
-        <div id="travel-planner-settings">
-            <h4>Travel Planner</h4>
-            <div id="stops">
-                <div class="from">
-                    <strong>From Solstigen 49</strong>
-                    <ul class="list-group">
-                        @foreach (var item in homeLocation.NearbyStops)
-                        {
-                            <li class="list-group-item @((item.MainMastExtId == tempOrigin) ? "active" : "")"
-                            @onclick="@(() => setOrigin(item.MainMastExtId))">@item.Name</li>
-                        }
-                    </ul>
-                </div>
-
-                <div class="to">
-                    @foreach (var item in nearbyStopLocations)
-                    {
-                        <strong>@item.Name</strong>
-                        <ul class="list-group">
-                            @foreach (var stop in item.NearbyStops)
-                            {
-                                <li class="list-group-item @((stop.MainMastExtId == tempDestination) ? "active" : "")"
-                            @onclick="@(() => setDestination(stop.MainMastExtId))">@stop.Name</li>
-                            }
-                        </ul>
-                    }
-                </div>
-            </div>
-        </div>
+        <MudText Typo="Typo.h6">Travel Planner</MudText>
+        <MudSelect T="NearbyStop" Label="Solstigen 49" @bind-Value="tempOrigin" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+            @foreach (var item in homeLocation.NearbyStops)
+            {
+                <MudSelectItem Value="@item" />
+            }
+        </MudSelect>
+        
+        <MudSelect T="NearbyStop" Label="Destination" @bind-Value="tempDestination" Variant="Variant.Outlined"
+            AnchorOrigin="Origin.BottomCenter">
+            @foreach (var item in nearbyStopLocations)
+            {
+                <MudSelectItem Value="@(new NearbyStop() {Name = @item.Name})" Disabled="true" />
+                @foreach (var stop in item.NearbyStops)
+                {
+                    <MudSelectItem Value="@stop" />
+                }
+            }
+        </MudSelect>
 
         <div id="error-message">@errorMessage</div>
     </DialogContent>
@@ -110,12 +95,12 @@
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = new();
-
-    private async void Submit() {
+    private async void Submit()
+    {
         await saveChanges();
         MudDialog.Close(DialogResult.Ok(true));
     }
-    
+
     void Cancel() => MudDialog.Cancel();
 
     private string SelectedMortgage { get; set; } = string.Empty;
@@ -127,8 +112,8 @@
 
     private List<NearbyStopLocation> nearbyStopLocations = new List<NearbyStopLocation>();
     private NearbyStopLocation homeLocation = new();
-    private string tempOrigin { get; set; } = string.Empty;
-    private string tempDestination { get; set; } = string.Empty;
+    private NearbyStop tempOrigin { get; set; } = new();
+    private NearbyStop tempDestination { get; set; } = new();
 
     protected override async void OnInitialized()
     {
@@ -174,12 +159,12 @@
         };
     }
 
-    private void setOrigin(string newOrigin)
+    private void setOrigin(NearbyStop newOrigin)
     {
         tempOrigin = newOrigin;
     }
 
-    private void setDestination(string newDestination)
+    private void setDestination(NearbyStop newDestination)
     {
         tempDestination = newDestination;
     }

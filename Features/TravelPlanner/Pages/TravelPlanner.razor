@@ -83,7 +83,7 @@
     {
         _loadingState.ToggleLoading(true);
         
-        trips = await _travelPlanner.GetTravelPlan(_appState.HomeStation, _appState.DestinationStation);
+        trips = await _travelPlanner.GetTravelPlan(_appState.HomeStation.MainMastExtId, _appState.DestinationStation.MainMastExtId);
         await InvokeAsync(StateHasChanged);
 
         _loadingState.ToggleLoading(false);

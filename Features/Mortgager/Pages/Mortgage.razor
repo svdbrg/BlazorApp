@@ -20,13 +20,15 @@
 
 <MudText Typo="Typo.h2">Mortgage all the things</MudText>
 
-<MudText Typo="Typo.body1">This is a tool to help visualize your mortgage application and the costs that follow by
+<MudText Typo="Typo.subtitle1">This is a tool to help visualize your mortgage application and the costs that follow by
     owning a home.</MudText>
+
 <div class="message @getClassName()">
     <b>@saveCounterMessage</b>
 </div>
-<div class="mortgage">
-    <div class="form-group">
+
+<MudGrid Style="margin-top:20px;">
+    <MudItem xs="12" md="6">
         <MudText Typo="Typo.h4">Loan information</MudText>
         <MudCard>
             <MudCardContent>
@@ -34,10 +36,12 @@
                 <LoanInformationSummary onSaveChanges="saveChanges" mortgage="mortgage" />
             </MudCardContent>
         </MudCard>
-    </div>
-    <Expenses canEdit="canEdit" mortgage="mortgage" onSaveChanges="saveChanges" />
-</div>
-
+    </MudItem>
+    <MudItem xs="12" md="6">
+        <MudText Typo="Typo.h4">Monthly expenses</MudText>
+        <Expenses canEdit="canEdit" mortgage="mortgage" onSaveChanges="saveChanges" />
+    </MudItem>
+</MudGrid>
 @code {
     private MortgageItem mortgage = new();
     private bool canEdit = true;

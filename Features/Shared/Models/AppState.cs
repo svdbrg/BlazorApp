@@ -1,19 +1,21 @@
+using BlazorApp.Features.TravelPlanner.Models;
+
 namespace BlazorApp.Features.Shared.Models;
 
 public class AppState
 {
     public bool AutoRefresh { get; private set; }
-    public string HomeStation { get; private set; } = "300104013";
-    public string DestinationStation { get; private set; } = "300109192";
+    public NearbyStop HomeStation { get; private set; } = new() { Name = "Drottninghamnsvägen (Nacka)", MainMastExtId = "300104013" };
+    public NearbyStop DestinationStation { get; private set; } = new() { Name = "Slussen", MainMastExtId = "300109192" };
     public event Action? OnChange;
 
-    public void SetHomeStation(string newStation)
+    public void SetHomeStation(NearbyStop newStation)
     {
         HomeStation = newStation;
         NotifyStateChanged();
     }
 
-    public void SetDestination(string newStation)
+    public void SetDestination(NearbyStop newStation)
     {
         DestinationStation = newStation;
         NotifyStateChanged();
