@@ -11,7 +11,7 @@ public class NearbyStop
     public string MainMastExtId { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         var other = o as NearbyStop;
         return other?.Name == Name;

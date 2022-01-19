@@ -14,13 +14,13 @@
 
 @foreach (var item in _options.Value)
 {
-    <MudCard Style="max-width:550px; margin-bottom:20px;">
+    <MudCard Style="max-width:550px; margin-bottom:20px;" Class="mud-theme-primary">
         <MudCardContent>
             <MudText Typo="Typo.h5">@item.Name</MudText>
             <MudText Typo="Typo.body2">@item.Description</MudText>
         </MudCardContent>
         <MudCardActions>
-            <MudButton Variant="Variant.Text" Link="@item.NavMenuItem.Href" Color="Color.Primary">Learn More</MudButton>
+            <MudButton Variant="Variant.Text" Link="@item.NavMenuItem.Href" Color="Color.Tertiary">Learn More</MudButton>
         </MudCardActions>
     </MudCard>
 }
