@@ -12,37 +12,44 @@
 
 <PageTitle>Travel Planner</PageTitle>
 
-<div class="switch-container">
-    <span @onclick="changeDirection"><svg width="24px" height="24px" viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg">
-            <path
-                d="M7.72 21.78a.75.75 0 001.06-1.06L5.56 17.5h14.69a.75.75 0 000-1.5H5.56l3.22-3.22a.75.75 0 10-1.06-1.06l-4.5 4.5a.75.75 0 000 1.06l4.5 4.5zm8.56-9.5a.75.75 0 11-1.06-1.06L18.44 8H3.75a.75.75 0 010-1.5h14.69l-3.22-3.22a.75.75 0 011.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5z" />
-        </svg></span>
-</div>
-
-<div id="trips">
+<MudGrid Spacing="3" Justify="Justify.Center">
     @foreach (var item in trips)
     {
-        <div class="trip">
-            <div class="prefix">@getLayoverStops(item)</div>
-            <div class="minutes">@((int)(item.Legs.First().Origin.Time.Subtract(DateTime.Now).Minutes))</div>
-            <div class="meta">
-                <div class="line">@(string.Join(", ", item.Legs.Where(l => !string.IsNullOrEmpty(l.Line)).Select(l =>
-                l.Line)))
+        <MudItem id="paper-wrapper" Class="paper-wrapper" xs="12" sm="6" md="6" lg="4">
+            <MudPaper Height="140px" Width="100%" Class="paper pa-4">
+                <div>
+                    <MudText Typo="Typo.h2">@((int)(item.Legs.First().Origin.Time.Subtract(DateTime.Now).Minutes))</MudText>
+                    <MudText Typo="Typo.caption">
+                        @getLayoverStops(item)<br />
+                        @(string.Join(", ", item.Legs.Where(l => !string.IsNullOrEmpty(l.Line)).Select(l => l.Line)))
+                    </MudText>
                 </div>
-                <div class="origin">
-                    @item.Legs.First().Origin.Time.ToShortTimeString()<br />
-                    @item.Legs.First().Origin.Name
+                <div>
+                    <div>
+                        <MudText Typo="Typo.caption">
+                            @item.Legs.First().Origin.Time.ToShortTimeString()<br />
+                            @item.Legs.First().Origin.Name
+                        </MudText>
+                    </div>
+                    <div>
+                        <MudIcon Icon="@Icons.Filled.KeyboardArrowDown" Title="Favorite" /><br />
+                    </div>
+                    <div>
+                        <MudText Typo="Typo.caption">
+                            @item.Legs.Last().Destination.Time.ToShortTimeString()<br />
+                            @item.Legs.Last().Destination.Name
+                        </MudText>
+                    </div>
                 </div>
-                <div class="destination">
-                    @item.Legs.Last().Destination.Time.ToShortTimeString()<br />
-                    @item.Legs.Last().Destination.Name
-                </div>
-            </div>
-        </div>
-    }
-</div>
 
+            </MudPaper>
+        </MudItem>
+    }
+</MudGrid>
+
+<div class="change-icon">
+    <MudFab Color="Color.Primary" StartIcon="@Icons.Filled.ChangeCircle" @onclick="changeDirection" />
+</div>
 @code {
     private IEnumerable<Trip> trips = new List<Trip>();
     private List<NearbyStopLocation> nearbyStopLocations = new List<NearbyStopLocation>();
@@ -81,8 +88,9 @@
     private async Task setTravelPlan()
     {
         _loadingState.ToggleLoading(true);
-        
-        trips = await _travelPlanner.GetTravelPlan(_appState.HomeStation.MainMastExtId, _appState.DestinationStation.MainMastExtId);
+
+        trips = await _travelPlanner.GetTravelPlan(_appState.HomeStation.MainMastExtId,
+        _appState.DestinationStation.MainMastExtId);
         await InvokeAsync(StateHasChanged);
 
         _loadingState.ToggleLoading(false);
