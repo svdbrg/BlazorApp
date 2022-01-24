@@ -5,10 +5,26 @@
 }
 
 #fixtures, #table {
-  float: none;
-  width: 100%;
+  float: left;
 }
 
 #fixtures {
-  margin-top: 10px;
+  width: 38%;
+  float: right;
+}
+
+#table {
+  width: 60%;
+}
+
+@media (max-width: 750px) {
+  #fixtures, #table {
+    float: none;
+    width: 100%;
+  }
+
+  #fixtures {
+    margin-top: 10px;
+    margin-left: 0;
+  }
 }

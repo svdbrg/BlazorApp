@@ -1,32 +1,22 @@
 table {
     width: 100%;
+}
+
+table td, table th {
     cursor: default;
 }
 
-thead tr:first-child th:first-child,
-tbody tr:first-child td:first-child {
-    width: 25px;
-}
-
-th:nth-child(2),
-td:nth-child(2) {
-    padding-left: 10px;
-}
-
-tbody tr:nth-child(1),
-tbody tr:nth-child(4),
-tbody tr:nth-child(5),
-tbody tr:nth-child(17) {
-    border-bottom: solid 1px #ccc;
+table tr th:nth-child(3),
+table tr th:nth-child(4),
+table tr th:nth-child(5),
+table tr td:nth-child(3),
+table tr td:nth-child(4),
+table tr td:nth-child(5) {
+    text-align: center;
 }
 
 tbody tr:first-child {
     font-weight: bold;
-}
-
-tbody tr:hover {
-    background-color: #ccc;
-    color: #000;
 }
 
 .team-is-playing {
@@ -35,10 +25,6 @@ tbody tr:hover {
 
 .team-is-done {
     color: #ccc;
-}
-
-tbody td:nth-child(2) div {
-    width: 100%;
 }
 
 tbody td:nth-child(2) div {
@@ -51,13 +37,10 @@ tr.mouse-over {
     background-color: chartreuse;
 }
 
-.table-wrapper {
-    position: relative;
-}
 
 @media only screen and (min-device-width: 320px) and (max-device-width: 800px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
     tbody td:nth-child(2) {
-        max-width: 150px;
+        max-width: 130px;
     }
 
     thead th:first-child, tbody td:first-child {

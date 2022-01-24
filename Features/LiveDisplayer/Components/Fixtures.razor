@@ -4,22 +4,32 @@
 
 @foreach (var day in days)
 {
-    <div class="day-wrapper">
-        <div class="day">@day.Date</div>
+    <MudPaper Class="pa-4 mb-4">
+        <MudText Typo="Typo.subtitle1">@day.Date</MudText>
+
         @foreach (var fixture in day.Fixtures)
         {
-            <div class="fixture @HelperMethods.GetCssClassForCurrentStatus(fixture.Status, fixture.Phase)"
+            <div class="d-flex justify-space-between py-2 px-1 @HelperMethods.GetCssClassForCurrentStatus(fixture.Status, fixture.Phase) fixture"
         @onmouseout="@(() => removeCurrentlyPlayingDelegate!(fixture.HomeTeamShortName, fixture.AwayTeamShortName))"
         @onmouseover="@(() => setCurrentlyPlayingDelegate!(fixture.HomeTeamShortName, fixture.AwayTeamShortName))">
-                <div id="f-@fixture.HomeTeamShortName" class="home">@fixture.HomeTeamShortName</div>
-                <div class="result">
-                    @(getTimeOrStatus(fixture))
+                <div id="f-@fixture.HomeTeamShortName" class="my-auto" style="width: 40%;">
+                    <MudText Align="Align.Right" Typo="Typo.subtitle2">
+                        @fixture.HomeTeam
+                    </MudText>
                 </div>
-                <div id="f-@fixture.AwayTeamShortName" class="away">@fixture.AwayTeamShortName</div>
+                <div class="my-auto">
+                    <MudText Align="Align.Center" Typo="Typo.caption">
+                        @(getTimeOrStatus(fixture))
+                    </MudText>
+                </div>
+                <div id="f-@fixture.AwayTeamShortName" class="my-auto" style="width: 40%;">
+                    <MudText Align="Align.Left" Typo="Typo.subtitle2">
+                        @fixture.AwayTeam
+                    </MudText>
+                </div>
             </div>
         }
-
-    </div>
+    </MudPaper>
 }
 
 @code {

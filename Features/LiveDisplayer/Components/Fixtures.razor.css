@@ -1,28 +1,3 @@
-.day-wrapper {
-    margin-bottom: 10px;
-    cursor: default;
-}
-    
-.day-wrapper .day {
-    text-align: center;
-}
-
-.day-wrapper .fixture .home, 
-.day-wrapper .fixture .result,
-.day-wrapper .fixture .away {
-    width: 33%;
-    float: left;
-    text-align: center;
-}
-
-.day-wrapper .fixture .home {
-    text-align: right;
-}
-
-.day-wrapper .fixture .away {
-    text-align: left;
-}
-
 .team-is-playing {
     color: lime;
 }
@@ -31,8 +6,12 @@
     color: #ccc;
 }
 
-.mouse-over div {
+.mouse-over {
     background-color: chartreuse;
+}
+
+.fixture {
+    cursor: default;
 }
 
 .fixture-postoned div.home, .fixture-postoned div.result, .fixture-postoned div.away {
