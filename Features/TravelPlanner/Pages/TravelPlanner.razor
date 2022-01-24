@@ -39,7 +39,7 @@
             </MudItem>
             <MudItem xs="6">
                 <div class="d-flex flex-column">
-                    <div class="my-2">
+                    <div class="my-2" style="text-align: right;">
                         <MudText Typo="Typo.button">
                             @item.Legs.First().Origin.Time.ToShortTimeString()
                         </MudText>
@@ -48,7 +48,7 @@
                             @item.Legs.First().Origin.Name
                         </MudText>
                     </div>
-                    <div class="my-2">
+                    <div class="my-2" style="text-align: right;">
                         <MudText Typo="Typo.button">
                             @item.Legs.Last().Destination.Time.ToShortTimeString()
                         </MudText>
