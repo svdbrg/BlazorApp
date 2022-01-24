@@ -27,6 +27,7 @@
                     <td>@team.Position</td>
                     <td>
                         <div>
+                            <img class="team-crest" src="@GetCrest(team.AltId)">
                             @team.Name
                         </div>
                     </td>
@@ -53,6 +54,11 @@
     public async void removeCurrentlyPlaying(string home, string away)
     {
         await _js.InvokeVoidAsync($"PlTable.removeClass", home, away);
+    }
+
+    private string GetCrest(string altId)
+    {
+        return $"https://resources.premierleague.com/premierleague/badges/25/{altId}.png";
     }
 
     private void ShowUpcomingFixturesForTeam(int teamId, string teamName)

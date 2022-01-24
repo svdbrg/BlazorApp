@@ -10,5 +10,6 @@ public class Team
     public int GoalDifference { get; set; }
     public int Points { get; set; }
     public string Status { get; set; } = string.Empty;
+    public string AltId { get; set; } = string.Empty;
     public string CssClass { get; set; } = "none";
 }

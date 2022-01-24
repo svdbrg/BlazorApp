@@ -40,6 +40,7 @@ public class FixtureMapperProfile : Profile
             .ForMember(s => s.Played, opt => opt.MapFrom(d => d.overall.played))
             .ForMember(s => s.Id, opt => opt.MapFrom(d => d.team.id))
             .ForMember(s => s.GoalDifference, opt => opt.MapFrom(d => d.overall.goalsDifference))
+            .ForMember(s => s.AltId, opt => opt.MapFrom(d => d.team.altIds.opta))
             .ForMember(s => s.Points, opt => opt.MapFrom(d => d.overall.points));
     }
 }

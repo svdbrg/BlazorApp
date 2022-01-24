@@ -97,7 +97,7 @@ public class PremierLeagueDataService : IFootballDataService
                 return new RootDto();
             }
 
-            var response = await client.GetAsync($"/football/fixtures?pageSize=100&comps=1&gameweeks={gameweekId}");
+            var response = await client.GetAsync($"/football/fixtures?pageSize=100&comps=1&altIds=true&gameweeks={gameweekId}");
 
             if (!response.IsSuccessStatusCode)
             {
