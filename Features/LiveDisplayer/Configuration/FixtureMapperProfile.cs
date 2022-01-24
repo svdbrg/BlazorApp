@@ -16,11 +16,18 @@ public class FixtureMapperProfile : Profile
             .ForMember(s => s.Status, opt => opt.MapFrom(d => d.status))
             .ForMember(s => s.Phase, opt => opt.MapFrom(d => d.phase))
             .ForMember(s => s.Result, opt => opt.MapFrom(d => $"{d.teams[0].score}-{d.teams[1].score}"))
+            .ForMember(s => s.Stadium, opt => opt.MapFrom( d=> d.ground.name))
+            .ForMember(s => s.City, opt => opt.MapFrom( d=> d.ground.city))
             .ForMember(s => s.DateAndTime, opt => opt.MapFrom((src, dest) =>
             {
                 if (string.IsNullOrWhiteSpace(src?.kickoff?.label))
                 {
                     return DateTime.MinValue;
+                }
+
+                if (src.kickoff.label.Contains("BST"))
+                {
+                    return DateTime.Parse(src.kickoff.label.Replace("BST", "GMT"), CultureInfo.CreateSpecificCulture("sv-SE")).AddHours(-1);
                 }
 
                 return DateTime.Parse(src.kickoff.label, CultureInfo.CreateSpecificCulture("sv-SE"));

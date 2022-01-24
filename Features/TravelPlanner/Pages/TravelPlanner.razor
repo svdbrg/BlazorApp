@@ -11,45 +11,57 @@
 @implements IDisposable
 
 <PageTitle>Travel Planner</PageTitle>
+<div class="change-icon">
+    <MudFab Color="Color.Primary" StartIcon="@Icons.Filled.ChangeCircle" @onclick="changeDirection" />
+</div>
 
-<MudGrid Spacing="3" Justify="Justify.Center">
-    @foreach (var item in trips)
-    {
-        <MudItem id="paper-wrapper" Class="paper-wrapper" xs="12" sm="6" md="6" lg="4">
-            <MudPaper Height="140px" Width="100%" Class="paper pa-4">
-                <div>
-                    <MudText Typo="Typo.h2">@((int)(item.Legs.First().Origin.Time.Subtract(DateTime.Now).Minutes))</MudText>
-                    <MudText Typo="Typo.caption">
-                        @getLayoverStops(item)<br />
-                        @(string.Join(", ", item.Legs.Where(l => !string.IsNullOrEmpty(l.Line)).Select(l => l.Line)))
-                    </MudText>
-                </div>
-                <div>
-                    <div>
+@foreach (var item in trips)
+{
+    <MudPaper Class="pa-4 ma-2 mud-theme-primary" Elevation="3">
+        <MudGrid>
+            <MudItem xs="6" md="6">
+                <div class="d-flex flex-column">
+                    <div class="my-2">
+                        <MudText Typo="Typo.h2">
+                            @((int)(item.Legs.First().Origin.Time.Subtract(DateTime.Now).Minutes))
+                            <MudText Typo="Typo.caption">minutes</MudText>
+                        </MudText>
+                    </div>
+                    <div class="my-2">
                         <MudText Typo="Typo.caption">
-                            @item.Legs.First().Origin.Time.ToShortTimeString()<br />
+                            @(string.Join(", ", item.Legs.Where(l => !string.IsNullOrEmpty(l.Line)).Select(l => l.Line)))
+                        </MudText>
+                        <MudText Typo="Typo.caption">
+                            @getLayoverStops(item)
+                        </MudText>
+                    </div>
+                </div>
+            </MudItem>
+            <MudItem xs="6" md="6">
+                <div class="d-flex flex-column">
+                    <div class="my-2">
+                        <MudText Typo="Typo.button">
+                            @item.Legs.First().Origin.Time.ToShortTimeString()
+                        </MudText>
+                        <br />
+                        <MudText Typo="Typo.caption">
                             @item.Legs.First().Origin.Name
                         </MudText>
                     </div>
-                    <div>
-                        <MudIcon Icon="@Icons.Filled.KeyboardArrowDown" Title="Favorite" /><br />
-                    </div>
-                    <div>
+                    <div class="my-2">
+                        <MudText Typo="Typo.button">
+                            @item.Legs.Last().Destination.Time.ToShortTimeString()
+                        </MudText>
+                        <br />
                         <MudText Typo="Typo.caption">
-                            @item.Legs.Last().Destination.Time.ToShortTimeString()<br />
                             @item.Legs.Last().Destination.Name
                         </MudText>
                     </div>
                 </div>
-
-            </MudPaper>
-        </MudItem>
-    }
-</MudGrid>
-
-<div class="change-icon">
-    <MudFab Color="Color.Primary" StartIcon="@Icons.Filled.ChangeCircle" @onclick="changeDirection" />
-</div>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+}
 @code {
     private IEnumerable<Trip> trips = new List<Trip>();
     private List<NearbyStopLocation> nearbyStopLocations = new List<NearbyStopLocation>();
@@ -82,7 +94,7 @@
         var stops = string.Join(", ", trip.Legs.Skip(1).Where(t => !string.IsNullOrWhiteSpace(t.Line)).Select(t =>
         t.Origin.Name));
 
-        return $"Via {stops}";
+        return $"via {stops}";
     }
 
     private async Task setTravelPlan()

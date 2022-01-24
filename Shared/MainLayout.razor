@@ -13,7 +13,9 @@
 <MudThemeProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
-
+<MudOverlay Visible="_loadingState.IsLoading" DarkBackground="true" Absolute="true">
+    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+</MudOverlay>
 <MudLayout>
     <MudDrawer @bind-Open="@open" Anchor="Anchor.Bottom" Width="100%" Height="350px" Elevation="1"
         Variant="@DrawerVariant.Temporary">
@@ -30,15 +32,11 @@
         <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Link="http://github.com/svdbrg" Target="_blank"
             Color="Color.Inherit" />
     </MudAppBar>
-    <div class="d-flex justify-center align-center mud-height-full" style="padding-bottom: 100px;">
-        <article class="content px-4">
-            @if (_loadingState.IsLoading)
-            {
-                <div class="loading">Loading...</div>
-            }
+    <MudMainContent Class="pt-0 pb-16">
+        <MudContainer MaxWidth="MaxWidth.Medium">
             @Body
-        </article>
-    </div>
+        </MudContainer>
+    </MudMainContent>
 </MudLayout>
 
 @code {

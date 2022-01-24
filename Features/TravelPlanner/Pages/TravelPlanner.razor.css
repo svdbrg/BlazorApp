@@ -1,19 +1,23 @@
-.paper div:first-child {
-    width: 55%;
+.minutes, .stops, .start, .stop {
+    width: 50%;
     float: left;
 }
 
-.paper div:last-child {
-    width: 45%;
-    float: left;
-    text-align: right;
-}
-
-.paper div:last-child div {
+.minute-wrapper, .time-wrapper {
     clear: both;
-    text-align: right;
     width: 100%;
 }
+
+.stop {
+    float:right;
+    text-align: right;
+}
+
+
+
+
+
+
 
 .change-icon {
     text-align: center;

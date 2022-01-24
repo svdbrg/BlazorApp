@@ -4,24 +4,34 @@
 @inject IFootballDataService _dataService
 
 <div class="tooltip-wrapper">
-    <h3 class="team">
-        @TeamName
-    </h3>
+    <MudText Typo="Typo.h4">@TeamName</MudText>
 
     @foreach (var fixture in Fixtures)
     {
-        <div class="fixture">
-            <div class="date">
-                @fixture.DateAndTime.ToString("m")
-            </div>
+        <div class="game-wrapper">
+            <MudText Style="clear:both;" Typo="Typo.h6">@fixture.DateAndTime.ToString("m")</MudText>
             <div class="teams">
-                <div class="home">@fixture.HomeTeam</div>
-                <div class="time">
-                    <span>
-                        @fixture.DateAndTime.ToString("t")
-                    </span>
+                <div class="home">
+                    <MudText Typo="Typo.subtitle2">
+                        @fixture.HomeTeam
+                    </MudText>
                 </div>
-                <div class="away">@fixture.AwayTeam</div>
+                <div class="time">
+                    <MudText Typo="Typo.overline">
+                        @fixture.DateAndTime.ToString("t")
+                    </MudText>
+                </div>
+                <div class="away">
+                    <MudText Typo="Typo.subtitle2">
+                        @fixture.AwayTeam
+                    </MudText>
+                </div>
+                <div class="stadium">
+                    <MudIcon Icon="@Icons.Filled.Stadium" Style="float:left; margin-right:5px;" Size="Size.Small" />
+                    <MudText Typo="Typo.caption">
+                        @fixture.Stadium, @fixture.City
+                    </MudText>
+                </div>
             </div>
         </div>
     }

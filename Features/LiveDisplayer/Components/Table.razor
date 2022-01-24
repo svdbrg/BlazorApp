@@ -7,7 +7,7 @@
 @inject IDialogService DialogService
 
 <div class="table-wrapper">
-    <table>
+    <MudSimpleTable Dense="true" Style="overflow-x: auto;">
         <thead>
             <tr>
                 <th>POS</th>
@@ -36,7 +36,7 @@
                 </tr>
             }
         </tbody>
-    </table>
+    </MudSimpleTable>
 </div>
 
 @code {
@@ -63,7 +63,9 @@
 
         DialogService.Show<UpcomingFixturesForTeam>("Upcoming fixtures", parameters, new DialogOptions
         {
-            CloseButton = false
+            CloseButton = false,
+            FullWidth = true,
+            NoHeader = true
         });
     }
 
