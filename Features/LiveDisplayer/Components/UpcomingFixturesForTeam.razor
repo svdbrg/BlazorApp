@@ -3,43 +3,52 @@
 
 @inject IFootballDataService _dataService
 
-<div class="tooltip-wrapper">
-    <MudText Typo="Typo.h4">@TeamName</MudText>
+<MudDialog Class="settings-modal">
+    <DialogContent>
+        <MudContainer Style="overflow-y: scroll;">
+            <MudText Typo="Typo.h4">@TeamName</MudText>
 
-    @foreach (var fixture in Fixtures)
-    {
-        <div class="game-wrapper">
-            <MudText Style="clear:both;" Typo="Typo.h6">@fixture.DateAndTime.ToString("m")</MudText>
-            <div class="teams">
-                <div class="home">
-                    <MudText Typo="Typo.subtitle2">
-                        @fixture.HomeTeam
-                    </MudText>
+            @foreach (var fixture in Fixtures)
+            {
+                <div class="game-wrapper">
+                    <MudText Style="clear:both;" Typo="Typo.h6">@fixture.DateAndTime.ToString("m")</MudText>
+                    <div class="teams">
+                        <div class="home">
+                            <MudText Typo="Typo.subtitle2">
+                                @fixture.HomeTeam
+                            </MudText>
+                        </div>
+                        <div class="time">
+                            <MudText Typo="Typo.overline">
+                                @fixture.DateAndTime.ToString("t")
+                            </MudText>
+                        </div>
+                        <div class="away">
+                            <MudText Typo="Typo.subtitle2">
+                                @fixture.AwayTeam
+                            </MudText>
+                        </div>
+                        <div class="stadium">
+                            <MudIcon Icon="@Icons.Filled.Stadium" Style="float:left; margin-right:5px;" Size="Size.Small" />
+                            <MudText Typo="Typo.caption">
+                                @fixture.Stadium, @fixture.City
+                            </MudText>
+                        </div>
+                    </div>
                 </div>
-                <div class="time">
-                    <MudText Typo="Typo.overline">
-                        @fixture.DateAndTime.ToString("t")
-                    </MudText>
-                </div>
-                <div class="away">
-                    <MudText Typo="Typo.subtitle2">
-                        @fixture.AwayTeam
-                    </MudText>
-                </div>
-                <div class="stadium">
-                    <MudIcon Icon="@Icons.Filled.Stadium" Style="float:left; margin-right:5px;" Size="Size.Small" />
-                    <MudText Typo="Typo.caption">
-                        @fixture.Stadium, @fixture.City
-                    </MudText>
-                </div>
-            </div>
-        </div>
-    }
-</div>
+            }
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Close</MudButton>
+    </DialogActions>
+</MudDialog>
 
 @code {
     [Parameter] public int TeamId { get; set; }
     [Parameter] public string TeamName { get; set; } = string.Empty;
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = new();
+    void Cancel() => MudDialog.Cancel();
 
     private IEnumerable<Fixture> Fixtures { get; set; } = new List<Fixture>();
 
