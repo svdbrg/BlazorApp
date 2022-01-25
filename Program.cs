@@ -29,9 +29,15 @@ builder.Services.AddSingleton<LoadingState>();
 
 builder.Services.AddMudServices();
 
-var app = builder.Build();
+builder.Services.AddHttpsRedirection(options => { options.HttpsPort = 443; });
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+    options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto;
+});
 
-app.UseHttpsRedirection();
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -40,6 +46,10 @@ if (!app.Environment.IsDevelopment())
 
     // For when docker container is running in Heroku
     app.Urls.Add("http://*:" + Environment.GetEnvironmentVariable("PORT"));
+
+    app
+        .UseForwardedHeaders()
+        .UseHttpsRedirection();
 }
 
 app.AddGoogleCredentials();
