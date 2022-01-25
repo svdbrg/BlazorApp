@@ -30,16 +30,18 @@
 <MudGrid Style="margin-top:20px;">
     <MudItem xs="12" md="6">
         <MudText Typo="Typo.h4">Loan information</MudText>
-        <MudCard>
+        <MudCard Class="mb-5">
             <MudCardContent>
                 <LoanInformationInput canEdit="canEdit" mortgage="mortgage" onSaveChanges="saveChanges" />
-                <LoanInformationSummary onSaveChanges="saveChanges" mortgage="mortgage" />
             </MudCardContent>
         </MudCard>
-    </MudItem>
-    <MudItem xs="12" md="6">
         <MudText Typo="Typo.h4">Monthly expenses</MudText>
         <Expenses canEdit="canEdit" mortgage="mortgage" onSaveChanges="saveChanges" />
+    </MudItem>
+    <MudItem xs="12" md="6">
+        <MudText Typo="Typo.h4">Summary</MudText>
+        <LoanInformationSummary onSaveChanges="saveChanges" mortgage="mortgage" />
+
     </MudItem>
 </MudGrid>
 @code {

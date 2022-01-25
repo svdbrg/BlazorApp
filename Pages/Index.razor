@@ -3,7 +3,6 @@
 @using BlazorApp.Features.Shared.Models
 
 @inject IOptions<List<FeatureInformation>> _options;
-@inject NavigationManager _navigationManager
 
 
 <PageTitle>Oscar's Playground</PageTitle>
@@ -23,11 +22,4 @@
             <MudButton Variant="Variant.Text" Link="@item.NavMenuItem.Href" Color="Color.Tertiary">Learn More</MudButton>
         </MudCardActions>
     </MudCard>
-}
-
-@code {
-    private void onClick(string href)
-    {
-        _navigationManager.NavigateTo(href);
-    }
 }
