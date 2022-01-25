@@ -19,12 +19,12 @@ tbody tr:first-child {
     font-weight: bold;
 }
 
-.team-is-playing {
-    color: limegreen;
-}
-
-.team-is-done {
-    color: #ccc;
+.team-is-playing td:first-child .dot {
+    height: 10px;
+    width: 10px;
+    background-color: limegreen;
+    border-radius: 50%;
+    display: inline-block;
 }
 
 tbody td:nth-child(2) div {
@@ -33,13 +33,9 @@ tbody td:nth-child(2) div {
     text-overflow: ellipsis;
 }
 
-tr.mouse-over {
-    background-color: chartreuse;
-}
-
 .team-crest {
     vertical-align: middle;
-    opacity: 0.5;
+    opacity: 0.8;
 }
 
 

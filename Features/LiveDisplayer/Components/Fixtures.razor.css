@@ -1,13 +1,11 @@
-.team-is-playing {
-    color: lime;
-}
-
-.team-is-done {
-    color: #ccc;
-}
-
-.mouse-over {
-    background-color: chartreuse;
+.team-is-playing .dot {
+    height: 10px;
+    width: 10px;
+    background-color: limegreen;
+    border-radius: 50%;
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: 6px;
 }
 
 .fixture {
@@ -16,6 +14,11 @@
 
 .fixture-postoned div.home, .fixture-postoned div.result, .fixture-postoned div.away {
     text-decoration: line-through;
+}
+
+.home-team img, .away-team img {
+    vertical-align: middle;
+    opacity: 0.8;
 }
 
 @media only screen 

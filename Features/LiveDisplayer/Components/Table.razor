@@ -24,10 +24,13 @@
                 @onmouseout="@(() => removeCurrentlyPlayingDelegate!(team.ShortName))" id="@team.ShortName"
                 class="@team.CssClass @HelperMethods.GetCssClassForCurrentStatus(team.Status)"
                 @onclick="(() => ShowUpcomingFixturesForTeam(team.Id, team.Name))">
-                    <td>@team.Position</td>
+                    <td>
+                        <span class="dot"></span>
+                        @team.Position
+                    </td>
                     <td>
                         <div>
-                            <img class="team-crest" src="@GetCrest(team.AltId)">
+                            <img class="team-crest" src="@GetCrest(team.AltId)" />
                             @team.Name
                         </div>
                     </td>

@@ -63,6 +63,7 @@
         }
 
         table = _dataFetcher.EnrichTableWithStatus(table, days);
+        await InvokeAsync(StateHasChanged);
 
         _loadingState.ToggleLoading(false);
     }
