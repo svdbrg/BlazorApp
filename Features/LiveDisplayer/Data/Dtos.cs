@@ -75,6 +75,7 @@ public class Team2Dto
     public string teamType { get; set; } = string.Empty;
     public string shortName { get; set; } = string.Empty;
     public double id { get; set; }
+    public AltIdsDto altIds { get; set; } = new();
 }
 
 public class TeamDto

@@ -18,23 +18,31 @@
 
 <PageTitle>Calculate your mortgage costs</PageTitle>
 
-<h1>Mortgage all the things</h1>
+<MudText Typo="Typo.h2">Mortgage all the things</MudText>
 
-<p>This is a tool to help visualize your mortgage application and the costs that follow by owning a home.</p>
+<MudText Typo="Typo.subtitle1">This is a tool to help visualize your mortgage application and the costs that follow by
+    owning a home.</MudText>
+
 <div class="message @getClassName()">
     <b>@saveCounterMessage</b>
 </div>
-<div class="mortgage">
-    <div class="form-group">
-        <h2>Loan information</h2>
-        <LoanInformationInput canEdit="canEdit" mortgage="mortgage" onSaveChanges="saveChanges" />
-        <LoanInformationSummary onSaveChanges="saveChanges" mortgage="mortgage" />
-    </div>
-    <Expenses canEdit="canEdit" mortgage="mortgage" onSaveChanges="saveChanges" />
-</div>
 
+<MudGrid Style="margin-top:20px;">
+    <MudItem xs="12" md="6">
+        <MudText Typo="Typo.h4">Loan information</MudText>
+        <MudCard>
+            <MudCardContent>
+                <LoanInformationInput canEdit="canEdit" mortgage="mortgage" onSaveChanges="saveChanges" />
+                <LoanInformationSummary onSaveChanges="saveChanges" mortgage="mortgage" />
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" md="6">
+        <MudText Typo="Typo.h4">Monthly expenses</MudText>
+        <Expenses canEdit="canEdit" mortgage="mortgage" onSaveChanges="saveChanges" />
+    </MudItem>
+</MudGrid>
 @code {
-    [CascadingParameter] public IModalService? Modal { get; set; }
     private MortgageItem mortgage = new();
     private bool canEdit = true;
     private string saveCounterMessage = "";

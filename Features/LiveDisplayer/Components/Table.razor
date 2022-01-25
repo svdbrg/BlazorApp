@@ -4,29 +4,33 @@
 
 @inject IJSRuntime _js
 @inject AppState _appState
+@inject IDialogService DialogService
 
 <div class="table-wrapper">
-    <table>
+    <MudSimpleTable Dense="true" Style="overflow-x: auto;">
         <thead>
             <tr>
-                <th>POS</th>
+                <th>P</th>
                 <th>Team</th>
                 <th>PL</th>
-                <th>GD</th>
+                <th>G</th>
                 <th>P</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var team in footballTable)
             {
-                <tr 
-                    @onmouseover="@(() => setCurrentlyPlayingDelegate!(team.ShortName))"
-                    @onmouseout="@(() => removeCurrentlyPlayingDelegate!(team.ShortName))"
-                    id="@team.ShortName" class="@team.CssClass @HelperMethods.GetCssClassForCurrentStatus(team.Status)"
-                    @onclick="(() => ShowUpcomingFixturesForTeam(team.Id, team.Name))">
-                    <td>@team.Position</td>
+                <tr @onmouseover="@(() => setCurrentlyPlayingDelegate!(team.ShortName))"
+                @onmouseout="@(() => removeCurrentlyPlayingDelegate!(team.ShortName))" id="@team.ShortName"
+                class="@team.CssClass @HelperMethods.GetCssClassForCurrentStatus(team.Status)"
+                @onclick="(() => ShowUpcomingFixturesForTeam(team.Id, team.Name))">
+                    <td>
+                        <span class="dot"></span>
+                        @team.Position
+                    </td>
                     <td>
                         <div>
+                            <img class="team-crest" src="@GetCrest(team.AltId)" />
                             @team.Name
                         </div>
                     </td>
@@ -36,12 +40,11 @@
                 </tr>
             }
         </tbody>
-    </table>
+    </MudSimpleTable>
 </div>
 
 @code {
     [Parameter] public IEnumerable<Team> footballTable { get; set; } = new List<Team>();
-    [CascadingParameter] public IModalService? Modal { get; set; }
     [Parameter] public Action<string>? setCurrentlyPlayingDelegate { get; set; }
 
     [Parameter] public Action<string>? removeCurrentlyPlayingDelegate { get; set; }
@@ -56,15 +59,22 @@
         await _js.InvokeVoidAsync($"PlTable.removeClass", home, away);
     }
 
+    private string GetCrest(string altId)
+    {
+        return $"https://resources.premierleague.com/premierleague/badges/25/{altId}.png";
+    }
+
     private void ShowUpcomingFixturesForTeam(int teamId, string teamName)
     {
-        var parameters = new ModalParameters();
+        var parameters = new DialogParameters();
         parameters.Add("TeamId", teamId);
         parameters.Add("TeamName", teamName);
 
-        Modal?.Show<UpcomingFixturesForTeam>("Upcoming fixtures", parameters, new ModalOptions
+        DialogService.Show<UpcomingFixturesForTeam>("Upcoming fixtures", parameters, new DialogOptions
         {
-            HideCloseButton = true
+            CloseButton = false,
+            FullWidth = true,
+            NoHeader = true
         });
     }
 

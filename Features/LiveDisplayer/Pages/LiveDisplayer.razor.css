@@ -1,15 +1,23 @@
-#fixtures, #table {
-  width: 50%;
-  float: left;
-}
-
 .refresh {
   position: fixed;
   top: 0;
   right: 0;
 }
 
-@media (max-width: 600px) {
+#fixtures, #table {
+  float: left;
+}
+
+#fixtures {
+  width: 38%;
+  float: right;
+}
+
+#table {
+  width: 60%;
+}
+
+@media (max-width: 750px) {
   #fixtures, #table {
     float: none;
     width: 100%;
@@ -17,5 +25,6 @@
 
   #fixtures {
     margin-top: 10px;
+    margin-left: 0;
   }
 }

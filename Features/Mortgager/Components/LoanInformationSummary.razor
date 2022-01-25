@@ -1,12 +1,11 @@
 @using Data
 
-<div class="summary">
-    <table>
+<MudSimpleTable Style="overflow-x: auto;" Class="summary-table">
+    <tbody>
         <tr>
             <td>Is a house:</td>
             <td>
-                <input type="checkbox" id="switch" @onchange="setIsHouse" checked="@(mortgage.IsHouse)" />
-                <label for="switch"></label>
+                <MudSwitch @bind-Checked="@mortgage.IsHouse" @onclick="setIsHouse" Color="Color.Success" />
             </td>
         </tr>
         @if (mortgage.IsHouse)
@@ -62,8 +61,8 @@
             <td>Monthly loan costs</td>
             <td>@mortgage.MonthlyLoanCost.ToString("C")</td>
         </tr>
-    </table>
-</div>
+    </tbody>
+</MudSimpleTable>
 
 @code {
     [Parameter]
@@ -74,7 +73,6 @@
 
     private async void setIsHouse()
     {
-        mortgage.IsHouse = !mortgage.IsHouse;
         await onSaveChanges.InvokeAsync();
     }
 }

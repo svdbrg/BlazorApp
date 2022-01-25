@@ -3,6 +3,7 @@ using BlazorApp.Features.Mortgager.Configuration;
 using BlazorApp.Features.Shared;
 using BlazorApp.Features.Shared.Models;
 using BlazorApp.Features.TravelPlanner.Configuration;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,8 @@ builder.Services.ConfigureAutoMapper();
 
 builder.Services.AddSingleton<AppState>();
 builder.Services.AddSingleton<LoadingState>();
+
+builder.Services.AddMudServices();
 
 var app = builder.Build();
 

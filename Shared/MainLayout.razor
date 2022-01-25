@@ -6,25 +6,42 @@
 @inject ILocalStorage _localStorage
 @inject AppState _appState
 @inject LoadingState _loadingState
+@inject IDialogService DialogService
 
 <PageTitle>BlazorApp</PageTitle>
 
-<div class="page">
-    <div class="sidebar">
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+<MudOverlay Visible="_loadingState.IsLoading" DarkBackground="true" Absolute="true">
+    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+</MudOverlay>
+<MudLayout>
+    <MudDrawer @bind-Open="@open" Anchor="Anchor.Bottom" Width="100%" Height="350px" Elevation="1"
+        Variant="@DrawerVariant.Temporary">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">My App</MudText>
+        </MudDrawerHeader>
         <NavMenu />
-    </div>
-    <main>
-        <article class="content px-4">
-            @if (_loadingState.IsLoading)
-            {
-                <div class="loading">Loading...</div>
-            }
+
+    </MudDrawer>
+    <MudAppBar Color="Color.Primary" Bottom="true" Fixed="true">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" OnClick="@(() => ToggleDrawer())" Color="Color.Inherit"
+            Edge="Edge.Start" />
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Link="http://github.com/svdbrg" Target="_blank"
+            Color="Color.Inherit" />
+    </MudAppBar>
+    <MudMainContent Class="pt-4 pb-16">
+        <MudContainer MaxWidth="MaxWidth.Medium">
             @Body
-        </article>
-    </main>
-</div>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
 
 @code {
+    bool open = false;
+
     protected override void OnInitialized()
     {
         _navigationManager.LocationChanged += LocationChanged;
@@ -46,6 +63,11 @@
         }
     }
 
+    void ToggleDrawer()
+    {
+        open = !open;
+    }
+
     private async void LocationChanged(object? sender, LocationChangedEventArgs e)
     {
         await IsAuthenticated();
@@ -63,10 +85,11 @@
             }
             else
             {
-                Modal?.Show<LoginModal>("Login", new ModalOptions
+                DialogService.Show<LoginModal>("Log in", new DialogOptions
                 {
-                    DisableBackgroundCancel = true,
-                    HideCloseButton = true
+                    CloseButton = false,
+                    CloseOnEscapeKey = false,
+                    DisableBackdropClick = true
                 });
             }
         }
@@ -76,6 +99,4 @@
     {
         await InvokeAsync(StateHasChanged);
     }
-
-    [CascadingParameter] public IModalService? Modal { get; set; }
 }

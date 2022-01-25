@@ -1,6 +1,7 @@
 using BlazorApp.Features.Shared.Models;
 using BlazorApp.Features.TravelPlanner.Services;
 using BlazorApp.Features.TravelPlanner.Services.Abstractions;
+using MudBlazor;
 
 namespace BlazorApp.Features.TravelPlanner.Configuration;
 
@@ -12,7 +13,7 @@ public static class LiveDisplayerConfigurator
         {
             Href = "travelplanner",
             Label = "Travel Planner",
-            Icon = "oi oi-dashboard"
+            Icon = Icons.Filled.TravelExplore
         },
         Name = "Travel Planner",
         Description = "Makes it a breeze to get an overview of when the next bus or train leaves."

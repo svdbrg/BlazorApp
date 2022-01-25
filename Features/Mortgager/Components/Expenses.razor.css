@@ -1,17 +1,9 @@
-div.expenses {
-    width: 30%;
-    float: left;
-    min-width: 500px;
+.expenses-table {
+    margin-top: 10px;
 }
 
-div.expenses div.input {
-    width: 50%;
-    float: left;
-}
-
-table.expenses {
-    width: 100%;
-    margin-top: 20px;
+.left {
+    text-align: left;
 }
 
 .center {
@@ -22,8 +14,12 @@ table.expenses {
     text-align: right;
 }
 
+tfoot {
+    border-top: 1px solid rgb(109, 109, 109);
+}
 
-@media (max-width: 1330px) {
+
+@media (max-width: 1085px) {
     div.expenses {
         min-width: auto;
         width: 100%;

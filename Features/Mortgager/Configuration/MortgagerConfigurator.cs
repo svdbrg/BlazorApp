@@ -1,7 +1,7 @@
 using BlazorApp.Features.Mortgager.Services;
 using BlazorApp.Features.Mortgager.Services.Abstractions;
 using BlazorApp.Features.Shared.Models;
-using Blazored.Modal;
+using MudBlazor;
 
 namespace BlazorApp.Features.Mortgager.Configuration;
 
@@ -13,7 +13,7 @@ public static class MortgagerConfigurator
         {
             Href = "mortgage",
             Label = "Mortgage",
-            Icon = "oi oi-list-rich"
+            Icon = Icons.Filled.AttachMoney
         },
         Name = "Mortgage",
         Description = "A tool to calculate mortgage costs based on purchase price, down payment yearly salary etc."
@@ -22,7 +22,6 @@ public static class MortgagerConfigurator
     public static IServiceCollection ConfigureMortgager(this IServiceCollection services, WebApplicationBuilder builder)
     {
         services.AddTransient<IDataService, GcmDataService>();
-        services.AddBlazoredModal();
 
         services.Configure<List<FeatureInformation>>(opt =>
         {

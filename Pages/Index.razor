@@ -8,19 +8,21 @@
 
 <PageTitle>Oscar's Playground</PageTitle>
 
-<h1>Hello, world!</h1>
+<MudText Typo="Typo.h2">Hello, world!</MudText>
 
-<p>This is where I collect minor project ideas and technologies I want to try out.</p>
+<MudText Typo="Typo.body1">This is where I collect minor project ideas and technologies I want to try out.</MudText>
 
 @foreach (var item in _options.Value)
 {
-    <div class="tool" @onclick="@(e => onClick(item.NavMenuItem.Href))">
-        <div class="information">
-            <h3>@item.Name</h3>
-            <p>@item.Description</p>
-        </div>
-        <div class="background-icon @item.NavMenuItem.Icon"></div>
-    </div>
+    <MudCard Style="margin-bottom:20px;" Class="mud-theme-primary">
+        <MudCardContent>
+            <MudText Typo="Typo.h5">@item.Name</MudText>
+            <MudText Typo="Typo.body2">@item.Description</MudText>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Text" Link="@item.NavMenuItem.Href" Color="Color.Tertiary">Learn More</MudButton>
+        </MudCardActions>
+    </MudCard>
 }
 
 @code {

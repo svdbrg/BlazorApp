@@ -3,28 +3,48 @@
 
 @inject ILocalStorage _localStorage
 
-<div class="simple-form">
-    <div class="form-group">
-        <input @bind="@input" type="password" class="form-control" />
-    </div>
-    <button @onclick="Login" class="btn btn-primary">Submit</button>
+<MudContainer MaxWidth="MaxWidth.Small">
+    <MudTextField @bind-Value="Password" Label="Password" Variant="Variant.Text" InputType="@PasswordInput"
+        Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" />
+    <MudContainer Style="margin-top: 30px; text-align:center;">
+        <MudFab Size="Size.Small" StartIcon="@Icons.Filled.Login" Color="Color.Primary" OnClick="Login" Label="Enter" />
     <div id="error-message">@errorMessage</div>
-</div>
-
+    </MudContainer>
+</MudContainer>
 @code {
-    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new();
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = new();
 
     private string errorMessage { get; set; } = string.Empty;
-    private string input { get; set; } = string.Empty;
+    private string Password { get; set; } = string.Empty;
+    private bool isShow;
+    private InputType PasswordInput = InputType.Password;
+    private string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    private void TogglePasswordVisibility()
+    {
+        if (isShow)
+        {
+            isShow = false;
+            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+            PasswordInput = InputType.Password;
+        }
+        else
+        {
+            isShow = true;
+            PasswordInputIcon = Icons.Material.Filled.Visibility;
+            PasswordInput = InputType.Text;
+        }
+    }
 
     private void Login()
     {
-        if (input == "solstigen")
+        if (Password == "solstigen")
         {
             errorMessage = "";
-            var token = HelperMethods.EncryptString($"{input}-{DateTime.Now.Ticks}-salt", "authorizationkey");
+            var token = HelperMethods.EncryptString($"{Password}-{DateTime.Now.Ticks}-salt", "authorizationkey");
             _localStorage.SaveStringAsync("auth", token);
-            ModalInstance.CloseAsync(ModalResult.Ok<bool>(true));
+
+            MudDialog.Close(DialogResult.Ok(true));
         }
         else
         {

@@ -1,42 +1,24 @@
-.day-wrapper {
-    margin-bottom: 10px;
+.team-is-playing .dot {
+    height: 10px;
+    width: 10px;
+    background-color: limegreen;
+    border-radius: 50%;
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: 6px;
+}
+
+.fixture {
     cursor: default;
-}
-    
-.day-wrapper .day {
-    text-align: center;
-}
-
-.day-wrapper .fixture .home, 
-.day-wrapper .fixture .result,
-.day-wrapper .fixture .away {
-    width: 33%;
-    float: left;
-    text-align: center;
-}
-
-.day-wrapper .fixture .home {
-    text-align: right;
-}
-
-.day-wrapper .fixture .away {
-    text-align: left;
-}
-
-.team-is-playing {
-    color: lime;
-}
-
-.team-is-done {
-    color: #ccc;
-}
-
-.mouse-over div {
-    background-color: chartreuse;
 }
 
 .fixture-postoned div.home, .fixture-postoned div.result, .fixture-postoned div.away {
     text-decoration: line-through;
+}
+
+.home-team img, .away-team img {
+    vertical-align: middle;
+    opacity: 0.8;
 }
 
 @media only screen 
