@@ -2,13 +2,13 @@
 
 <MudForm>
     <MudTextField T="int" Disabled="@(!canEdit)" OnBlur="onSaveChanges" Label="Purchase price SEK"
-        @bind-Value="mortgage.PurchasePrice" />
+        @bind-Value="mortgage.PurchasePrice" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.AttachMoney" />
     <MudTextField T="int" Disabled="@(!canEdit)" OnBlur="onSaveChanges" Label="Down payment SEK"
-        @bind-Value="mortgage.DownPayment" />
+        @bind-Value="mortgage.DownPayment" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.AttachMoney" />
     <MudTextField T="double" Disabled="@(!canEdit)" OnBlur="onSaveChanges" Label="Interest rate %"
-        @bind-Value="mortgage.InterestRate" />
+        @bind-Value="mortgage.InterestRate" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Percent" />
     <MudTextField T="int" Disabled="@(!canEdit)" OnBlur="onSaveChanges" Label="Total monthly salary"
-        @bind-Value="mortgage.TotalSalary" />
+        @bind-Value="mortgage.TotalSalary" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.AttachMoney" />
 </MudForm>
 
 @code {

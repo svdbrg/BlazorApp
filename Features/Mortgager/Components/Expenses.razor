@@ -10,7 +10,7 @@
             </MudItem>
             <MudItem xs="12" sm="6" md="6">
                 <MudTextField T="int" Disabled="@(!canEdit)" OnKeyDown="Enter" Label="Cost SEK"
-                    @bind-Value="expenseCost" />
+                    @bind-Value="expenseCost" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.AttachMoney" />
             </MudItem>
         </MudGrid>
         <div>

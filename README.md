@@ -19,6 +19,12 @@ Displays when the next bus leaves from bus stops near my house to Slussen (defau
 - LocalStorage
 - Google Firestore
 
+## 3rd party packages
+- AutoMapper
+- HtmlAgilityPack
+- MudBlazor
+- Google.Cloud.Firestore
+
 ## Instructions
 - Clone repo
 - Place Google Firebase credentials in text-file and place file according to `GcmCredentialsConfigurator.cs`
