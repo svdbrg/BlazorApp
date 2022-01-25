@@ -4,9 +4,9 @@ namespace BlazorApp.Features.Mortgager.Data;
 
 public class MortgageItem
 {
-    public int PurchasePrice { get; set; }
-    public int DownPayment { get; set; }
-    public int TotalSalary { get; set; }
+    public double PurchasePrice { get; set; }
+    public double DownPayment { get; set; }
+    public double TotalSalary { get; set; }
     public double InterestRate { get; set; }
     public double TitleDeed { get => (this.PurchasePrice * 0.015) + 825; }
     public double MortgageDeed { get => (this.Loan * 0.02) + 375; }
@@ -52,7 +52,7 @@ public class MortgageItem
 
     public double TotalSalaryToCompareWith { get => (this.TotalSalary * 12) * 4.5; }
 
-    public int Loan { get => this.PurchasePrice - this.DownPayment; }
+    public int Loan { get => (int)this.PurchasePrice - (int)this.DownPayment; }
 
     public double MonthlyLoanCost
     {

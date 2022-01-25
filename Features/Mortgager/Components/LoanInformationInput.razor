@@ -1,14 +1,19 @@
 @using Data
+@using System.Globalization
 
 <MudForm>
-    <MudTextField T="int" Disabled="@(!canEdit)" OnBlur="onSaveChanges" Label="Purchase price SEK"
-        @bind-Value="mortgage.PurchasePrice" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.AttachMoney" />
-    <MudTextField T="int" Disabled="@(!canEdit)" OnBlur="onSaveChanges" Label="Down payment SEK"
-        @bind-Value="mortgage.DownPayment" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.AttachMoney" />
+    <MudNumericField Immediate="true" Disabled="@(!canEdit)" OnBlur="onSaveChanges" Label="Purchase price" Format="C0" Culture="@_sv" T="double"
+        @bind-Value="mortgage.PurchasePrice" HelperText="@mortgage.PurchasePrice.ToString()" />
+
+    <MudNumericField Immediate="true" Disabled="@(!canEdit)" OnBlur="onSaveChanges" Label="Down payment" Format="C0" Culture="@_sv" T="double"
+        @bind-Value="mortgage.DownPayment" HelperText="@mortgage.DownPayment.ToString()" />
+
+    
     <MudTextField T="double" Disabled="@(!canEdit)" OnBlur="onSaveChanges" Label="Interest rate %"
         @bind-Value="mortgage.InterestRate" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Percent" />
-    <MudTextField T="int" Disabled="@(!canEdit)" OnBlur="onSaveChanges" Label="Total monthly salary"
-        @bind-Value="mortgage.TotalSalary" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.AttachMoney" />
+
+    <MudNumericField Immediate="true" Disabled="@(!canEdit)" OnBlur="onSaveChanges" Label="Total monthly salary" Format="C0" Culture="@_sv" T="double"
+        @bind-Value="mortgage.TotalSalary" HelperText="@mortgage.TotalSalary.ToString()" />
 </MudForm>
 
 @code {
@@ -20,4 +25,6 @@
 
     [Parameter]
     public EventCallback onSaveChanges { get; set; }
+
+    private CultureInfo _sv = CultureInfo.GetCultureInfo("sv-SE");
 }
