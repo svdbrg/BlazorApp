@@ -2,13 +2,14 @@
 @using Features.Shared.Services
 
 @inject ILocalStorage _localStorage
+@inject IDataService _gcmDataService
 
 <MudContainer MaxWidth="MaxWidth.Small">
     <MudTextField @bind-Value="Password" Label="Password" Variant="Variant.Text" InputType="@PasswordInput"
         Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" />
     <MudContainer Style="margin-top: 30px; text-align:center;">
         <MudFab Size="Size.Small" StartIcon="@Icons.Filled.Login" Color="Color.Primary" OnClick="Login" Label="Enter" />
-    <div id="error-message">@errorMessage</div>
+        <div id="error-message">@errorMessage</div>
     </MudContainer>
 </MudContainer>
 @code {
@@ -36,13 +37,15 @@
         }
     }
 
-    private void Login()
+    private async void Login()
     {
-        if (Password == "solstigen")
+        var auth = await _gcmDataService.Authenticate(Password);
+        
+        if (auth.IsAuthenticated)
         {
             errorMessage = "";
             var token = HelperMethods.EncryptString($"{Password}-{DateTime.Now.Ticks}-salt", "authorizationkey");
-            _localStorage.SaveStringAsync("auth", token);
+            await _localStorage.SaveStringAsync("auth", token);
 
             MudDialog.Close(DialogResult.Ok(true));
         }

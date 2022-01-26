@@ -1,5 +1,5 @@
-using BlazorApp.Features.Mortgager.Services;
-using BlazorApp.Features.Mortgager.Services.Abstractions;
+using BlazorApp.Features.Shared.Services;
+using BlazorApp.Features.Shared.Services.Abstractions;
 using BlazorApp.Features.Shared.Models;
 using MudBlazor;
 
@@ -21,8 +21,6 @@ public static class MortgagerConfigurator
 
     public static IServiceCollection ConfigureMortgager(this IServiceCollection services, WebApplicationBuilder builder)
     {
-        services.AddTransient<IDataService, GcmDataService>();
-
         services.Configure<List<FeatureInformation>>(opt =>
         {
             opt.Add(featureInformation);

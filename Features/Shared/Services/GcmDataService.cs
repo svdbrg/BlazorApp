@@ -1,11 +1,10 @@
 using AutoMapper;
 using BlazorApp.Features.Mortgager.Data;
-using BlazorApp.Features.Mortgager.Services.Abstractions;
-using BlazorApp.Features.Shared.Services;
 using BlazorApp.Features.Shared.Services.Abstractions;
 using Google.Cloud.Firestore;
+using BlazorApp.Features.Shared.Models;
 
-namespace BlazorApp.Features.Mortgager.Services;
+namespace BlazorApp.Features.Shared.Services;
 
 public class GcmDataService : IDataService
 {
@@ -90,5 +89,28 @@ public class GcmDataService : IDataService
         var db = FirestoreDb.Create("mortgager");
         var document = db.Collection("mortgages").Document($"mortgage-{suffix}");
         await document.DeleteAsync();
+    }
+
+    public async Task<Authentication> Authenticate(string password)
+    {
+        var db = FirestoreDb.Create("mortgager");
+        var collection = db.Collection("passwords");
+
+        // TODO: Encrypt password
+        var docRef = collection.Document(password);
+        var snapshot = await docRef.GetSnapshotAsync();
+
+        if (snapshot != null)
+        {
+            _logger.LogInformation("Call to Firestore succeeded");
+
+            var authDto = snapshot.ConvertTo<AuthenticationDto>();
+
+            return _mapper.Map<Authentication>(authDto);
+        }
+
+        _logger.LogWarning("Call to Firestore failed when getting data");
+
+        throw new UnauthorizedAccessException("Call to Firestore failed when getting data");
     }
 }
