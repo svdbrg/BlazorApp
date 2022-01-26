@@ -7,7 +7,11 @@ using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Configuration
+    .AddJsonFile("appsettings.local.json", 
+                optional: true, 
+                reloadOnChange: true);
+
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddLocalization();
@@ -52,7 +56,7 @@ if (!app.Environment.IsDevelopment())
         .UseHttpsRedirection();
 }
 
-app.AddGoogleCredentials();
+app.AddGoogleCredentials(builder);
 
 app.UseStaticFiles();
 

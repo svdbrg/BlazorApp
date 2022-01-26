@@ -37,3 +37,4 @@ msbuild.wrn
 .vs/
 
 mortgage*.json
+appsettings.local.json

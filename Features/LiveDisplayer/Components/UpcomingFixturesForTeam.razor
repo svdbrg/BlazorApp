@@ -3,9 +3,9 @@
 
 @inject IFootballDataService _dataService
 
-<MudDialog Class="settings-modal">
+<MudDialog Class="settings-modal pa-0">
     <DialogContent>
-        <MudContainer Style="overflow-y: scroll;">
+        <MudContainer Style="overflow-y: scroll; max-height:750px;">
             <MudText Typo="Typo.h4">@TeamName</MudText>
 
             @foreach (var fixture in Fixtures)
@@ -28,12 +28,11 @@
                                 @fixture.AwayTeam
                             </MudText>
                         </div>
-                        <div class="stadium">
-                            <MudIcon Icon="@Icons.Filled.Stadium" Style="float:left; margin-right:5px;" Size="Size.Small" />
-                            <MudText Typo="Typo.caption">
-                                @fixture.Stadium, @fixture.City
-                            </MudText>
-                        </div>
+                    </div>
+                    <div class="stadium">
+                        <MudText Typo="Typo.overline">
+                            @fixture.Stadium, @fixture.City
+                        </MudText>
                     </div>
                 </div>
             }

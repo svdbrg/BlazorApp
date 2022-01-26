@@ -2,14 +2,15 @@ namespace BlazorApp.Features.Mortgager.Configuration;
 
 public static class GcmCredentialsConfigurator
 {
-    public static void AddGoogleCredentials(this WebApplication app)
+    public static void AddGoogleCredentials(this WebApplication app, WebApplicationBuilder builder)
     {
         var filePath = "";
         
         if (app.Environment.IsDevelopment())
         {
-            filePath = "C:\\Users\\svdbrg\\gcm\\mortgager.json";
-            // filePath = "C:\\Dev\\Local\\gcm.json";
+            filePath = builder.Configuration
+                .GetSection("GoogleCloudPlatform")
+                .GetValue<string>("TokenFilePath");
         }
         else
         {

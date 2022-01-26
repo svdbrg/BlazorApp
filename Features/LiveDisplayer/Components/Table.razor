@@ -20,17 +20,18 @@
         <tbody>
             @foreach (var team in footballTable)
             {
-                <tr @onmouseover="@(() => setCurrentlyPlayingDelegate!(team.ShortName))"
-                @onmouseout="@(() => removeCurrentlyPlayingDelegate!(team.ShortName))" id="@team.ShortName"
-                class="@team.CssClass @HelperMethods.GetCssClassForCurrentStatus(team.Status)"
-                @onclick="(() => ShowUpcomingFixturesForTeam(team.Id, team.Name))">
+                <tr 
+                    class="@team.CssClass @HelperMethods.GetCssClassForCurrentStatus(team.Status)"
+                    @onmouseover="@(() => setCurrentlyPlayingDelegate!(team.ShortName))"
+                    @onmouseout="@(() => removeCurrentlyPlayingDelegate!(team.ShortName))" id="@team.ShortName"
+                    @onclick="(() => ShowUpcomingFixturesForTeam(team.Id, team.Name))">
                     <td>
                         <span class="dot"></span>
                         @team.Position
                     </td>
                     <td>
                         <div>
-                            <img class="team-crest" src="@GetCrest(team.AltId)" />
+                            <img height="25" width="25" class="team-crest" src="@GetCrest(team.AltId)" />
                             @team.Name
                         </div>
                     </td>
