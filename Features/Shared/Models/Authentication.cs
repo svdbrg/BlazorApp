@@ -5,12 +5,20 @@ namespace BlazorApp.Features.Shared.Models;
 public class Authentication
 {
     public bool IsAuthenticated { get; set; }
+    public string Name { get; set; } = string.Empty;
     public bool IsAdmin { get; set; }
+    public string EncryptedPassword { get; set; } = string.Empty;
 }
 
 [FirestoreData]
 public class AuthenticationDto
 {
     [FirestoreProperty]
+    public string Name { get; set; }= string.Empty;
+    
+    [FirestoreProperty]
     public bool IsAdmin { get; set; }
+    
+    [FirestoreProperty]
+    public string EncryptedPassword { get; set; } = string.Empty;
 }

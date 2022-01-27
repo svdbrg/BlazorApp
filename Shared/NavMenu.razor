@@ -1,10 +1,12 @@
-﻿@using Microsoft.Extensions.Options;
+﻿@using Features.Shared.Services
+@using Microsoft.Extensions.Options;
 @using BlazorApp.Features.Shared.Models
 @using BlazorApp.Features.Shared.Services.Abstractions
 
 @inject IOptions<List<FeatureInformation>> _options;
 @inject ILocalStorage _localStorage
 @inject NavigationManager _navigationManager
+@inject BlazorApp.Features.Shared.Services.Abstractions.IDataService _gcmDataService
 @inject IDialogService DialogService
 
 <MudNavMenu Bordered="true">
@@ -15,11 +17,24 @@
     }
 </MudNavMenu>
 <div class="logout">
+    @if (isAdmin)
+    {
+        <MudNavLink Icon="@Icons.Filled.AdminPanelSettings" @onclick="openAdmin">Admin</MudNavLink>
+    }
     <MudNavLink Icon="@Icons.Filled.Settings" @onclick="openSettings">Settings</MudNavLink>
     <MudNavLink Icon="@Icons.Filled.Logout" @onclick="logOut">Log out</MudNavLink>
 </div>
 
 @code {
+    private bool isAdmin { get; set; }
+    private List<Authentication> users { get; set; } = new();
+
+    protected override async void OnInitialized()
+    {
+        await loadPrivileges();
+        await InvokeAsync(StateHasChanged);
+    }
+
     private async void logOut()
     {
         await _localStorage.RemoveAsync("auth");
@@ -31,9 +46,33 @@
         var options = new DialogOptions
         {
             CloseOnEscapeKey = true,
-            MaxWidth= MaxWidth.ExtraLarge
+            MaxWidth = MaxWidth.ExtraLarge
         };
 
         DialogService.Show<SettingsModal>("Settings", options);
+    }
+
+    private void openAdmin()
+    {
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.ExtraExtraLarge
+        };
+
+        DialogService.Show<AdminModal>("Admin", options);
+    }
+
+    private async Task loadPrivileges()
+    {
+        var authString = await _localStorage.GetStringAsync("auth");
+        var decryptedAuthString = Encryption.DecryptString(authString, Encryption.AuthorizationEncryptionKey);
+
+        isAdmin = bool.Parse(decryptedAuthString.Split('-')[1]);
+    }
+
+    private async Task loadAccounts()
+    {
+        users = await _gcmDataService.GetAllAccounts();
     }
 }

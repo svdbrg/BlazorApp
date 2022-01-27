@@ -1,0 +1,8 @@
+table {
+    min-width: 500px;
+    margin-bottom: 30px;
+}
+
+table td {
+    vertical-align: middle;
+}

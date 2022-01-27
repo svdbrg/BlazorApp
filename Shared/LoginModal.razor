@@ -44,7 +44,7 @@
         if (auth.IsAuthenticated)
         {
             errorMessage = "";
-            var token = HelperMethods.EncryptString($"{Password}-{DateTime.Now.Ticks}-salt", "authorizationkey");
+            var token = Encryption.EncryptString($"{Password}-{auth.IsAdmin}-{auth.Name}-{Encryption.Salt}", Encryption.AuthorizationEncryptionKey);
             await _localStorage.SaveStringAsync("auth", token);
 
             MudDialog.Close(DialogResult.Ok(true));
@@ -52,6 +52,8 @@
         else
         {
             errorMessage = "Wrong password";
+
+            await InvokeAsync(StateHasChanged);
         }
     }
 }

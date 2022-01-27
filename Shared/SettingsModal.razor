@@ -5,7 +5,7 @@
 @using Features.TravelPlanner.Services.Abstractions
 
 @inject IDataService _mortgageDataService
-@inject ITravelPlanner _travelPlannerService;
+@inject ITravelPlanner _travelPlannerService
 @inject ILocalStorage _localStorage
 @inject AppState _appState
 @inject IJSRuntime _js
@@ -65,13 +65,14 @@
             </tbody>
         </table>
         <MudText Typo="Typo.h6">Travel Planner</MudText>
-        <MudSelect T="NearbyStop" Label="Solstigen 49" @bind-Value="tempOrigin" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+        <MudSelect T="NearbyStop" Label="Solstigen 49" @bind-Value="tempOrigin" Variant="Variant.Outlined"
+            AnchorOrigin="Origin.BottomCenter">
             @foreach (var item in homeLocation.NearbyStops)
             {
                 <MudSelectItem Value="@item" />
             }
         </MudSelect>
-        
+
         <MudSelect T="NearbyStop" Label="Destination" @bind-Value="tempDestination" Variant="Variant.Outlined"
             AnchorOrigin="Origin.BottomCenter">
             @foreach (var item in nearbyStopLocations)
@@ -118,6 +119,7 @@
     {
         await loadMortgageData();
         await loadTravelPlannerData();
+
         StateHasChanged();
     }
 
@@ -126,8 +128,8 @@
         var encryptedMortgage = await _localStorage.GetStringAsync("documentSuffix");
 
         ExistingMortgages = await _mortgageDataService.GetAllMortgageDocuments();
-        SelectedMortgage = string.IsNullOrWhiteSpace(encryptedMortgage) ? "" : HelperMethods.DecryptString(encryptedMortgage,
-        "documentSuffix45");
+        SelectedMortgage = string.IsNullOrWhiteSpace(encryptedMortgage) ? "" : Encryption.DecryptString(encryptedMortgage,
+        Encryption.DocumentSuffixEncryptionKey);
         autoRefresh = _appState.AutoRefresh;
     }
 
@@ -196,7 +198,7 @@
                 SelectedMortgage = newMortgage;
             }
 
-            var encryptedMortgage = HelperMethods.EncryptString(SelectedMortgage, "documentSuffix45");
+            var encryptedMortgage = Encryption.EncryptString(SelectedMortgage, Encryption.DocumentSuffixEncryptionKey);
             await _localStorage.SaveStringAsync("documentSuffix", encryptedMortgage ?? (Guid.NewGuid().ToString()));
 
             await InvokeAsync(StateHasChanged);

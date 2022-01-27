@@ -1,0 +1,61 @@
+@using Features.Shared.Models
+@using BlazorApp.Features.Shared.Services.Abstractions
+
+@inject IDataService _gcmDataService
+
+
+<MudDialog Class="settings-modal">
+    <DialogContent>
+        <MudText Typo="Typo.h6">Accounts</MudText>
+        <MudSimpleTable Style="min-width:500px;">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th style="text-align: right;">Is admin</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var account in users)
+                {
+                    <tr>
+                        <td>@account.Name</td>
+                        <td style="text-align: right;">
+                            <MudSwitch Style="margin-right:0;" @bind-Checked="@account.IsAdmin" Color="Color.Success" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
+        <MudPaper Class="mt-10 pa-5">
+            <MudText Typo="Typo.h6">New user</MudText>
+            <MudTextField T="string" HelperText="Name of the new user" Label="Name" @bind-Value="newUser.Name" />
+            <div class="d-flex align-center justify-space-between mt-6">
+                <MudCheckBox @bind-Checked="@newUser.IsAdmin" Label="Is admin" Color="Color.Secondary"></MudCheckBox>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">
+                    Save
+                </MudButton>
+            </div>
+        </MudPaper>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    private List<Authentication> users { get; set; } = new();
+    private Authentication newUser { get; set; } = new();
+
+    protected override async void OnInitialized()
+    {
+        await loadAccounts();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task loadAccounts()
+    {
+        users = await _gcmDataService.GetAllAccounts();
+    }
+
+    private async Task saveNewUser()
+    {
+        
+    }
+}

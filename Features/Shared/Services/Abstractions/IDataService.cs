@@ -10,4 +10,5 @@ public interface IDataService
     Task<List<string>> GetAllMortgageDocuments();
     Task DeleteMortgageAsync(string suffix);
     Task<Authentication> Authenticate(string password);
+    Task<List<Authentication>> GetAllAccounts();
 }

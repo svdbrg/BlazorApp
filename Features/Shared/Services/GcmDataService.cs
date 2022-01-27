@@ -22,7 +22,7 @@ public class GcmDataService : IDataService
     public async Task<MortgageItem?> GetSavedDataAsync()
     {
         var encryptedDocumentSuffix = await _localStorage.GetStringAsync("documentSuffix");
-        var documentSuffix = HelperMethods.DecryptString(encryptedDocumentSuffix, "documentSuffix45");
+        var documentSuffix = Encryption.DecryptString(encryptedDocumentSuffix, Encryption.DocumentSuffixEncryptionKey);
 
         if (string.IsNullOrWhiteSpace(documentSuffix))
         {
@@ -55,7 +55,7 @@ public class GcmDataService : IDataService
     public async Task<bool> SaveDataAsync(MortgageItem item)
     {
         var encryptedDocumentSuffix = await _localStorage.GetStringAsync("documentSuffix");
-        var documentSuffix = HelperMethods.DecryptString(encryptedDocumentSuffix, "documentSuffix45");
+        var documentSuffix = Encryption.DecryptString(encryptedDocumentSuffix, Encryption.DocumentSuffixEncryptionKey);
 
         if (string.IsNullOrWhiteSpace(documentSuffix))
         {
@@ -93,24 +93,40 @@ public class GcmDataService : IDataService
 
     public async Task<Authentication> Authenticate(string password)
     {
+        var token = Encryption.EncryptString($"{password}-{Encryption.Salt}", Encryption.AuthorizationEncryptionKey);
+
         var db = FirestoreDb.Create("mortgager");
         var collection = db.Collection("passwords");
 
-        // TODO: Encrypt password
-        var docRef = collection.Document(password);
-        var snapshot = await docRef.GetSnapshotAsync();
+        var query = collection.WhereEqualTo("EncryptedPassword", token);
+        var querySnapshot = await query.GetSnapshotAsync();
 
-        if (snapshot != null)
+        if (querySnapshot != null && querySnapshot.Any() && querySnapshot.Count() == 1)
         {
             _logger.LogInformation("Call to Firestore succeeded");
 
-            var authDto = snapshot.ConvertTo<AuthenticationDto>();
+            var authDto = querySnapshot.Documents.First().ConvertTo<AuthenticationDto>();
 
-            return _mapper.Map<Authentication>(authDto);
+            var auth = _mapper.Map<Authentication>(authDto);
+            auth.IsAuthenticated = true;
+
+            return auth;
         }
 
         _logger.LogWarning("Call to Firestore failed when getting data");
 
-        throw new UnauthorizedAccessException("Call to Firestore failed when getting data");
+        return new Authentication();
+    }
+
+    public async Task<List<Authentication>> GetAllAccounts()
+    {
+        var db = FirestoreDb.Create("mortgager");
+        var snapshot = await db.Collection("passwords").GetSnapshotAsync();
+        // var dtos = snapshot.Documents.Select(d => d.ConvertTo<AuthenticationDto>());
+
+        
+
+
+        return snapshot.Documents.Select(d => d.ConvertTo<AuthenticationDto>()).Select(_mapper.Map<Authentication>).ToList();
     }
 }
