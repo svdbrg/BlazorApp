@@ -30,6 +30,7 @@ builder.Services.ConfigureAutoMapper();
 
 builder.Services.AddSingleton<AppState>();
 builder.Services.AddSingleton<LoadingState>();
+builder.Services.AddSingleton<AuthState>();
 
 builder.Services.AddMudServices();
 

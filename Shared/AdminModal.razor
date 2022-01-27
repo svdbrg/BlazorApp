@@ -20,10 +20,10 @@
                 {
                     <tr>
                         <td>@account.Name</td>
-                        <td style="text-align: center; width: 100px;">
+                        <td style="text-align: center; max-width: 100px;">
                             <MudSwitch Style="margin-right:0;" @bind-Checked="@account.IsAdmin" Color="Color.Success" />
                         </td>
-                        <td style="text-align: center; width: 100px;">
+                        <td style="text-align: center; max-width: 100px;">
                             <a @onclick="@(e => removeUser(account))">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-trash" viewBox="0 0 16 16">
@@ -65,9 +65,15 @@
             </div>
         </MudPaper>
     </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
 </MudDialog>
 
 @code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = new();
+    void Cancel() => MudDialog.Cancel();
+
     private List<Authentication> users { get; set; } = new();
     private Authentication newUser { get; set; } = new();
     private string tempPassword { get; set; } = string.Empty;
