@@ -6,7 +6,6 @@
 @inject IOptions<List<FeatureInformation>> _options;
 @inject ILocalStorage _localStorage
 @inject NavigationManager _navigationManager
-@inject BlazorApp.Features.Shared.Services.Abstractions.IDataService _gcmDataService
 @inject IDialogService DialogService
 
 <MudNavMenu Bordered="true">
@@ -27,12 +26,16 @@
 
 @code {
     private bool isAdmin { get; set; }
-    private List<Authentication> users { get; set; } = new();
 
-    protected override async void OnInitialized()
+    protected override async Task OnAfterRenderAsync(bool firstrender)
     {
-        await loadPrivileges();
-        await InvokeAsync(StateHasChanged);
+        if (firstrender)
+        {
+            await loadPrivileges();
+            await InvokeAsync(StateHasChanged);
+        }
+
+        await base.OnAfterRenderAsync(firstrender);
     }
 
     private async void logOut()
@@ -66,13 +69,15 @@
     private async Task loadPrivileges()
     {
         var authString = await _localStorage.GetStringAsync("auth");
-        var decryptedAuthString = Encryption.DecryptString(authString, Encryption.AuthorizationEncryptionKey);
+        if (authString != null)
+        {
+            var decryptedAuthString = Encryption.DecryptString(authString, Encryption.AuthorizationEncryptionKey);
 
-        isAdmin = bool.Parse(decryptedAuthString.Split('-')[1]);
-    }
-
-    private async Task loadAccounts()
-    {
-        users = await _gcmDataService.GetAllAccounts();
+            isAdmin = bool.Parse(decryptedAuthString.Split('-')[1]);
+        }
+        else
+        {
+            isAdmin = false;
+        }
     }
 }

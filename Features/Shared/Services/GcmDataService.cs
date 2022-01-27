@@ -122,11 +122,28 @@ public class GcmDataService : IDataService
     {
         var db = FirestoreDb.Create("mortgager");
         var snapshot = await db.Collection("passwords").GetSnapshotAsync();
-        // var dtos = snapshot.Documents.Select(d => d.ConvertTo<AuthenticationDto>());
 
-        
+        return snapshot.Documents
+            .Select(d => d.ConvertTo<AuthenticationDto>())
+            .Select(_mapper.Map<Authentication>)
+            .ToList();
+    }
 
+    public async Task SaveNewUser(Authentication newUser, string password)
+    {
+        var token = Encryption.EncryptString($"{password}-{Encryption.Salt}", Encryption.AuthorizationEncryptionKey);
+        newUser.EncryptedPassword = token;
 
-        return snapshot.Documents.Select(d => d.ConvertTo<AuthenticationDto>()).Select(_mapper.Map<Authentication>).ToList();
+        var newUserDto = _mapper.Map<AuthenticationDto>(newUser);
+
+        var db = FirestoreDb.Create("mortgager");
+        var docref = await db.Collection("passwords").AddAsync(newUserDto);
+    }
+
+    public async Task DeleteUser(Authentication user)
+    {
+        var db = FirestoreDb.Create("mortgager");
+        var document = db.Collection("passwords").Document(user.Id);
+        await document.DeleteAsync();
     }
 }

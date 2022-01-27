@@ -10,12 +10,6 @@
                     @bind-Value="expenseName" HelperText="Name of the monthly cost" />
             </MudItem>
             <MudItem xs="12" sm="6" md="6">
-
-                @* <MudTextField T="int" Disabled="@(!canEdit)" OnKeyDown="Enter" Label="Cost SEK"
-                    @bind-Value="expenseCost" Adornment="Adornment.End"
-                    AdornmentIcon="@Icons.Material.Filled.AttachMoney" /> *@
-
-
                 <MudNumericField Immediate="true" Disabled="@(!canEdit)" OnKeyDown="Enter"
                     Label="Cost" Format="C0" Culture="@CultureInfo.CurrentCulture" T="double"
                     @bind-Value="expenseCost" HelperText="@expenseCost.ToString()" />

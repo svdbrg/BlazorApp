@@ -11,4 +11,6 @@ public interface IDataService
     Task DeleteMortgageAsync(string suffix);
     Task<Authentication> Authenticate(string password);
     Task<List<Authentication>> GetAllAccounts();
+    Task SaveNewUser(Authentication newUser, string password);
+    Task DeleteUser(Authentication user);
 }
