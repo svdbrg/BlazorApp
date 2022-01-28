@@ -11,17 +11,26 @@ public class GcmDataService : IDataService
     private readonly IMapper _mapper;
     private readonly ILogger<GcmDataService> _logger;
     private readonly ILocalStorage _localStorage;
+    private readonly AuthState _authState;
 
-    public GcmDataService(IMapper mapper, ILogger<GcmDataService> logger, ILocalStorage localStorage)
+    public GcmDataService(IMapper mapper, ILogger<GcmDataService> logger, ILocalStorage localStorage, AuthState authState)
     {
         _mapper = mapper ?? throw new NullReferenceException(nameof(mapper));
         _logger = logger ?? throw new NullReferenceException(nameof(logger));
         _localStorage = localStorage ?? throw new NullReferenceException(nameof(localStorage));
+        _authState = authState ?? throw new NullReferenceException(nameof(authState));
     }
 
     public async Task<MortgageItem?> GetSavedDataAsync()
     {
         var encryptedDocumentSuffix = await _localStorage.GetStringAsync("documentSuffix");
+
+        if (encryptedDocumentSuffix == null)
+        {
+            _logger.LogInformation($"Did not find documentSuffix in local storage");
+            throw new FileNotFoundException("Did not find documentSuffix in local storage");
+        }
+
         var documentSuffix = Encryption.DecryptString(encryptedDocumentSuffix, Encryption.DocumentSuffixEncryptionKey);
 
         if (string.IsNullOrWhiteSpace(documentSuffix))
@@ -55,6 +64,14 @@ public class GcmDataService : IDataService
     public async Task<bool> SaveDataAsync(MortgageItem item)
     {
         var encryptedDocumentSuffix = await _localStorage.GetStringAsync("documentSuffix");
+
+        if (string.IsNullOrWhiteSpace(encryptedDocumentSuffix))
+        {
+            _logger.LogInformation($"Did not find documentSuffix in local storage");
+
+            return false;
+        }
+        
         var documentSuffix = Encryption.DecryptString(encryptedDocumentSuffix, Encryption.DocumentSuffixEncryptionKey);
 
         if (string.IsNullOrWhiteSpace(documentSuffix))

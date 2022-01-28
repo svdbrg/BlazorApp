@@ -7,6 +7,7 @@
 @inject ILocalStorage _localStorage
 @inject NavigationManager _navigationManager
 @inject IDialogService DialogService
+@inject AuthState _authState
 
 <MudNavMenu Bordered="true">
     <MudNavLink Icon="@Icons.Filled.Home" Href="/#">Home</MudNavLink>
@@ -26,6 +27,11 @@
 
 @code {
     private bool isAdmin { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _authState.OnChange += OnAppStateChange;
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstrender)
     {
@@ -79,5 +85,10 @@
         {
             isAdmin = false;
         }
+    }
+
+    private async void OnAppStateChange()
+    {
+        await InvokeAsync(StateHasChanged);
     }
 }

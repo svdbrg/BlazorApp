@@ -61,6 +61,7 @@ public class LoadingState
 
 public class AuthState
 {
+    public bool IsAdmin { get; set; }
     public event Action? OnChange;
 
     public void IsAuthenticated()

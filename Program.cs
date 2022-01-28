@@ -28,9 +28,9 @@ builder.Services.ConfigureTravelPlanner(builder);
 
 builder.Services.ConfigureAutoMapper();
 
-builder.Services.AddSingleton<AppState>();
-builder.Services.AddSingleton<LoadingState>();
-builder.Services.AddSingleton<AuthState>();
+builder.Services.AddScoped<AppState>();
+builder.Services.AddScoped<LoadingState>();
+builder.Services.AddScoped<AuthState>();
 
 builder.Services.AddMudServices();
 
