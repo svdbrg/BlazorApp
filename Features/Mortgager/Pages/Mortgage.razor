@@ -2,8 +2,7 @@
 
 @using BlazorApp.Features.Mortgager.Components
 @using BlazorApp.Features.Mortgager.Data
-@using BlazorApp.Features.Mortgager.Services.Abstractions
-@using BlazorApp.Features.Mortgager.Services
+@using BlazorApp.Features.Shared.Services
 @using BlazorApp.Features.Shared.Services.Abstractions;
 @using BlazorApp.Features.Shared.Models
 
@@ -20,8 +19,8 @@
 
 <MudText Typo="Typo.h2">Mortgage all the things</MudText>
 
-<MudText Typo="Typo.subtitle1">This is a tool to help visualize your mortgage application and the costs that follow by
-    owning a home.</MudText>
+<MudText Typo="Typo.subtitle1">This is a tool to help visualize your mortgage application and the costs that follow by owning a home.</MudText>
+<MudText Typo="Typo.subtitle2">Current mortgage: <b>@mortgage.Name</b></MudText>
 
 <div class="message @getClassName()">
     <b>@saveCounterMessage</b>

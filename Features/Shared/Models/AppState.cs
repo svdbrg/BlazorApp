@@ -58,3 +58,16 @@ public class LoadingState
 
     private void NotifyStateChanged() => OnChange?.Invoke();
 }
+
+public class AuthState
+{
+    public bool IsAdmin { get; set; }
+    public event Action? OnChange;
+
+    public void IsAuthenticated()
+    {
+        NotifyStateChanged();
+    }
+
+    private void NotifyStateChanged() => OnChange?.Invoke();
+}

@@ -1,4 +1,5 @@
-﻿@using Microsoft.Extensions.Options;
+﻿@using Features.Shared.Services
+@using Microsoft.Extensions.Options;
 @using BlazorApp.Features.Shared.Models
 @using BlazorApp.Features.Shared.Services.Abstractions
 
@@ -6,6 +7,7 @@
 @inject ILocalStorage _localStorage
 @inject NavigationManager _navigationManager
 @inject IDialogService DialogService
+@inject AuthState _authState
 
 <MudNavMenu Bordered="true">
     <MudNavLink Icon="@Icons.Filled.Home" Href="/#">Home</MudNavLink>
@@ -15,11 +17,33 @@
     }
 </MudNavMenu>
 <div class="logout">
+    @if (isAdmin)
+    {
+        <MudNavLink Icon="@Icons.Filled.AdminPanelSettings" @onclick="openAdmin">Admin</MudNavLink>
+    }
     <MudNavLink Icon="@Icons.Filled.Settings" @onclick="openSettings">Settings</MudNavLink>
     <MudNavLink Icon="@Icons.Filled.Logout" @onclick="logOut">Log out</MudNavLink>
 </div>
 
 @code {
+    private bool isAdmin { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _authState.OnChange += OnAppStateChange;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstrender)
+    {
+        if (firstrender)
+        {
+            await loadPrivileges();
+            await InvokeAsync(StateHasChanged);
+        }
+
+        await base.OnAfterRenderAsync(firstrender);
+    }
+
     private async void logOut()
     {
         await _localStorage.RemoveAsync("auth");
@@ -31,9 +55,40 @@
         var options = new DialogOptions
         {
             CloseOnEscapeKey = true,
-            MaxWidth= MaxWidth.ExtraLarge
+            MaxWidth = MaxWidth.ExtraLarge
         };
 
         DialogService.Show<SettingsModal>("Settings", options);
+    }
+
+    private void openAdmin()
+    {
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.ExtraExtraLarge
+        };
+
+        DialogService.Show<AdminModal>("Admin", options);
+    }
+
+    private async Task loadPrivileges()
+    {
+        var authString = await _localStorage.GetStringAsync("auth");
+        if (authString != null)
+        {
+            var decryptedAuthString = Encryption.DecryptString(authString, Encryption.AuthorizationEncryptionKey);
+
+            isAdmin = bool.Parse(decryptedAuthString.Split('-')[1]);
+        }
+        else
+        {
+            isAdmin = false;
+        }
+    }
+
+    private async void OnAppStateChange()
+    {
+        await InvokeAsync(StateHasChanged);
     }
 }

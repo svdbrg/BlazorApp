@@ -38,7 +38,6 @@ tbody td:nth-child(2) div {
     opacity: 0.8;
 }
 
-
 @media only screen and (min-device-width: 320px) and (max-device-width: 800px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
     tbody td:nth-child(2) {
         max-width: 130px;
