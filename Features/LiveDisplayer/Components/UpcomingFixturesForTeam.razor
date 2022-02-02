@@ -3,7 +3,7 @@
 
 @inject IFootballDataService _dataService
 
-<MudDialog Class="settings-modal pa-0">
+<MudDialog DisableSidePadding="true" Class="settings-modal pa-0">
     <DialogContent>
         <MudContainer Style="overflow-y: scroll; max-height:750px;">
             <MudText Typo="Typo.h4">@TeamName</MudText>
@@ -16,6 +16,7 @@
                         <div class="home">
                             <MudText Typo="Typo.subtitle2">
                                 @fixture.HomeTeam
+                                <img height="25" width="25" class="team-crest" src="@GetCrest(fixture.HomeTeamAltId)" />
                             </MudText>
                         </div>
                         <div class="time">
@@ -25,6 +26,7 @@
                         </div>
                         <div class="away">
                             <MudText Typo="Typo.subtitle2">
+                                <img height="25" width="25" class="team-crest" src="@GetCrest(fixture.AwayTeamAltId)" />
                                 @fixture.AwayTeam
                             </MudText>
                         </div>
@@ -55,5 +57,10 @@
     {
         Fixtures = await _dataService.GetUpcomingFixtureForTeam(TeamId);
         StateHasChanged();
+    }
+
+    private string GetCrest(string altId)
+    {
+        return $"https://resources.premierleague.com/premierleague/badges/25/{altId}.png";
     }
 }

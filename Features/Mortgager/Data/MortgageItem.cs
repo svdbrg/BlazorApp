@@ -4,6 +4,7 @@ namespace BlazorApp.Features.Mortgager.Data;
 
 public class MortgageItem
 {
+    public string Name { get; set; } = string.Empty;
     public double PurchasePrice { get; set; }
     public double DownPayment { get; set; }
     public double TotalSalary { get; set; }
