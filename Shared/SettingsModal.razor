@@ -3,9 +3,10 @@
 @using Features.Shared.Services
 @using Features.TravelPlanner.Models
 @using Features.TravelPlanner.Services.Abstractions
+@using Features.Mortgager.Services.Abstractions
 
-@inject IDataService _mortgageDataService
-@inject ITravelPlanner _travelPlannerService
+@inject IMortgageDataService _mortgageDataService
+@inject ITravelPlannerDataClient _travelPlannerService
 @inject ILocalStorage _localStorage
 @inject AppState _appState
 @inject IJSRuntime _js

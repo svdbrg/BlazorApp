@@ -1,7 +1,7 @@
 @using Features.Shared.Models
 @using BlazorApp.Features.Shared.Services.Abstractions
 
-@inject IDataService _gcmDataService
+@inject IAuthenticationDataService _authService
 @inject IJSRuntime js
 
 <MudDialog Class="settings-modal">
@@ -90,7 +90,7 @@
 
     private async Task loadAccounts()
     {
-        users = await _gcmDataService.GetAllAccounts();
+        users = await _authService.GetAllAccounts();
     }
 
     private async Task removeUser(Authentication user)
@@ -100,7 +100,7 @@
             return;
         }
 
-        await _gcmDataService.DeleteUser(user);
+        await _authService.DeleteUser(user);
 
         await loadAccounts();
         await InvokeAsync(StateHasChanged);
@@ -108,7 +108,7 @@
 
     private async Task saveNewUser()
     {
-        await _gcmDataService.SaveNewUser(newUser, tempPassword);
+        await _authService.SaveNewUser(newUser, tempPassword);
 
         newUser = new();
         tempPassword = string.Empty;

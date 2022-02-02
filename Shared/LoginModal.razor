@@ -3,8 +3,8 @@
 @using BlazorApp.Features.Shared.Models
 
 @inject ILocalStorage _localStorage
-@inject IDataService _gcmDataService
 @inject AuthState _authState
+@inject IAuthenticationDataService _authService
 
 <MudContainer MaxWidth="MaxWidth.Small">
     <MudTextField @bind-Value="Password" Label="Password" Variant="Variant.Text" InputType="@PasswordInput"
@@ -41,7 +41,7 @@
 
     private async void Login()
     {
-        var auth = await _gcmDataService.Authenticate(Password);
+        var auth = await _authService.Authenticate(Password);
         
         if (auth.IsAuthenticated)
         {

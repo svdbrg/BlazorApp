@@ -21,7 +21,7 @@ public static class LiveDisplayerConfigurator
 
     public static IServiceCollection ConfigureTravelPlanner(this IServiceCollection services, WebApplicationBuilder builder)
     {
-        services.AddTransient<ITravelPlanner, SlTravelPlanner>();
+        services.AddTransient<ITravelPlannerDataClient, SlTravelPlannerDataClient>();
         
         services.AddHttpClient("TravelPlanner", c =>
         {

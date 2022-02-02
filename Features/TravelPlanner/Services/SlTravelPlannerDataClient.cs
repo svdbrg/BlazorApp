@@ -5,12 +5,12 @@ using BlazorApp.Features.TravelPlanner.Services.Abstractions;
 
 namespace BlazorApp.Features.TravelPlanner.Services;
 
-public class SlTravelPlanner : ITravelPlanner
+public class SlTravelPlannerDataClient : ITravelPlannerDataClient
 {
     private readonly IMapper _mapper;
     private readonly IHttpClientFactory _httpClientFactory;
 
-    public SlTravelPlanner(IHttpClientFactory httpClientFactory, IMapper mapper)
+    public SlTravelPlannerDataClient(IHttpClientFactory httpClientFactory, IMapper mapper)
     {
         _httpClientFactory = httpClientFactory ?? throw new NullReferenceException(nameof(httpClientFactory));
         _mapper = mapper ?? throw new NullReferenceException(nameof(mapper));

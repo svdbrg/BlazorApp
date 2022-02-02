@@ -10,7 +10,7 @@ public static class SharedConfigurator
     public static IServiceCollection ConfigureSharedServices(this IServiceCollection services)
     {
         services.AddTransient<ILocalStorage, BlazorStorage>();
-        services.AddTransient<IDataService, GcmDataService>();
+        services.AddTransient<IAuthenticationDataService, FirebaseAuthenticationDataService>();
 
         return services;
     }
