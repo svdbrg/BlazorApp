@@ -48,6 +48,12 @@ public class TravelPlannerProfile : Profile
             .ForMember(s => s.MainMastExtId, opt => opt.MapFrom(d => d.mainMastExtId));
 
         CreateMap<NearbyStopDto, NearbyStop>()
+            .ForMember(s => s.Id, opt => opt.MapFrom(d => d.Id))
+            .ForMember(s => s.Name, opt => opt.MapFrom(d => d.Name))
+            .ForMember(s => s.MainMastExtId, opt => opt.MapFrom(d => d.MainMastExtId));
+
+        CreateMap<NearbyStop, NearbyStopDto>()
+            .ForMember(s => s.Id, opt => opt.MapFrom(d => d.Id))
             .ForMember(s => s.Name, opt => opt.MapFrom(d => d.Name))
             .ForMember(s => s.MainMastExtId, opt => opt.MapFrom(d => d.MainMastExtId));
 

@@ -35,4 +35,18 @@ public class FirebaseTravelPlannerRepository : ITravelPlannerRepository
             .Select(_mapper.Map<NearbyStop>)
             .ToList();
     }
+
+    public async Task SaveNewNearbyStopAsync(NearbyStop stop)
+    {
+        var newStopDto = _mapper.Map<NearbyStopDto>(stop);
+        var db = FirestoreDb.Create("mortgager");
+        var docref = await db.Collection("nearbystops").AddAsync(newStopDto);
+    }
+
+    public async Task DeleteStopAsync(NearbyStop stop)
+    {
+        var db = FirestoreDb.Create("mortgager");
+        var doc = db.Collection("nearbystops").Document(stop.Id);
+        await doc.DeleteAsync();
+    }
 }

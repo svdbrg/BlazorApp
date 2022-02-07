@@ -10,6 +10,7 @@ public class NearbyStopLocation
 
 public class NearbyStop
 {
+    public string Id { get; set; } = string.Empty;
     public string MainMastExtId { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
 
