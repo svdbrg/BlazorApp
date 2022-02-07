@@ -1,7 +1,7 @@
-using BlazorApp.Features.Shared.Services;
-using BlazorApp.Features.Shared.Services.Abstractions;
 using BlazorApp.Features.Shared.Models;
 using MudBlazor;
+using BlazorApp.Features.Mortgager.Services.Abstractions;
+using BlazorApp.Features.Mortgager.Services;
 
 namespace BlazorApp.Features.Mortgager.Configuration;
 
@@ -25,6 +25,8 @@ public static class MortgagerConfigurator
         {
             opt.Add(featureInformation);
         });
+
+        services.AddTransient<IMortgageDataService, FirebaseMortgageDataService>();
 
         return services;
     }

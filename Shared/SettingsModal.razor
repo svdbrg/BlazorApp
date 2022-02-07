@@ -3,9 +3,10 @@
 @using Features.Shared.Services
 @using Features.TravelPlanner.Models
 @using Features.TravelPlanner.Services.Abstractions
+@using Features.Mortgager.Services.Abstractions
 
-@inject IDataService _mortgageDataService
-@inject ITravelPlanner _travelPlannerService
+@inject IMortgageDataService _mortgageDataService
+@inject ITravelPlannerService _travelPlannerService
 @inject ILocalStorage _localStorage
 @inject AppState _appState
 @inject IJSRuntime _js
@@ -65,15 +66,7 @@
             </tbody>
         </table>
         <MudText Typo="Typo.h6">Travel Planner</MudText>
-        <MudSelect T="NearbyStop" Label="Solstigen 49" @bind-Value="tempOrigin" Variant="Variant.Outlined"
-            AnchorOrigin="Origin.BottomCenter">
-            @foreach (var item in homeLocation.NearbyStops)
-            {
-                <MudSelectItem Value="@item" />
-            }
-        </MudSelect>
-
-        <MudSelect T="NearbyStop" Label="Destination" @bind-Value="tempDestination" Variant="Variant.Outlined"
+        <MudSelect T="NearbyStop" Label="From" @bind-Value="tempOrigin" Variant="Variant.Outlined"
             AnchorOrigin="Origin.BottomCenter">
             @foreach (var item in nearbyStopLocations)
             {
@@ -81,6 +74,18 @@
                 @foreach (var stop in item.NearbyStops)
                 {
                     <MudSelectItem Value="@stop" />
+                }
+            }
+        </MudSelect>
+
+        <MudSelect T="NearbyStop" Label="To" @bind-Value="tempDestination" Variant="Variant.Outlined"
+            AnchorOrigin="Origin.BottomCenter" >
+            @foreach (var item in nearbyStopLocations)
+            {
+                <MudSelectItem Value="@(new NearbyStop() {Name = @item.Name})" Disabled="true" />
+                @foreach (var stop in item.NearbyStops)
+                {
+                    <MudSelectItem Value="@stop" T="NearbyStop" />
                 }
             }
         </MudSelect>
@@ -111,7 +116,6 @@
     private bool autoRefresh { get; set; }
 
     private List<NearbyStopLocation> nearbyStopLocations = new List<NearbyStopLocation>();
-    private NearbyStopLocation homeLocation = new();
     private NearbyStop tempOrigin { get; set; } = new();
     private NearbyStop tempDestination { get; set; } = new();
 
@@ -138,36 +142,7 @@
         tempDestination = _appState.DestinationStation;
         tempOrigin = _appState.HomeStation;
 
-        foreach (var item in Places.PlacesOfInterest)
-        {
-            nearbyStopLocations.Add(new NearbyStopLocation
-            {
-                Name = item.Name,
-                NearbyStops = await _travelPlannerService.GetNearbyStops(item.Longitude, item.Latitude).ToListAsync()
-            });
-        }
-
-        nearbyStopLocations.Add(new NearbyStopLocation
-        {
-            Name = "Other",
-            NearbyStops = new List<NearbyStop> { new() { Name = "Slussen", MainMastExtId = "300109192" } }
-        });
-
-        homeLocation = new NearbyStopLocation
-        {
-            Name = Places.Home.Name,
-            NearbyStops = await _travelPlannerService.GetNearbyStops(Places.Home.Longitude, Places.Home.Latitude).ToListAsync()
-        };
-    }
-
-    private void setOrigin(NearbyStop newOrigin)
-    {
-        tempOrigin = newOrigin;
-    }
-
-    private void setDestination(NearbyStop newDestination)
-    {
-        tempDestination = newDestination;
+        nearbyStopLocations = await _travelPlannerService.GetAllNearbyStops().ToListAsync();
     }
 
     private async Task saveChanges()

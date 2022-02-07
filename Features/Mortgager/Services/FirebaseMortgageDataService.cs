@@ -1,24 +1,23 @@
 using AutoMapper;
 using BlazorApp.Features.Mortgager.Data;
+using BlazorApp.Features.Mortgager.Services.Abstractions;
+using BlazorApp.Features.Shared.Services;
 using BlazorApp.Features.Shared.Services.Abstractions;
 using Google.Cloud.Firestore;
-using BlazorApp.Features.Shared.Models;
 
-namespace BlazorApp.Features.Shared.Services;
+namespace BlazorApp.Features.Mortgager.Services;
 
-public class GcmDataService : IDataService
+public class FirebaseMortgageDataService : IMortgageDataService
 {
-    private readonly IMapper _mapper;
-    private readonly ILogger<GcmDataService> _logger;
     private readonly ILocalStorage _localStorage;
-    private readonly AuthState _authState;
+    private readonly ILogger<FirebaseMortgageDataService> _logger;
+    private readonly IMapper _mapper;
 
-    public GcmDataService(IMapper mapper, ILogger<GcmDataService> logger, ILocalStorage localStorage, AuthState authState)
+    public FirebaseMortgageDataService(ILocalStorage localStorage, ILogger<FirebaseMortgageDataService> logger, IMapper mapper)
     {
-        _mapper = mapper ?? throw new NullReferenceException(nameof(mapper));
-        _logger = logger ?? throw new NullReferenceException(nameof(logger));
         _localStorage = localStorage ?? throw new NullReferenceException(nameof(localStorage));
-        _authState = authState ?? throw new NullReferenceException(nameof(authState));
+        _logger = logger ?? throw new NullReferenceException(nameof(logger));
+        _mapper = mapper ?? throw new NullReferenceException(nameof(mapper));
     }
 
     public async Task<MortgageItem?> GetSavedDataAsync()
@@ -73,7 +72,7 @@ public class GcmDataService : IDataService
 
             return false;
         }
-        
+
         var documentSuffix = Encryption.DecryptString(encryptedDocumentSuffix, Encryption.DocumentSuffixEncryptionKey);
 
         if (string.IsNullOrWhiteSpace(documentSuffix))
@@ -107,62 +106,6 @@ public class GcmDataService : IDataService
     {
         var db = FirestoreDb.Create("mortgager");
         var document = db.Collection("mortgages").Document($"mortgage-{suffix}");
-        await document.DeleteAsync();
-    }
-
-    public async Task<Authentication> Authenticate(string password)
-    {
-        var token = Encryption.EncryptString($"{password}-{Encryption.Salt}", Encryption.AuthorizationEncryptionKey);
-
-        var db = FirestoreDb.Create("mortgager");
-        var collection = db.Collection("passwords");
-
-        var query = collection.WhereEqualTo("EncryptedPassword", token);
-        var querySnapshot = await query.GetSnapshotAsync();
-
-        if (querySnapshot != null && querySnapshot.Any() && querySnapshot.Count() == 1)
-        {
-            _logger.LogInformation("Call to Firestore succeeded");
-
-            var authDto = querySnapshot.Documents.First().ConvertTo<AuthenticationDto>();
-
-            var auth = _mapper.Map<Authentication>(authDto);
-            auth.IsAuthenticated = true;
-
-            return auth;
-        }
-
-        _logger.LogWarning("Call to Firestore failed when getting data");
-
-        return new Authentication();
-    }
-
-    public async Task<List<Authentication>> GetAllAccounts()
-    {
-        var db = FirestoreDb.Create("mortgager");
-        var snapshot = await db.Collection("passwords").GetSnapshotAsync();
-
-        return snapshot.Documents
-            .Select(d => d.ConvertTo<AuthenticationDto>())
-            .Select(_mapper.Map<Authentication>)
-            .ToList();
-    }
-
-    public async Task SaveNewUser(Authentication newUser, string password)
-    {
-        var token = Encryption.EncryptString($"{password}-{Encryption.Salt}", Encryption.AuthorizationEncryptionKey);
-        newUser.EncryptedPassword = token;
-
-        var newUserDto = _mapper.Map<AuthenticationDto>(newUser);
-
-        var db = FirestoreDb.Create("mortgager");
-        var docref = await db.Collection("passwords").AddAsync(newUserDto);
-    }
-
-    public async Task DeleteUser(Authentication user)
-    {
-        var db = FirestoreDb.Create("mortgager");
-        var document = db.Collection("passwords").Document(user.Id);
         await document.DeleteAsync();
     }
 }

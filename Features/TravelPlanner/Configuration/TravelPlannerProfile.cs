@@ -46,5 +46,21 @@ public class TravelPlannerProfile : Profile
         CreateMap<StopLocationDto, NearbyStop>()
             .ForMember(s => s.Name, opt => opt.MapFrom(d => d.name))
             .ForMember(s => s.MainMastExtId, opt => opt.MapFrom(d => d.mainMastExtId));
+
+        CreateMap<NearbyStopDto, NearbyStop>()
+            .ForMember(s => s.Id, opt => opt.MapFrom(d => d.Id))
+            .ForMember(s => s.Name, opt => opt.MapFrom(d => d.Name))
+            .ForMember(s => s.MainMastExtId, opt => opt.MapFrom(d => d.MainMastExtId));
+
+        CreateMap<NearbyStop, NearbyStopDto>()
+            .ForMember(s => s.Id, opt => opt.MapFrom(d => d.Id))
+            .ForMember(s => s.Name, opt => opt.MapFrom(d => d.Name))
+            .ForMember(s => s.MainMastExtId, opt => opt.MapFrom(d => d.MainMastExtId));
+
+
+        CreateMap<PlaceOfInterestDto, PlaceOfInterest>()
+            .ForMember(s => s.Name, opt => opt.MapFrom(d => d.Name))
+            .ForMember(s => s.Longitude, opt => opt.MapFrom(d => d.Longitude))
+            .ForMember(s => s.Latitude, opt => opt.MapFrom(d => d.Latitude));
     }
 }
