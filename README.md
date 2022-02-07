@@ -9,7 +9,7 @@ A tool for calculating your mortgage and the monthly cost for your apartment or 
 A live display for current standings and upcoming, ongoing and past fixtures in Barclays Premier League.
 
 ### Travel Planner
-Displays when the next bus leaves from bus stops near my house to Slussen (default) or any other stop from a pre-defined list of stops.
+Displays when the next bus leaves from bus stops near my house to Slussen (default).
 
 ## Technologies
 - .NET 6
@@ -27,6 +27,6 @@ Displays when the next bus leaves from bus stops near my house to Slussen (defau
 
 ## Instructions
 - Clone repo
-- Place Google Firebase credentials in text-file and place file according to `GcmCredentialsConfigurator.cs`
+- Place Google Firestore credentials in json-file and add absolute path to `appsettings.json`
 - `dotnet run`
 - Enjoy

@@ -5,13 +5,13 @@ using Google.Cloud.Firestore;
 
 namespace BlazorApp.Features.Shared.Services;
 
-public class FirebaseAuthenticationDataService : IAuthenticationDataService
+public class FirestoreAuthenticationDataService : IAuthenticationDataService
 {
     private readonly IMapper _mapper;
-    private readonly ILogger<FirebaseAuthenticationDataService> _logger;
+    private readonly ILogger<FirestoreAuthenticationDataService> _logger;
 
 
-    public FirebaseAuthenticationDataService(IMapper mapper, ILogger<FirebaseAuthenticationDataService> logger)
+    public FirestoreAuthenticationDataService(IMapper mapper, ILogger<FirestoreAuthenticationDataService> logger)
     {
         _mapper = mapper ?? throw new NullReferenceException(nameof(mapper));
         _logger = logger ?? throw new NullReferenceException(nameof(logger));

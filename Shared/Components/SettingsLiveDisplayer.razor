@@ -1,0 +1,38 @@
+@using BlazorApp.Features.Shared.Models
+
+@inject AppState _appState
+
+<table>
+    <tbody>
+        <tr>
+            <td colspan="2">
+                <MudText Typo="Typo.h6">Live Displayer</MudText>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Live updates
+            </td>
+            <td class="live-switch">
+                <MudSwitch @bind-Checked="@autoRefresh" Color="Color.Success" />
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+@code {
+    private bool autoRefresh { get; set; }
+
+    protected override void OnInitialized()
+    {
+        autoRefresh = _appState.AutoRefresh;
+    }
+    
+    public void saveLiveDisplayerSettings()
+    {
+        if (_appState.AutoRefresh != autoRefresh)
+        {
+            _appState.ToggleAutoRefresh();
+        }
+    }
+}

@@ -7,13 +7,13 @@ using Google.Cloud.Firestore;
 
 namespace BlazorApp.Features.Mortgager.Services;
 
-public class FirebaseMortgageDataService : IMortgageDataService
+public class FirestoreMortgageDataService : IMortgageDataService
 {
     private readonly ILocalStorage _localStorage;
-    private readonly ILogger<FirebaseMortgageDataService> _logger;
+    private readonly ILogger<FirestoreMortgageDataService> _logger;
     private readonly IMapper _mapper;
 
-    public FirebaseMortgageDataService(ILocalStorage localStorage, ILogger<FirebaseMortgageDataService> logger, IMapper mapper)
+    public FirestoreMortgageDataService(ILocalStorage localStorage, ILogger<FirestoreMortgageDataService> logger, IMapper mapper)
     {
         _localStorage = localStorage ?? throw new NullReferenceException(nameof(localStorage));
         _logger = logger ?? throw new NullReferenceException(nameof(logger));

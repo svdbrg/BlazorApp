@@ -1,0 +1,93 @@
+
+@using BlazorApp.Features.TravelPlanner.Models
+@using BlazorApp.Features.TravelPlanner.Services.Abstractions
+
+@inject ITravelPlannerRepository _travelPlannerRepository
+@inject IJSRuntime js
+
+<MudText Typo="Typo.h6">Stops</MudText>
+<MudSimpleTable Style="min-width:500px;">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th style="text-align: center;">Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in stops)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td style="text-align: center;"><a @onclick="@(e => removeStop(item))">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-trash" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0
+            0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z">
+                            </path>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1
+            1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882
+            4H4.118zM2.5 3V2h11v1h-11z">
+                            </path>
+                        </svg>
+                    </a></td>
+            </tr>
+        }
+    </tbody>
+</MudSimpleTable>
+<MudPaper Class="mt-10 pa-5">
+    <MudText Typo="Typo.h6">New stop</MudText>
+
+    <MudGrid>
+        <MudItem xs="12" sm="6" md="6">
+            <MudTextField T="string" HelperText="Name of the stop" Label="Name" @bind-Value="newNearbyStop.Name" />
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="6">
+            <MudTextField T="string" HelperText="MainMastExtId of the stop" Label="Stop Id"
+                @bind-Value="newNearbyStop.MainMastExtId" />
+        </MudItem>
+    </MudGrid>
+    <div class="d-flex align-center justify-space-between mt-6">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="saveNewStop">
+            Save
+        </MudButton>
+    </div>
+</MudPaper>
+
+@code {
+    private List<NearbyStop> stops { get; set; } = new();
+    private NearbyStop newNearbyStop { get; set; } = new();
+
+    protected override async void OnInitialized()
+    {
+        await loadStops();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task loadStops()
+    {
+        stops = await _travelPlannerRepository.GetOtherNearbyStopsAsync();
+    }
+
+    private async Task removeStop(NearbyStop stop)
+    {
+        if (!await js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete stop '{stop.Name}'?"))
+        {
+            return;
+        }
+
+        await _travelPlannerRepository.DeleteStopAsync(stop);
+
+        await loadStops();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task saveNewStop()
+    {
+        await _travelPlannerRepository.SaveNewNearbyStopAsync(newNearbyStop);
+        newNearbyStop = new();
+
+        await loadStops();
+        await InvokeAsync(StateHasChanged);
+    }
+}

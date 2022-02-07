@@ -5,11 +5,11 @@ using Google.Cloud.Firestore;
 
 namespace BlazorApp.Features.TravelPlanner.Services;
 
-public class FirebaseTravelPlannerRepository : ITravelPlannerRepository
+public class FirestoreTravelPlannerRepository : ITravelPlannerRepository
 {
     private readonly IMapper _mapper;
 
-    public FirebaseTravelPlannerRepository(IMapper mapper)
+    public FirestoreTravelPlannerRepository(IMapper mapper)
     {
         _mapper = mapper ?? throw new NullReferenceException(nameof(mapper));
     }

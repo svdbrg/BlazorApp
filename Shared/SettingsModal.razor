@@ -1,96 +1,8 @@
-@using BlazorApp.Features.Shared.Services.Abstractions
-@using BlazorApp.Features.Shared.Models
-@using Features.Shared.Services
-@using Features.TravelPlanner.Models
-@using Features.TravelPlanner.Services.Abstractions
-@using Features.Mortgager.Services.Abstractions
-
-@inject IMortgageDataService _mortgageDataService
-@inject ITravelPlannerService _travelPlannerService
-@inject ILocalStorage _localStorage
-@inject AppState _appState
-@inject IJSRuntime _js
-
 <MudDialog Class="settings-modal">
     <DialogContent>
-        <table>
-            <tbody>
-                <tr>
-                    <td colspan="2">
-                        <MudText Typo="Typo.h6">Mortgage</MudText>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <MudSelect T="string" Label="Mortgage" @bind-Value="SelectedMortgage" Variant="Variant.Outlined"
-                            AnchorOrigin="Origin.BottomCenter">
-                            @foreach (var item in ExistingMortgages)
-                            {
-                                <MudSelectItem T="string" value="@item" />
-                            }
-                            <MudSelectItem T="string" Value="@("Other")" />
-                        </MudSelect>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        @if (SelectedMortgage != "Other" && SelectedMortgage != "Choose")
-                        {
-                            <MudButton Variant="Variant.Text" OnClick="deleteMortgage" Color="Color.Secondary">Delete
-                                mortgage</MudButton>
-                        }
-                        @if (SelectedMortgage == "Other")
-                        {
-                            <MudTextField @bind-Value="newMortgage" Label="New mortgage" Variant="Variant.Text">
-                            </MudTextField>
-                        }
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <table>
-            <tbody>
-                <tr>
-                    <td colspan="2">
-                        <MudText Typo="Typo.h6">Live Displayer</MudText>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Live updates
-                    </td>
-                    <td class="live-switch">
-                        <MudSwitch @bind-Checked="@autoRefresh" Color="Color.Success" />
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <MudText Typo="Typo.h6">Travel Planner</MudText>
-        <MudSelect T="NearbyStop" Label="From" @bind-Value="tempOrigin" Variant="Variant.Outlined"
-            AnchorOrigin="Origin.BottomCenter">
-            @foreach (var item in nearbyStopLocations)
-            {
-                <MudSelectItem Value="@(new NearbyStop() {Name = @item.Name})" Disabled="true" />
-                @foreach (var stop in item.NearbyStops)
-                {
-                    <MudSelectItem Value="@stop" />
-                }
-            }
-        </MudSelect>
-
-        <MudSelect T="NearbyStop" Label="To" @bind-Value="tempDestination" Variant="Variant.Outlined"
-            AnchorOrigin="Origin.BottomCenter" >
-            @foreach (var item in nearbyStopLocations)
-            {
-                <MudSelectItem Value="@(new NearbyStop() {Name = @item.Name})" Disabled="true" />
-                @foreach (var stop in item.NearbyStops)
-                {
-                    <MudSelectItem Value="@stop" T="NearbyStop" />
-                }
-            }
-        </MudSelect>
-
-        <div id="error-message">@errorMessage</div>
+        <BlazorApp.Shared.Components.SettingsMortgage @ref="settingsMortgage" />
+        <BlazorApp.Shared.Components.SettingsLiveDisplayer @ref="settingsLiveDisplayer" />
+        <BlazorApp.Shared.Components.SettingsTravelPlanner @ref="settingsTravelPlanner" />
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -100,6 +12,9 @@
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = new();
+    private BlazorApp.Shared.Components.SettingsMortgage settingsMortgage = new();
+    private BlazorApp.Shared.Components.SettingsLiveDisplayer settingsLiveDisplayer = new();
+    private BlazorApp.Shared.Components.SettingsTravelPlanner settingsTravelPlanner = new();
     private async void Submit()
     {
         await saveChanges();
@@ -108,117 +23,10 @@
 
     void Cancel() => MudDialog.Cancel();
 
-    private string SelectedMortgage { get; set; } = string.Empty;
-    private string newMortgage { get; set; } = string.Empty;
-    private string errorMessage { get; set; } = string.Empty;
-    List<string> ExistingMortgages { get; set; } = new();
-
-    private bool autoRefresh { get; set; }
-
-    private List<NearbyStopLocation> nearbyStopLocations = new List<NearbyStopLocation>();
-    private NearbyStop tempOrigin { get; set; } = new();
-    private NearbyStop tempDestination { get; set; } = new();
-
-    protected override async void OnInitialized()
-    {
-        await loadMortgageData();
-        await loadTravelPlannerData();
-
-        StateHasChanged();
-    }
-
-    private async Task loadMortgageData()
-    {
-        var encryptedMortgage = await _localStorage.GetStringAsync("documentSuffix");
-
-        ExistingMortgages = await _mortgageDataService.GetAllMortgageDocuments();
-        SelectedMortgage = string.IsNullOrWhiteSpace(encryptedMortgage) ? "" : Encryption.DecryptString(encryptedMortgage,
-        Encryption.DocumentSuffixEncryptionKey);
-        autoRefresh = _appState.AutoRefresh;
-    }
-
-    private async Task loadTravelPlannerData()
-    {
-        tempDestination = _appState.DestinationStation;
-        tempOrigin = _appState.HomeStation;
-
-        nearbyStopLocations = await _travelPlannerService.GetAllNearbyStops().ToListAsync();
-    }
-
     private async Task saveChanges()
     {
-        await saveMortgageSettings();
-        saveLiveDisplayerSettings();
-        saveTravelPlannerSettings();
-    }
-
-    private void saveLiveDisplayerSettings()
-    {
-        if (_appState.AutoRefresh != autoRefresh)
-        {
-            _appState.ToggleAutoRefresh();
-        }
-    }
-
-    private async Task saveMortgageSettings()
-    {
-        if (!canSelect())
-        {
-            errorMessage = "Please select a valid mortgage in the list";
-        }
-        else
-        {
-            if (SelectedMortgage == "Other")
-            {
-                SelectedMortgage = newMortgage;
-            }
-
-            var encryptedMortgage = Encryption.EncryptString(SelectedMortgage, Encryption.DocumentSuffixEncryptionKey);
-            await _localStorage.SaveStringAsync("documentSuffix", encryptedMortgage ?? (Guid.NewGuid().ToString()));
-
-            await InvokeAsync(StateHasChanged);
-            _appState.ChangeMortageSetting();
-        }
-    }
-
-    private void saveTravelPlannerSettings()
-    {
-        _appState.SetDestination(tempDestination);
-        _appState.SetHomeStation(tempOrigin);
-    }
-
-    private void changeAutoRefresh()
-    {
-        autoRefresh = !autoRefresh;
-    }
-
-    private bool canSelect()
-    {
-        if ((SelectedMortgage == "Other" && string.IsNullOrEmpty(newMortgage))
-        || SelectedMortgage == "Choose"
-        || string.IsNullOrWhiteSpace(SelectedMortgage))
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    private async Task deleteMortgage()
-    {
-        if (!await _js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete the mortgage '{SelectedMortgage}'?"))
-        {
-            return;
-        }
-
-        await _mortgageDataService.DeleteMortgageAsync(SelectedMortgage);
-        await loadMortgageData();
-    }
-
-    private void changeSelectedValue(ChangeEventArgs e)
-    {
-        errorMessage = string.Empty;
-        SelectedMortgage = e?.Value?.ToString() ?? string.Empty;
-        StateHasChanged();
-    }
+        await settingsMortgage.saveMortgageSettings();
+        settingsLiveDisplayer.saveLiveDisplayerSettings();
+        settingsTravelPlanner.saveTravelPlannerSettings();
+    }  
 }

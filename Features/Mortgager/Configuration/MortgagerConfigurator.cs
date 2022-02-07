@@ -26,7 +26,7 @@ public static class MortgagerConfigurator
             opt.Add(featureInformation);
         });
 
-        services.AddTransient<IMortgageDataService, FirebaseMortgageDataService>();
+        services.AddTransient<IMortgageDataService, FirestoreMortgageDataService>();
 
         return services;
     }

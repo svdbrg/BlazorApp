@@ -22,7 +22,7 @@ public static class LiveDisplayerConfigurator
     public static IServiceCollection ConfigureTravelPlanner(this IServiceCollection services, WebApplicationBuilder builder)
     {
         services.AddTransient<ITravelPlannerDataClient, SlTravelPlannerDataClient>();
-        services.AddTransient<ITravelPlannerRepository, FirebaseTravelPlannerRepository>();
+        services.AddTransient<ITravelPlannerRepository, FirestoreTravelPlannerRepository>();
         services.AddTransient<ITravelPlannerService, TravelPlannerService>();
         
         services.AddHttpClient("TravelPlanner", c =>
