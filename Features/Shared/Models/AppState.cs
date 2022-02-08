@@ -5,8 +5,8 @@ namespace BlazorApp.Features.Shared.Models;
 public class AppState
 {
     public bool AutoRefresh { get; private set; }
-    public NearbyStop HomeStation { get; private set; } = new() { Name = "Drottninghamnsvägen (Nacka)", MainMastExtId = "300104013" };
-    public NearbyStop DestinationStation { get; private set; } = new() { Name = "Slussen", MainMastExtId = "300109192" };
+    public NearbyStop HomeStation { get; private set; } = new();
+    public NearbyStop DestinationStation { get; private set; } = new();
     public event Action? OnChange;
 
     public void SetHomeStation(NearbyStop newStation)

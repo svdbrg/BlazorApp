@@ -13,6 +13,17 @@ public class NearbyStop
     public string Id { get; set; } = string.Empty;
     public string MainMastExtId { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
+    public bool IsEmpty
+    {
+        get
+        {
+            return (
+                        string.IsNullOrWhiteSpace(Id) &&
+                        string.IsNullOrWhiteSpace(MainMastExtId) &&
+                        string.IsNullOrWhiteSpace(Name)
+                    );
+        }
+    }
 
     public override bool Equals(object? o)
     {

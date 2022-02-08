@@ -71,7 +71,25 @@
     {
         if (firstRender)
         {
+            setInitialPlan();
             await setTravelPlan();
+        }
+    }
+
+    private void setInitialPlan()
+    {
+        if (_appState.HomeStation.IsEmpty && _appState.DestinationStation.IsEmpty)
+        {
+            if (DateTime.Now.TimeOfDay > new TimeSpan(10, 00, 00))
+            {
+                _appState.SetHomeStation(new() { Name = "Slussen", MainMastExtId = "300109192" });
+                _appState.SetDestination(new() { Name = "Drottninghamnsvägen (Nacka)", MainMastExtId = "300104013" });
+            }
+            else
+            {
+                _appState.SetDestination(new() { Name = "Slussen", MainMastExtId = "300109192" });
+                _appState.SetHomeStation(new() { Name = "Drottninghamnsvägen (Nacka)", MainMastExtId = "300104013" });
+            }
         }
     }
 
