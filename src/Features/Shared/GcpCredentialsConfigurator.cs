@@ -1,6 +1,6 @@
 namespace BlazorApp.Features.Shared;
 
-public static class GcmCredentialsConfigurator
+public static class GcpCredentialsConfigurator
 {
     public static void AddGoogleCredentials(this WebApplication app, WebApplicationBuilder builder)
     {
@@ -15,11 +15,11 @@ public static class GcmCredentialsConfigurator
         else
         {
             var dir = Directory.GetCurrentDirectory();
-            var filecontent = Environment.GetEnvironmentVariable("gcm.json");
+            var filecontent = Environment.GetEnvironmentVariable("gcp.json");
 
-            File.WriteAllText($"{dir}/gcm.json", filecontent);
+            File.WriteAllText($"{dir}/gcp.json", filecontent);
 
-            filePath = $"{dir}/gcm.json";
+            filePath = $"{dir}/gcp.json";
         }
 
         Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", filePath);
