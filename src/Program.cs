@@ -1,8 +1,8 @@
 using BlazorApp.Features.LiveDisplayer.Configuration;
 using BlazorApp.Features.Mortgager.Configuration;
+using BlazorApp.Features.TravelPlanner.Configuration;
 using BlazorApp.Features.Shared;
 using BlazorApp.Features.Shared.Models;
-using BlazorApp.Features.TravelPlanner.Configuration;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);

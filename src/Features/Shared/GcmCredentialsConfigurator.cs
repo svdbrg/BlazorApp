@@ -1,4 +1,4 @@
-namespace BlazorApp.Features.Mortgager.Configuration;
+namespace BlazorApp.Features.Shared;
 
 public static class GcmCredentialsConfigurator
 {
