@@ -4,6 +4,7 @@
 
 @inject ITravelPlannerService _travelPlannerService
 @inject AppState _appState
+@inject SettingsState _settingsState
 
 
 <MudText Typo="Typo.h6">Travel Planner</MudText>
@@ -39,6 +40,7 @@
     protected override async void OnInitialized()
     {
         await loadTravelPlannerData();
+        _settingsState.OnChange += saveTravelPlannerSettings;
 
         StateHasChanged();
     }
@@ -51,7 +53,7 @@
         nearbyStopLocations = await _travelPlannerService.GetAllNearbyStops().ToListAsync();
     }
 
-    public void saveTravelPlannerSettings()
+    private void saveTravelPlannerSettings()
     {
         _appState.SetDestination(tempDestination);
         _appState.SetHomeStation(tempOrigin);

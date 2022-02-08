@@ -7,6 +7,7 @@
 @inject ILocalStorage _localStorage
 @inject AppState _appState
 @inject IJSRuntime _js
+@inject SettingsState _settingsState
 
 <table>
     <tbody>
@@ -54,6 +55,7 @@
     protected override async void OnInitialized()
     {
         await loadMortgageData();
+        _settingsState.OnChange += saveMortgageSettings;
 
         StateHasChanged();
     }
@@ -67,7 +69,7 @@
         Encryption.DocumentSuffixEncryptionKey);
     }
 
-    public async Task saveMortgageSettings()
+    private async void saveMortgageSettings()
     {
         if (!canSelect())
         {

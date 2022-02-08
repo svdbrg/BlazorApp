@@ -31,6 +31,7 @@ builder.Services.ConfigureAutoMapper();
 builder.Services.AddScoped<AppState>();
 builder.Services.AddScoped<LoadingState>();
 builder.Services.AddScoped<AuthState>();
+builder.Services.AddScoped<SettingsState>();
 
 builder.Services.AddMudServices();
 

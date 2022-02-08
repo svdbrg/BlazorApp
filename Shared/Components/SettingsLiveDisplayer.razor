@@ -1,6 +1,7 @@
 @using BlazorApp.Features.Shared.Models
 
 @inject AppState _appState
+@inject SettingsState _settingsState
 
 <table>
     <tbody>
@@ -26,9 +27,10 @@
     protected override void OnInitialized()
     {
         autoRefresh = _appState.AutoRefresh;
+        _settingsState.OnChange += saveLiveDisplayerSettings;
     }
-    
-    public void saveLiveDisplayerSettings()
+
+    private void saveLiveDisplayerSettings()
     {
         if (_appState.AutoRefresh != autoRefresh)
         {

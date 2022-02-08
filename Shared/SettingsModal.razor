@@ -1,8 +1,13 @@
+@using BlazorApp.Shared.Components
+@using BlazorApp.Features.Shared.Models
+
+@inject SettingsState _settingsState
+
 <MudDialog Class="settings-modal">
     <DialogContent>
-        <BlazorApp.Shared.Components.SettingsMortgage @ref="settingsMortgage" />
-        <BlazorApp.Shared.Components.SettingsLiveDisplayer @ref="settingsLiveDisplayer" />
-        <BlazorApp.Shared.Components.SettingsTravelPlanner @ref="settingsTravelPlanner" />
+        <SettingsMortgage />
+        <SettingsLiveDisplayer />
+        <SettingsTravelPlanner />
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -12,21 +17,16 @@
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = new();
-    private BlazorApp.Shared.Components.SettingsMortgage settingsMortgage = new();
-    private BlazorApp.Shared.Components.SettingsLiveDisplayer settingsLiveDisplayer = new();
-    private BlazorApp.Shared.Components.SettingsTravelPlanner settingsTravelPlanner = new();
-    private async void Submit()
+
+    private SettingsMortgage settingsMortgage = new();
+    private SettingsLiveDisplayer settingsLiveDisplayer = new();
+    private SettingsTravelPlanner settingsTravelPlanner = new();
+
+    private void Submit()
     {
-        await saveChanges();
+        _settingsState.IsSaving();
         MudDialog.Close(DialogResult.Ok(true));
     }
 
     void Cancel() => MudDialog.Cancel();
-
-    private async Task saveChanges()
-    {
-        await settingsMortgage.saveMortgageSettings();
-        settingsLiveDisplayer.saveLiveDisplayerSettings();
-        settingsTravelPlanner.saveTravelPlannerSettings();
-    }  
 }

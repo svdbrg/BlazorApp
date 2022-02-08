@@ -71,3 +71,15 @@ public class AuthState
 
     private void NotifyStateChanged() => OnChange?.Invoke();
 }
+
+public class SettingsState
+{
+    public event Action? OnChange;
+
+    public void IsSaving()
+    {
+        NotifyStateChanged();
+    }
+
+    private void NotifyStateChanged() => OnChange?.Invoke();
+}
