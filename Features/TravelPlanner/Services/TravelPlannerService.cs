@@ -19,12 +19,6 @@ public class TravelPlannerService : ITravelPlannerService
         var pois = await _repository.GetPlacesOfInterestAsync();
         var nearbyStopLocations = new List<NearbyStopLocation>();
 
-        yield return new NearbyStopLocation
-        {
-            Name = "Other",
-            NearbyStops = await _repository.GetOtherNearbyStopsAsync()
-        };
-
         foreach (var poi in pois)
         {
             yield return new NearbyStopLocation
@@ -33,5 +27,11 @@ public class TravelPlannerService : ITravelPlannerService
                 NearbyStops = await _dataClient.GetNearbyStops(poi.Longitude, poi.Latitude).ToListAsync()
             };
         }
+
+        yield return new NearbyStopLocation
+        {
+            Name = "Other",
+            NearbyStops = await _repository.GetOtherNearbyStopsAsync()
+        };
     }
 }

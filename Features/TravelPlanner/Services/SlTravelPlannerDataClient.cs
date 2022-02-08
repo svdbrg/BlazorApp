@@ -20,10 +20,10 @@ public class SlTravelPlannerDataClient : ITravelPlannerDataClient
     {
         using (var client = _httpClientFactory.CreateClient("TravelPlanner"))
         {
-            var response = await client.GetAsync($"/api2/nearbystopsv2.json?key=195841a58631431ebec7649bc57d98aa&originCoordLat={lat.ToString().Replace(",",".")}&originCoordLong={lon.ToString().Replace(",",".")}&maxNo=10&r=500&products=10");
+            var response = await client.GetAsync($"/api2/nearbystopsv2.json?key=195841a58631431ebec7649bc57d98aa&originCoordLat={lat.ToString().Replace(",", ".")}&originCoordLong={lon.ToString().Replace(",", ".")}&maxNo=10&r=500&products=10");
             var data = JsonSerializer.Deserialize<NearbyStopsRoot>(await response.Content.ReadAsStreamAsync());
 
-            foreach (var item in data?.stopLocationOrCoordLocation?.DistinctBy(s => s.StopLocation.mainMastExtId) ?? new List<StopLocationOrCoordLocationDto>())
+            foreach (var item in data?.stopLocationOrCoordLocation?.OrderBy(a => a.StopLocation.name)?.DistinctBy(s => s.StopLocation.mainMastExtId) ?? new List<StopLocationOrCoordLocationDto>())
             {
                 yield return _mapper.Map<NearbyStop>(item.StopLocation);
             }

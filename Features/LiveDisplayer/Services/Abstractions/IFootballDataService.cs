@@ -1,6 +1,6 @@
 using BlazorApp.Features.LiveDisplayer.Data;
 
-namespace BlazorApp.Features.LiveDisplayer.Services;
+namespace BlazorApp.Features.LiveDisplayer.Services.Abstractions;
 
 public interface IFootballDataService
 {

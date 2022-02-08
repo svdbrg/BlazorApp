@@ -22,6 +22,7 @@ public class FirestoreTravelPlannerRepository : ITravelPlannerRepository
         return snapshot.Documents
             .Select(d => d.ConvertTo<PlaceOfInterestDto>())
             .Select(_mapper.Map<PlaceOfInterest>)
+            .OrderBy(p => p.Name)
             .ToList();
     }
 
@@ -33,6 +34,7 @@ public class FirestoreTravelPlannerRepository : ITravelPlannerRepository
         return snapshot.Documents
             .Select(d => d.ConvertTo<NearbyStopDto>())
             .Select(_mapper.Map<NearbyStop>)
+            .OrderBy(s => s.Name)
             .ToList();
     }
 

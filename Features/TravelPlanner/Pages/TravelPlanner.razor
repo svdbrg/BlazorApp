@@ -4,7 +4,7 @@
 @using Models
 @using BlazorApp.Features.Shared.Models
 
-@inject ITravelPlannerDataClient _travelPlanner
+@inject ITravelPlannerDataClient _travelPlannerDataClient
 @inject AppState _appState
 @inject LoadingState _loadingState
 
@@ -101,7 +101,7 @@
     {
         _loadingState.ToggleLoading(true);
 
-        trips = await _travelPlanner.GetTravelPlan(_appState.HomeStation.MainMastExtId,
+        trips = await _travelPlannerDataClient.GetTravelPlan(_appState.HomeStation.MainMastExtId,
         _appState.DestinationStation.MainMastExtId);
         await InvokeAsync(StateHasChanged);
 
