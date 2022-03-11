@@ -8,6 +8,7 @@
 @inject AppState _appState
 @inject LoadingState _loadingState
 @inject IDialogService DialogService
+@inject ILogger<MainLayout> _logger
 
 <PageTitle>BlazorApp</PageTitle>
 
@@ -18,8 +19,7 @@
     <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
 </MudOverlay>
 <MudLayout>
-    <MudDrawer @bind-Open="@open" Elevation="1"
-        Variant="@DrawerVariant.Responsive">
+    <MudDrawer @bind-Open="@open" Elevation="1" Variant="@DrawerVariant.Responsive">
         <MudDrawerHeader>
             <MudText Typo="Typo.h6">Oscar's playground</MudText>
         </MudDrawerHeader>
@@ -75,24 +75,35 @@
 
     private async Task IsAuthenticated()
     {
-        var authenticationToken = await _localStorage.GetStringAsync("auth");
-
-        if (string.IsNullOrWhiteSpace(authenticationToken))
+        try
         {
-            if (!_navigationManager.ToBaseRelativePath(_navigationManager.Uri).Equals(""))
+            var authenticationToken = await _localStorage.GetStringAsync("auth");
+
+            if (string.IsNullOrWhiteSpace(authenticationToken))
             {
-                _navigationManager.NavigateTo("/", true);
-            }
-            else
-            {
-                DialogService.Show<LoginModal>("Log in", new DialogOptions
+                if (!_navigationManager.ToBaseRelativePath(_navigationManager.Uri).Equals(""))
                 {
-                    CloseButton = false,
-                    CloseOnEscapeKey = false,
-                    DisableBackdropClick = true
-                });
+                    _navigationManager.NavigateTo("/", true);
+                }
+                else
+                {
+                    DialogService.Show<LoginModal>("Log in", new DialogOptions
+                    {
+                        CloseButton = false,
+                        CloseOnEscapeKey = false,
+                        DisableBackdropClick = true
+                    });
+                }
             }
         }
+        catch (System.Exception)
+        {
+            _logger.LogInformation("Unable to read authentication, removing key.")
+            await _localStorage.RemoveAsync("auth");
+
+            _navigationManager.NavigateTo("/", true);
+        }
+
     }
 
     private async void OnAppStateChange()
