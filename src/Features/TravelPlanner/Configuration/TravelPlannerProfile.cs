@@ -62,5 +62,15 @@ public class TravelPlannerProfile : Profile
             .ForMember(s => s.Name, opt => opt.MapFrom(d => d.Name))
             .ForMember(s => s.Longitude, opt => opt.MapFrom(d => d.Longitude))
             .ForMember(s => s.Latitude, opt => opt.MapFrom(d => d.Latitude));
+
+        CreateMap<StopsResult, StopsResultDto>()
+            .ForMember(s => s.LocationEastingCoordinate, opt => opt.MapFrom((src, dest) =>
+            {
+                return double.Parse(src.LocationEastingCoordinate.Replace(".", ","));
+            }))
+            .ForMember(s => s.LocationNorthingCoordinate, opt => opt.MapFrom((src, dest) =>
+            {
+                return double.Parse(src.LocationNorthingCoordinate.Replace(".", ","));
+            }));
     }
 }

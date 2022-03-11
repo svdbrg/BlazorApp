@@ -4,6 +4,7 @@ using BlazorApp.Features.TravelPlanner.Configuration;
 using BlazorApp.Features.Shared;
 using BlazorApp.Features.Shared.Models;
 using MudBlazor.Services;
+using BlazorApp.Features.TravelPlanner.Services.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,6 +59,7 @@ if (!app.Environment.IsDevelopment())
         .UseHttpsRedirection();
 }
 
+
 app.AddGoogleCredentials(builder);
 
 app.UseStaticFiles();
@@ -68,5 +70,7 @@ app.UseRequestLocalization("sv-SE");
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+
+app.MapGet("/api/get-line-info/{line}", (IStopsAndMapsDataClient stopsAndMaps, string line) => stopsAndMaps.GetStopsOnLineAsync(line));
 
 app.Run();

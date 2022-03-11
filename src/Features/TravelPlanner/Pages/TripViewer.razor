@@ -1,0 +1,47 @@
+@page "/tripviewer"
+
+@using BlazorApp.Features.TravelPlanner.Services.Abstractions
+@using BlazorApp.Features.Shared.Models
+
+@inject IJSRuntime JSRuntime
+@inject IStopsAndMapsDataClient _stopsAndMaps
+@inject LoadingState _loadingState
+
+<MudText Typo="Typo.h2">@selectedLine</MudText>
+<MudPaper Width="100%">
+    <MudList Clickable="true">
+        <MudListItem Text="72" Icon="@Icons.Filled.Bookmark" OnClick='() => changeLine("72")' IconColor="Color.Primary" />
+        <MudListItem Text="409" Icon="@Icons.Filled.Bookmark" OnClick='() => changeLine("409")' IconColor="Color.Primary" />
+        <MudListItem Text="449" Icon="@Icons.Filled.Bookmark" OnClick='() => changeLine("449")' IconColor="Color.Primary" />
+        <MudListItem Text="471" Icon="@Icons.Filled.Bookmark" OnClick='() => changeLine("471")' IconColor="Color.Primary" />
+    </MudList>
+</MudPaper>
+<div id="map" style="height:500px;width:100%;"> </div>
+
+@code {
+    private string selectedLine { get; set; } = "72";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await getData();
+        }
+    }
+
+    private async Task changeLine(string line)
+    {
+        selectedLine = line;
+        await getData();
+    }
+
+    private async Task getData()
+    {
+        _loadingState.ToggleLoading(true);
+
+        var result = await _stopsAndMaps.GetStopsOnLineAsync(selectedLine);
+        await JSRuntime.InvokeVoidAsync("loadBingMap", result);
+
+        _loadingState.ToggleLoading(false);
+    }
+}
