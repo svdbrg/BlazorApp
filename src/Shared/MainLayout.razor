@@ -98,7 +98,7 @@
         }
         catch (System.Exception)
         {
-            _logger.LogInformation("Unable to read authentication, removing key.")
+            _logger.LogInformation("Unable to read authentication, removing key.");
             await _localStorage.RemoveAsync("auth");
 
             _navigationManager.NavigateTo("/", true);
