@@ -19,6 +19,7 @@ FROM build AS publish
 RUN dotnet publish "BlazorApp.csproj" -c Release -o /app/publish
 
 FROM base AS final
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 WORKDIR /app
 COPY --from=publish /app/publish .
 
