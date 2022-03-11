@@ -14,6 +14,8 @@ public class Fixture
     public string AwayTeamShortName { get; set; } = string.Empty;
     public string HomeTeamAltId { get; set; } = string.Empty;
     public string AwayTeamAltId { get; set; } = string.Empty;
+    public int HomeTeamScore { get; set; }
+    public int AwayTeamScore { get; set; }
     public string Stadium { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
     public string Result { get; set; } = string.Empty;

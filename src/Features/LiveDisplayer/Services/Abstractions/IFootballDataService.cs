@@ -8,4 +8,5 @@ public interface IFootballDataService
     IAsyncEnumerable<Day> GetDaysAndFixturesAsync();
     IEnumerable<Team> EnrichTableWithStatus(IEnumerable<Team> teams, IEnumerable<Day> days);
     Task<IEnumerable<Fixture>> GetUpcomingFixtureForTeam(int teamId);
+    Task<IEnumerable<Fixture>> GetResultsForTeam(int teamId);
 }

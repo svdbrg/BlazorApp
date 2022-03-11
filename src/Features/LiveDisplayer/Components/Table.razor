@@ -71,7 +71,7 @@
         parameters.Add("TeamId", teamId);
         parameters.Add("TeamName", teamName);
 
-        DialogService.Show<UpcomingFixturesForTeam>("Upcoming fixtures", parameters, new DialogOptions
+        DialogService.Show<FixturesModal>("Upcoming fixtures", parameters, new DialogOptions
         {
             CloseButton = false,
             FullWidth = true,
