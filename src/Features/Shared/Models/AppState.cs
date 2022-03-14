@@ -7,6 +7,7 @@ public class AppState
     public bool AutoRefresh { get; private set; }
     public NearbyStop HomeStation { get; private set; } = new();
     public NearbyStop DestinationStation { get; private set; } = new();
+    public bool IsDarkMode { get; private set; }
     public event Action? OnChange;
 
     public void SetHomeStation(NearbyStop newStation)
@@ -18,6 +19,12 @@ public class AppState
     public void SetDestination(NearbyStop newStation)
     {
         DestinationStation = newStation;
+        NotifyStateChanged();
+    }
+
+    public void SetDarkMode(bool darkMode)
+    {
+        IsDarkMode = darkMode;
         NotifyStateChanged();
     }
 

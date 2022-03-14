@@ -7,12 +7,12 @@
 @inject ILocalStorage _localStorage
 @inject AppState _appState
 @inject LoadingState _loadingState
-@inject IDialogService DialogService
+@inject IDialogService _dialogService
 @inject ILogger<MainLayout> _logger
 
 <PageTitle>BlazorApp</PageTitle>
 
-<MudThemeProvider />
+<MudThemeProvider IsDarkMode="_appState.IsDarkMode" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 <MudOverlay Visible="_loadingState.IsLoading" DarkBackground="true" Absolute="true">
@@ -29,6 +29,8 @@
         <MudIconButton Icon="@Icons.Material.Filled.Menu" OnClick="@(() => ToggleDrawer())" Color="Color.Inherit"
             Edge="Edge.Start" />
         <MudSpacer />
+        <MudCheckBox onclick="@(() => ToggleDarkMode())" @bind-Checked="@isDarkMode" Color="Color.Inherit"
+            CheckedIcon="@Icons.Outlined.LightMode" UncheckedIcon="@Icons.Outlined.DarkMode" />
         <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Link="http://github.com/svdbrg" Target="_blank"
             Color="Color.Inherit" />
     </MudAppBar>
@@ -41,18 +43,28 @@
 
 @code {
     bool open = true;
+    private bool isDarkMode { get; set; }
 
     protected override void OnInitialized()
     {
         _navigationManager.LocationChanged += LocationChanged;
         _appState.OnChange += OnAppStateChange;
         _loadingState.OnChange += OnAppStateChange;
+
+        isDarkMode = _appState.IsDarkMode;
     }
 
     public void Dispose()
     {
         _appState.OnChange -= OnAppStateChange;
         _loadingState.OnChange -= OnAppStateChange;
+    }
+
+    void ToggleDarkMode()
+    {
+        isDarkMode = !_appState.IsDarkMode;
+        Console.WriteLine($"Set darkmode to : {isDarkMode}");
+        _appState.SetDarkMode(isDarkMode);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -87,7 +99,7 @@
                 }
                 else
                 {
-                    DialogService.Show<LoginModal>("Log in", new DialogOptions
+                    _dialogService.Show<LoginModal>("Log in", new DialogOptions
                     {
                         CloseButton = false,
                         CloseOnEscapeKey = false,
@@ -103,7 +115,6 @@
 
             _navigationManager.NavigateTo("/", true);
         }
-
     }
 
     private async void OnAppStateChange()
