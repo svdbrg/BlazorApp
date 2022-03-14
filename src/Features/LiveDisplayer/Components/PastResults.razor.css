@@ -3,19 +3,14 @@
     float: left;
     padding-top: 4px;
 }
-
 .time {
     width: 20%;
     float: left;
 }
 
-.teams {
-    margin-left: 20px;
-}
-
 .stadium {
     width: 100%;
-    clear: both;
+    clear:both;
     text-align: center;
     margin-top: -10px;
 }

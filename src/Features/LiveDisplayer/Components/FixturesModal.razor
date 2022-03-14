@@ -1,7 +1,7 @@
 <MudDialog DisableSidePadding="true" Class="settings-modal pa-0">
     <DialogContent>
-        <MudText Typo="Typo.h4">@TeamName</MudText>
-        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+        <MudText Typo="Typo.h4" Align="Align.Center" Class="pb-5">@TeamName</MudText>
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-4">
             <MudTabPanel Text="Upcoming fixtures">
                 <UpcomingFixtures TeamId="@TeamId" TeamName="@TeamName" />
             </MudTabPanel>
