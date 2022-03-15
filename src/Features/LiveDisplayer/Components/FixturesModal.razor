@@ -36,13 +36,11 @@
 
         UpcomingFixtures = allFixtures
             .Where(f => f.Status == "L" || f.Status == "U" && f.DateAndTime > DateTime.MinValue)
-            .OrderBy(f => f.DateAndTime)
-            .Take(5);
+            .OrderBy(f => f.DateAndTime);
 
         PastResults = allFixtures
             .Where(f => f.Status == "C" && f.DateAndTime < DateTime.Now)
-            .OrderByDescending(f => f.DateAndTime)
-            .Take(5);
+            .OrderByDescending(f => f.DateAndTime);
 
         StateHasChanged();
     }
