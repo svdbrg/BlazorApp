@@ -48,6 +48,22 @@ public class KickoffDto
     {
         get
         {
+            if (DateTime.TryParse(label, out var date))
+            {
+                if (date.Date == DateTime.Today)
+                {
+                    return "Today";
+                }
+                else if (date.Date == DateTime.Today.AddDays(1))
+                {
+                    return "Tomorrow";
+                }
+                else if (date.Date == DateTime.Today.AddDays(-1))
+                {
+                    return "Yesterday";
+                }
+            }
+
             return label.Split(',')[0];
         }
     }

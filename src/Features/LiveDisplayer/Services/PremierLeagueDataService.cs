@@ -76,28 +76,16 @@ public class PremierLeagueDataService : IFootballDataService
         }
     }
 
-    public async Task<IEnumerable<Fixture>> GetUpcomingFixtureForTeam(int teamId)
+    public async Task<IEnumerable<Fixture>> GetFixturesForTeamAsync(int teamId)
     {
         using (var client = _httpClientFactory.CreateClient("PL"))
         {
-            var response = await client.GetAsync($"/football/fixtures?comps=1&compSeasons=418&page=0&pageSize=10&sort=asc&statuses=U,L&altIds=true&teams={teamId}");
+            var response = await client.GetAsync($"/football/fixtures?comps=1&compSeasons=418&page=0&pageSize=100&sort=asc&statuses=U,L,C&altIds=true&teams={teamId}");
 
             _logger.LogInformation("Revieved upcoming fixtures for team with id {teamId}", teamId);
             var data = JsonSerializer.Deserialize<FixtureRoot>(await response.Content.ReadAsStreamAsync()) ?? new FixtureRoot();
 
-            return data.content.Where(c => c.kickoff.completeness > 0.0).Select(_mapper.Map<Fixture>).Take(6);
-        }
-    }
-
-    public async Task<IEnumerable<Fixture>> GetResultsForTeam(int teamId)
-    {
-        using (var client = _httpClientFactory.CreateClient("PL"))
-        {
-            var response = await client.GetAsync($"/football/fixtures?comps=1&compSeasons=418&page=0&pageSize=10&sort=desc&statuses=C&altIds=true&teams={teamId}");
-            _logger.LogInformation("Revieved results for team with id {teamId}", teamId);
-            var data = JsonSerializer.Deserialize<FixtureRoot>(await response.Content.ReadAsStreamAsync()) ?? new FixtureRoot();
-
-            return data.content.Where(c => c.kickoff.completeness > 0.0).Select(_mapper.Map<Fixture>).Take(6);
+            return data.content.Select(_mapper.Map<Fixture>);
         }
     }
 

@@ -1,13 +1,10 @@
 @using Data
-@using Services.Abstractions
-
-@inject IFootballDataService _dataService
 
 <MudContainer Style="overflow-y: scroll; max-height:750px;">
     @foreach (var fixture in Fixtures)
     {
         <div class="game-wrapper">
-            <MudText Style="clear:both;" Typo="Typo.h6">@fixture.DateAndTime.ToString("m")</MudText>
+            <MudText Style="clear:both;" Typo="Typo.h6">@GetFriendlyDate(fixture.DateAndTime)</MudText>
             <div class="teams">
                 <div class="home">
                     <MudText Typo="Typo.subtitle2">
@@ -16,12 +13,18 @@
                     </MudText>
                 </div>
                 <div class="time">
-                    <MudText Typo="Typo.overline">
-                        @fixture.DateAndTime.ToString("t")
-                    </MudText>
-                </div>
-                <div class="away">
-                    <MudText Typo="Typo.subtitle2">
+                    @if(ShowPastResults) {
+                        <MudText Typo="Typo.overline">
+                            @fixture.HomeTeamScore - @fixture.AwayTeamScore
+                        </MudText>
+                    } else {
+                        <MudText Typo="Typo.overline">
+                            @fixture.DateAndTime.ToString("t")
+                        </MudText>
+                    }
+                  </div>  
+                 <div cla   ss="away">
+                        <MudText Typo="Typo.subtitle2">
                         <img height="25" width="25" class="team-crest" src="@GetCrest(fixture.AwayTeamAltId)" />
                         @fixture.AwayTeam
                     </MudText>
@@ -37,14 +40,26 @@
 </MudContainer>
 
 @code {
-    [Parameter] public int TeamId { get; set; }
     [Parameter] public string TeamName { get; set; } = string.Empty;
-    private IEnumerable<Fixture> Fixtures { get; set; } = new List<Fixture>();
+    [Parameter] public bool ShowPastResults { get; set; } = false;
+    [Parameter] public IEnumerable<Fixture> Fixtures { get; set; } = new List<Fixture>();
 
-    protected override async void OnInitialized()
+    private string GetFriendlyDate(DateTime date)
     {
-        Fixtures = await _dataService.GetUpcomingFixtureForTeam(TeamId);
-        StateHasChanged();
+        if (date.Date == DateTime.Today)
+        {
+            return "Today";
+        }
+        else if (date.Date == DateTime.Today.AddDays(1))
+        {
+            return "Tomorrow";
+        }
+        else if (date.Date == DateTime.Today.AddDays(-1))
+        {
+            return "Yesterday";
+        }
+
+        return date.ToString("m");
     }
 
     private string GetCrest(string altId)

@@ -1,12 +1,17 @@
+@using Data
+@using Services.Abstractions
+
+@inject IFootballDataService _dataService
+
 <MudDialog DisableSidePadding="true" Class="settings-modal pa-0">
     <DialogContent>
         <MudText Typo="Typo.h4" Align="Align.Center" Class="pb-5">@TeamName</MudText>
         <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-4">
             <MudTabPanel Text="Upcoming fixtures">
-                <UpcomingFixtures TeamId="@TeamId" TeamName="@TeamName" />
+                <PastOrUpcomingResults Fixtures="UpcomingFixtures" TeamName="@TeamName" />
             </MudTabPanel>
             <MudTabPanel Text="Results">
-                <PastResults TeamId="@TeamId" TeamName="@TeamName" />
+                <PastOrUpcomingResults Fixtures="PastResults" ShowPastResults="true" TeamName="@TeamName" />
             </MudTabPanel>
         </MudTabs>
     </DialogContent>
@@ -15,10 +20,30 @@
     </DialogActions>
 </MudDialog>
 
-
 @code {
     [Parameter] public int TeamId { get; set; }
     [Parameter] public string TeamName { get; set; } = string.Empty;
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = new();
+
+    private IEnumerable<Fixture> UpcomingFixtures { get; set; } = new List<Fixture>();
+    private IEnumerable<Fixture> PastResults { get; set; } = new List<Fixture>();
+
     void Cancel() => MudDialog.Cancel();
+
+    protected override async void OnInitialized()
+    {
+        var allFixtures = await _dataService.GetFixturesForTeamAsync(TeamId);
+
+        UpcomingFixtures = allFixtures
+            .Where(f => f.Status == "L" || f.Status == "U" && f.DateAndTime > DateTime.MinValue)
+            .OrderBy(f => f.DateAndTime)
+            .Take(5);
+
+        PastResults = allFixtures
+            .Where(f => f.Status == "C" && f.DateAndTime < DateTime.Now)
+            .OrderByDescending(f => f.DateAndTime)
+            .Take(5);
+
+        StateHasChanged();
+    }
 }
