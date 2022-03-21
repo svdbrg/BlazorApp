@@ -47,6 +47,8 @@
     private async void logOut()
     {
         await _localStorage.RemoveAsync("auth");
+        await _localStorage.RemoveAsync("documentSuffix");
+        
         _navigationManager.NavigateTo("/", true);
     }
 
