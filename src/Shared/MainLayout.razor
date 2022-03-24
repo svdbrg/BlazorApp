@@ -112,6 +112,7 @@
         {
             _logger.LogInformation("Unable to read authentication, removing key.");
             await _localStorage.RemoveAsync("auth");
+            await _localStorage.RemoveAsync("documentSuffix");
 
             _navigationManager.NavigateTo("/", true);
         }
