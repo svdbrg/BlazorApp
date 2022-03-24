@@ -11,6 +11,9 @@ A live display for current standings and upcoming, ongoing and past fixtures in 
 ### Travel Planner
 Displays when the next bus leaves from bus stops near my house to Slussen (default).
 
+### Bus Line Viewer
+View any given pre-defined bus line and its stops on a map.
+
 ## Technologies
 - .NET 6
 - Server-Side Blazor
@@ -24,6 +27,7 @@ Displays when the next bus leaves from bus stops near my house to Slussen (defau
 - HtmlAgilityPack
 - MudBlazor
 - Google.Cloud.Firestore
+- Bing Maps
 
 ## Instructions
 - Clone repo
