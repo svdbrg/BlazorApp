@@ -25,10 +25,10 @@
 })();
 
 var map, infobox;
-function loadBingMap(stuff) {
-    var box = new Microsoft.Maps.LocationRect.fromEdges(stuff.box.maxLat, stuff.box.minLon, stuff.box.minLat, stuff.box.maxLon);
+function loadBingMap(mapInfo, bingCredentials) {
+    var box = new Microsoft.Maps.LocationRect.fromEdges(mapInfo.box.maxLat, mapInfo.box.minLon, mapInfo.box.minLat, mapInfo.box.maxLon);
     map = new Microsoft.Maps.Map(document.getElementById('map'), {
-        credentials: 'AlQ2_Xk6I3LPBdC1bHpgkv7IMHl2YuuEVCoTgbp-SQnxBA3JC2H6YOjIt51Dd4p5',
+        credentials: bingCredentials,
         bounds: box
     });
 
@@ -38,11 +38,11 @@ function loadBingMap(stuff) {
 
     infobox.setMap(map);
 
-    for (let index = 0; index < stuff.stops.length; index++) {
-        var loc = new Microsoft.Maps.Location(stuff.stops[index].locationNorthingCoordinate, stuff.stops[index].locationEastingCoordinate);
+    for (let index = 0; index < mapInfo.stops.length; index++) {
+        var loc = new Microsoft.Maps.Location(mapInfo.stops[index].locationNorthingCoordinate, mapInfo.stops[index].locationEastingCoordinate);
         var pin = new Microsoft.Maps.Pushpin(loc);
         pin.metadata = {
-            title: stuff.stops[index].stopPointName
+            title: mapInfo.stops[index].stopPointName
         }
         Microsoft.Maps.Events.addHandler(pin, 'click', pushpinClicked);
         map.entities.push(pin);

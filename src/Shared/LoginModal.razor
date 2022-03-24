@@ -8,7 +8,7 @@
 
 <MudContainer MaxWidth="MaxWidth.Small">
     <MudTextField @bind-Value="Password" Label="Password" Variant="Variant.Text" InputType="@PasswordInput"
-        Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" />
+        Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" Immediate="true" />
     <MudContainer Style="margin-top: 30px; text-align:center;">
         <MudFab Size="Size.Small" StartIcon="@Icons.Filled.Login" Color="Color.Primary" OnClick="Login" Label="Enter" />
         <div id="error-message">@errorMessage</div>

@@ -15,6 +15,7 @@
         <MudListItem Text="449" Icon="@Icons.Filled.Bookmark" OnClick='() => changeLine("449")' IconColor="Color.Primary" />
         <MudListItem Text="471" Icon="@Icons.Filled.Bookmark" OnClick='() => changeLine("471")' IconColor="Color.Primary" />
     </MudList>
+    <MudTextField @bind-Value="selectedLine" T="string" OnBlur='() => changeLine(selectedLine)' />
 </MudPaper>
 <div id="map" style="height:500px;width:100%;"> </div>
 
@@ -40,7 +41,7 @@
         _loadingState.ToggleLoading(true);
 
         var result = await _stopsAndMaps.GetStopsOnLineAsync(selectedLine);
-        await JSRuntime.InvokeVoidAsync("loadBingMap", result);
+        await JSRuntime.InvokeVoidAsync("loadBingMap", result, "AlQ2_Xk6I3LPBdC1bHpgkv7IMHl2YuuEVCoTgbp-SQnxBA3JC2H6YOjIt51Dd4p5");
 
         _loadingState.ToggleLoading(false);
     }
