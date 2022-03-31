@@ -7,7 +7,7 @@
 @inject IAuthenticationDataService _authService
 
 <MudContainer MaxWidth="MaxWidth.Small">
-    <MudTextField @bind-Value="Password" Label="Password" Variant="Variant.Text" InputType="@PasswordInput"
+    <MudTextField @bind-Value="Password" Label="Password" Variant="Variant.Text" InputType="@PasswordInput" OnKeyDown="Enter"
         Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" Immediate="true" />
     <MudContainer Style="margin-top: 30px; text-align:center;">
         <MudFab Size="Size.Small" StartIcon="@Icons.Filled.Login" Color="Color.Primary" OnClick="Login" Label="Enter" />
@@ -39,7 +39,7 @@
         }
     }
 
-    private async void Login()
+    private async Task Login()
     {
         var auth = await _authService.Authenticate(Password);
         
@@ -58,6 +58,14 @@
             errorMessage = "Wrong password";
 
             await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    public async Task Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await Login();
         }
     }
 }
