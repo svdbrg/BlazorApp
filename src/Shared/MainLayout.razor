@@ -12,7 +12,7 @@
 
 <PageTitle>BlazorApp</PageTitle>
 
-<MudThemeProvider IsDarkMode="_appState.IsDarkMode" />
+<MudThemeProvider IsDarkMode="isDarkMode" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 <MudOverlay Visible="_loadingState.IsLoading" DarkBackground="true" Absolute="true">
@@ -50,8 +50,6 @@
         _navigationManager.LocationChanged += LocationChanged;
         _appState.OnChange += OnAppStateChange;
         _loadingState.OnChange += OnAppStateChange;
-
-        isDarkMode = _appState.IsDarkMode;
     }
 
     public void Dispose()
@@ -60,18 +58,32 @@
         _loadingState.OnChange -= OnAppStateChange;
     }
 
-    void ToggleDarkMode()
+    async void ToggleDarkMode()
     {
         isDarkMode = !_appState.IsDarkMode;
-        Console.WriteLine($"Set darkmode to : {isDarkMode}");
         _appState.SetDarkMode(isDarkMode);
+        await _localStorage.SaveStringAsync("IsDarkMode", isDarkMode.ToString());
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+            _loadingState.ToggleLoading(true);
+            if (bool.TryParse(await _localStorage.GetStringAsync("IsDarkMode"), out var darkmode))
+            {
+                isDarkMode = darkmode;
+                _appState.SetDarkMode(isDarkMode);
+            }
+            else
+            {
+                isDarkMode = _appState.IsDarkMode;
+            }
+
+            await InvokeAsync(StateHasChanged);
+
             await IsAuthenticated();
+            _loadingState.ToggleLoading(false);
         }
     }
 
