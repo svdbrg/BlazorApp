@@ -1,8 +1,10 @@
 using System.Text.Json;
 using AutoMapper;
+using BlazorApp.Features.Shared.Models;
 using BlazorApp.Features.TravelPlanner.Models;
 using BlazorApp.Features.TravelPlanner.Services.Abstractions;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 
 namespace BlazorApp.Features.TravelPlanner.Services;
 
@@ -11,12 +13,14 @@ public class SlStopsAndMapsDataClient : IStopsAndMapsDataClient
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IMapper _mapper;
     private readonly IMemoryCache _cache;
+    private readonly ApiKeys _keys;
 
-    public SlStopsAndMapsDataClient(IHttpClientFactory httpClientFactory, IMapper mapper, IMemoryCache cache)
+    public SlStopsAndMapsDataClient(IHttpClientFactory httpClientFactory, IMapper mapper, IMemoryCache cache, IOptions<ApiKeys> keys)
     {
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+        _keys = keys?.Value ?? throw new ArgumentNullException(nameof(keys));
     }
 
     public async Task<RouteStopsDto> GetStopsOnLineAsync(string lineNumber)
@@ -25,7 +29,7 @@ public class SlStopsAndMapsDataClient : IStopsAndMapsDataClient
         {
             if (!_cache.TryGetValue<LinesDTO>("buslines", out var linesResult))
             {
-                var linesResponse = await client.GetAsync("https://api.sl.se/api2/LineData.json?key=f18412b0164348ba85445d876debe0d4&model=jour&DefaultTransportModeCode=BUS");
+                var linesResponse = await client.GetAsync($"/api2/LineData.json?key={_keys.SlLineData}&model=jour&DefaultTransportModeCode=BUS");
                 linesResult = JsonSerializer.Deserialize<LinesDTO>(await linesResponse.Content.ReadAsStringAsync());
 
                 if (linesResult != null)
@@ -49,7 +53,7 @@ public class SlStopsAndMapsDataClient : IStopsAndMapsDataClient
 
             if (!_cache.TryGetValue<StopsDTO>("busstops", out var stops))
             {
-                var x = await client.GetAsync("https://api.sl.se/api2/LineData.json?key=f18412b0164348ba85445d876debe0d4&model=stop");
+                var x = await client.GetAsync($"/api2/LineData.json?key={_keys.SlLineData}&model=stop");
                 stops = JsonSerializer.Deserialize<StopsDTO>(await x.Content.ReadAsStringAsync());
 
                 if (stops != null)
@@ -71,7 +75,7 @@ public class SlStopsAndMapsDataClient : IStopsAndMapsDataClient
 
             if (interestingStops == null)
             {
-                throw new NullReferenceException("No stops found");
+                throw new KeyNotFoundException("No stops found");
             }
 
             return new RouteStopsDto

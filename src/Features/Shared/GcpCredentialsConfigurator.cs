@@ -20,7 +20,6 @@ public static class GcpCredentialsConfigurator
             File.WriteAllText($"{dir}/gcp.json", filecontent);
 
             filePath = $"{dir}/gcp.json";
-
         }
 
         Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", filePath);
