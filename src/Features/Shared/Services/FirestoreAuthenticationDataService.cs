@@ -2,6 +2,7 @@ using AutoMapper;
 using BlazorApp.Features.Shared.Models;
 using BlazorApp.Features.Shared.Services.Abstractions;
 using Google.Cloud.Firestore;
+using Microsoft.Extensions.Options;
 
 namespace BlazorApp.Features.Shared.Services;
 
@@ -9,17 +10,18 @@ public class FirestoreAuthenticationDataService : IAuthenticationDataService
 {
     private readonly IMapper _mapper;
     private readonly ILogger<FirestoreAuthenticationDataService> _logger;
+    private readonly EncryptionKeys _encryptionKeys;
 
-
-    public FirestoreAuthenticationDataService(IMapper mapper, ILogger<FirestoreAuthenticationDataService> logger)
+    public FirestoreAuthenticationDataService(IMapper mapper, ILogger<FirestoreAuthenticationDataService> logger, IOptions<EncryptionKeys> encryptionKeys)
     {
         _mapper = mapper ?? throw new NullReferenceException(nameof(mapper));
         _logger = logger ?? throw new NullReferenceException(nameof(logger));
+        _encryptionKeys = encryptionKeys?.Value ?? throw new NullReferenceException(nameof(encryptionKeys));
     }
 
     public async Task<Authentication> Authenticate(string password)
     {
-        var token = Encryption.EncryptString($"{password}-{Encryption.Salt}", Encryption.AuthorizationEncryptionKey);
+        var token = Encryption.EncryptString($"{password}-{_encryptionKeys.Salt}", _encryptionKeys.AuthorizationEncryptionKey);
 
         var db = FirestoreDb.Create("mortgager");
         var collection = db.Collection("passwords");
@@ -57,7 +59,7 @@ public class FirestoreAuthenticationDataService : IAuthenticationDataService
 
     public async Task SaveNewUser(Authentication newUser, string password)
     {
-        var token = Encryption.EncryptString($"{password}-{Encryption.Salt}", Encryption.AuthorizationEncryptionKey);
+        var token = Encryption.EncryptString($"{password}-{_encryptionKeys.Salt}", _encryptionKeys.AuthorizationEncryptionKey);
         newUser.EncryptedPassword = token;
 
         var newUserDto = _mapper.Map<AuthenticationDto>(newUser);

@@ -45,6 +45,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 });
 
 builder.Services.Configure<ApiKeys>(builder.Configuration.GetSection("ApiKeys"));
+builder.Services.Configure<EncryptionKeys>(builder.Configuration.GetSection("EncryptionKeys"));
 
 var app = builder.Build();
 

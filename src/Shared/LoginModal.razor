@@ -1,10 +1,12 @@
 @using BlazorApp.Features.Shared.Services.Abstractions
 @using Features.Shared.Services
 @using BlazorApp.Features.Shared.Models
+@using Microsoft.Extensions.Options
 
 @inject ILocalStorage _localStorage
 @inject AuthState _authState
 @inject IAuthenticationDataService _authService
+@inject IOptions<EncryptionKeys> _encryptionKeys
 
 <MudContainer MaxWidth="MaxWidth.Small">
     <MudTextField @bind-Value="Password" Label="Password" Variant="Variant.Text" InputType="@PasswordInput" OnKeyDown="Enter"
@@ -46,7 +48,7 @@
         if (auth.IsAuthenticated)
         {
             errorMessage = "";
-            var token = Encryption.EncryptString($"{Password}-{auth.IsAdmin}-{auth.Name}-{Encryption.Salt}", Encryption.AuthorizationEncryptionKey);
+            var token = Encryption.EncryptString($"{Password}-{auth.IsAdmin}-{auth.Name}-{_encryptionKeys.Value.Salt}", _encryptionKeys.Value.AuthorizationEncryptionKey);
             await _localStorage.SaveStringAsync("auth", token);
 
             _authState.IsAuthenticated();

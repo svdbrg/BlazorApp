@@ -1,13 +1,11 @@
 using System.Security.Cryptography;
 using System.Text;
+using BlazorApp.Features.Shared.Models;
 
 namespace BlazorApp.Features.Shared.Services;
 
 public static class Encryption
 {
-    public const string AuthorizationEncryptionKey = "b14ca5898a4e4133bbce2ea2315a1916";
-    public const string DocumentSuffixEncryptionKey = "c25db6889b5f589assfuha934tetjre4";
-    public const string Salt = "au9sdui";
     public static string EncryptString(string plainText, string key)
     {
         byte[] iv = new byte[16];

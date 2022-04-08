@@ -2,12 +2,14 @@
 @using BlazorApp.Features.Shared.Services.Abstractions
 @using Features.Shared.Services
 @using BlazorApp.Features.Shared.Models
+@using Microsoft.Extensions.Options
 
 @inject IMortgageDataService _mortgageDataService
 @inject ILocalStorage _localStorage
 @inject AppState _appState
 @inject IJSRuntime _js
 @inject SettingsState _settingsState
+@inject IOptions<EncryptionKeys> _encryptionKeys
 
 <table>
     <tbody>
@@ -66,7 +68,7 @@
 
         ExistingMortgages = await _mortgageDataService.GetAllMortgageDocuments();
         SelectedMortgage = string.IsNullOrWhiteSpace(encryptedMortgage) ? "" : Encryption.DecryptString(encryptedMortgage,
-        Encryption.DocumentSuffixEncryptionKey);
+        _encryptionKeys.Value.DocumentSuffixEncryptionKey);
     }
 
     private async void saveMortgageSettings()
@@ -82,7 +84,7 @@
                 SelectedMortgage = newMortgage;
             }
 
-            var encryptedMortgage = Encryption.EncryptString(SelectedMortgage, Encryption.DocumentSuffixEncryptionKey);
+            var encryptedMortgage = Encryption.EncryptString(SelectedMortgage, _encryptionKeys.Value.DocumentSuffixEncryptionKey);
             await _localStorage.SaveStringAsync("documentSuffix", encryptedMortgage ?? (Guid.NewGuid().ToString()));
 
             await InvokeAsync(StateHasChanged);

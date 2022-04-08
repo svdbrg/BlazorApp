@@ -1,9 +1,11 @@
 using AutoMapper;
 using BlazorApp.Features.Mortgager.Data;
 using BlazorApp.Features.Mortgager.Services.Abstractions;
+using BlazorApp.Features.Shared.Models;
 using BlazorApp.Features.Shared.Services;
 using BlazorApp.Features.Shared.Services.Abstractions;
 using Google.Cloud.Firestore;
+using Microsoft.Extensions.Options;
 
 namespace BlazorApp.Features.Mortgager.Services;
 
@@ -12,12 +14,14 @@ public class FirestoreMortgageDataService : IMortgageDataService
     private readonly ILocalStorage _localStorage;
     private readonly ILogger<FirestoreMortgageDataService> _logger;
     private readonly IMapper _mapper;
+    private readonly EncryptionKeys _encryptionKeys;
 
-    public FirestoreMortgageDataService(ILocalStorage localStorage, ILogger<FirestoreMortgageDataService> logger, IMapper mapper)
+    public FirestoreMortgageDataService(ILocalStorage localStorage, ILogger<FirestoreMortgageDataService> logger, IMapper mapper, IOptions<EncryptionKeys> encryptionKeys)
     {
         _localStorage = localStorage ?? throw new NullReferenceException(nameof(localStorage));
         _logger = logger ?? throw new NullReferenceException(nameof(logger));
         _mapper = mapper ?? throw new NullReferenceException(nameof(mapper));
+        _encryptionKeys = encryptionKeys?.Value ?? throw new NullReferenceException(nameof(encryptionKeys));
     }
 
     public async Task<MortgageItem?> GetSavedDataAsync()
@@ -30,7 +34,7 @@ public class FirestoreMortgageDataService : IMortgageDataService
             throw new FileNotFoundException("Did not find documentSuffix in local storage");
         }
 
-        var documentSuffix = Encryption.DecryptString(encryptedDocumentSuffix, Encryption.DocumentSuffixEncryptionKey);
+        var documentSuffix = Encryption.DecryptString(encryptedDocumentSuffix, _encryptionKeys.DocumentSuffixEncryptionKey);
 
         if (string.IsNullOrWhiteSpace(documentSuffix))
         {
@@ -73,7 +77,7 @@ public class FirestoreMortgageDataService : IMortgageDataService
             return false;
         }
 
-        var documentSuffix = Encryption.DecryptString(encryptedDocumentSuffix, Encryption.DocumentSuffixEncryptionKey);
+        var documentSuffix = Encryption.DecryptString(encryptedDocumentSuffix, _encryptionKeys.DocumentSuffixEncryptionKey);
 
         if (string.IsNullOrWhiteSpace(documentSuffix))
         {
