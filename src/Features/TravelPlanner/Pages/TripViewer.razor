@@ -2,10 +2,12 @@
 
 @using BlazorApp.Features.TravelPlanner.Services.Abstractions
 @using BlazorApp.Features.Shared.Models
+@using Microsoft.Extensions.Options
 
 @inject IJSRuntime JSRuntime
 @inject IStopsAndMapsDataClient _stopsAndMaps
 @inject LoadingState _loadingState
+@inject IOptions<ApiKeys> _keys
 
 <MudText Typo="Typo.h2">@selectedLine</MudText>
 <MudPaper Width="100%">
@@ -41,7 +43,7 @@
         _loadingState.ToggleLoading(true);
 
         var result = await _stopsAndMaps.GetStopsOnLineAsync(selectedLine);
-        await JSRuntime.InvokeVoidAsync("loadBingMap", result, "AlQ2_Xk6I3LPBdC1bHpgkv7IMHl2YuuEVCoTgbp-SQnxBA3JC2H6YOjIt51Dd4p5");
+        await JSRuntime.InvokeVoidAsync("loadBingMap", result, _keys.Value.Bing);
 
         _loadingState.ToggleLoading(false);
     }

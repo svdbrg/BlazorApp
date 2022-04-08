@@ -4,14 +4,14 @@ using BlazorApp.Features.TravelPlanner.Configuration;
 using BlazorApp.Features.Shared;
 using BlazorApp.Features.Shared.Models;
 using MudBlazor.Services;
-using BlazorApp.Features.TravelPlanner.Services.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration
-    .AddJsonFile("appsettings.local.json", 
-                optional: true, 
-                reloadOnChange: true);
+    .AddJsonFile("appsettings.local.json",
+                optional: true,
+                reloadOnChange: true)
+                .AddEnvironmentVariables();
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
@@ -44,6 +44,8 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto;
 });
 
+builder.Services.Configure<ApiKeys>(builder.Configuration.GetSection("ApiKeys"));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -59,7 +61,6 @@ if (!app.Environment.IsDevelopment())
         .UseHttpsRedirection();
 }
 
-
 app.AddGoogleCredentials(builder);
 
 app.UseStaticFiles();
@@ -71,6 +72,6 @@ app.UseRequestLocalization("sv-SE");
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
-app.MapGet("/api/get-line-info/{line}", (IStopsAndMapsDataClient stopsAndMaps, string line) => stopsAndMaps.GetStopsOnLineAsync(line));
+//app.MapGet("/api/get-line-info/{line}", (IStopsAndMapsDataClient stopsAndMaps, string line) => stopsAndMaps.GetStopsOnLineAsync(line));
 
 app.Run();
