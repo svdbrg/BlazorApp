@@ -71,9 +71,11 @@ public class SlTravelPlannerDataClient : ITravelPlannerDataClient
     {
         var minutesToDeparture = Math.Round(DateTime.Parse(departure.date + " " + departure.time).Subtract(DateTime.Now).TotalMinutes);
         var lineNumber = departure.ProductAtStop.displayNumber;
-        var direction = departure.direction
-            .Substring(0, departure.direction.IndexOf('('))
-            .Trim();
+        var direction = departure.direction.Contains("(") ? 
+            departure.direction
+                .Substring(0, departure.direction.IndexOf('('))
+                .Trim() 
+            : departure.direction;
 
         if (minutesToDeparture < 1)
         {

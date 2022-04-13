@@ -52,14 +52,18 @@ function loadBingMap(mapInfo, bingCredentials) {
 }
 
 function pushpinClicked(e) {
+    infobox.setOptions({
+        location: e.target.getLocation(),
+        title: e.target.metadata.title,
+        visible: true,
+        description: 'Loading...'
+    });
+    
     if (e.target.metadata) {
         fetch('/api/get-departures-for-stop/' + e.target.metadata.title).then(function (response) {
             return response.json();
         }).then(function (data) {
             infobox.setOptions({
-                location: e.target.getLocation(),
-                title: e.target.metadata.title,
-                visible: true,
                 description: '<ul>' + 
                     data.map(function (d) { 
                         return '<li>' + d + '</li>' 
