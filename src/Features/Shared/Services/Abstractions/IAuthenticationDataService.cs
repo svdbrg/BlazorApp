@@ -6,6 +6,6 @@ public interface IAuthenticationDataService
 {
     Task<Authentication> Authenticate(string password);
     Task<List<Authentication>> GetAllAccounts();
-    Task SaveNewUser(Authentication newUser, string password);
-    Task DeleteUser(Authentication user);
+    Task<bool> SaveNewUser(Authentication newUser, string password);
+    Task<bool> DeleteUser(Authentication user);
 }

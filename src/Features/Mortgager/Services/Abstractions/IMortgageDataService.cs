@@ -7,5 +7,5 @@ public interface IMortgageDataService
     Task<bool> SaveDataAsync(MortgageItem item);
     Task<MortgageItem?> GetSavedDataAsync();
     Task<List<string>> GetAllMortgageDocuments();
-    Task DeleteMortgageAsync(string suffix);
+    Task<bool> DeleteMortgageAsync(string suffix);
 }

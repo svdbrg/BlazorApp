@@ -53,10 +53,23 @@ function loadBingMap(mapInfo, bingCredentials) {
 
 function pushpinClicked(e) {
     if (e.target.metadata) {
-        infobox.setOptions({
-            location: e.target.getLocation(),
-            title: e.target.metadata.title,
-            visible: true
+        fetch('/api/get-departures-for-stop/' + e.target.metadata.title).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            infobox.setOptions({
+                location: e.target.getLocation(),
+                title: e.target.metadata.title,
+                visible: true,
+                description: '<ul>' + 
+                    data.map(function (d) { 
+                        return '<li>' + d + '</li>' 
+                    })
+                    .join('') + 
+                    '</ul>'
+            });
+        }).catch(function (err) {
+            // There was an error
+            console.warn('Something went wrong.', err);
         });
     }
 }

@@ -96,20 +96,23 @@ public class FirestoreMortgageDataService : IMortgageDataService
 
         var result = await docRef.SetAsync(mortgageItemDto);
 
-        return true;
+        return result?.UpdateTime != null;
     }
 
     public async Task<List<string>> GetAllMortgageDocuments()
     {
         var db = FirestoreDb.Create("mortgager");
         var collection = db.Collection("mortgages");
+
         return await collection.ListDocumentsAsync().Select(d => d.Id.Replace("mortgage-", "")).ToListAsync();
     }
 
-    public async Task DeleteMortgageAsync(string suffix)
+    public async Task<bool> DeleteMortgageAsync(string suffix)
     {
         var db = FirestoreDb.Create("mortgager");
         var document = db.Collection("mortgages").Document($"mortgage-{suffix}");
-        await document.DeleteAsync();
+        var result = await document.DeleteAsync();
+
+        return result?.UpdateTime != null;
     }
 }

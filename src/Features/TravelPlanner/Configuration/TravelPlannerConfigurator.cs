@@ -37,10 +37,15 @@ public static class LiveDisplayerConfigurator
         services.AddTransient<ITravelPlannerRepository, FirestoreTravelPlannerRepository>();
         services.AddTransient<ITravelPlannerService, TravelPlannerService>();
         services.AddSingleton<IStopsAndMapsDataClient, SlStopsAndMapsDataClient>();
-        
+
         services.AddHttpClient("TravelPlanner", c =>
         {
             c.BaseAddress = new Uri("https://api.sl.se/");
+        });
+
+        services.AddHttpClient("Resrobot", c =>
+        {
+            c.BaseAddress = new Uri("https://api.resrobot.se/");
         });
 
         services.Configure<List<FeatureInformation>>(opt =>

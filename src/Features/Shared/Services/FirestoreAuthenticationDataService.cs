@@ -57,7 +57,7 @@ public class FirestoreAuthenticationDataService : IAuthenticationDataService
             .ToList();
     }
 
-    public async Task SaveNewUser(Authentication newUser, string password)
+    public async Task<bool> SaveNewUser(Authentication newUser, string password)
     {
         var token = Encryption.EncryptString($"{password}-{_encryptionKeys.Salt}", _encryptionKeys.AuthorizationEncryptionKey);
         newUser.EncryptedPassword = token;
@@ -66,12 +66,16 @@ public class FirestoreAuthenticationDataService : IAuthenticationDataService
 
         var db = FirestoreDb.Create("mortgager");
         var docref = await db.Collection("passwords").AddAsync(newUserDto);
+
+        return docref?.Id != null;
     }
 
-    public async Task DeleteUser(Authentication user)
+    public async Task<bool> DeleteUser(Authentication user)
     {
         var db = FirestoreDb.Create("mortgager");
         var document = db.Collection("passwords").Document(user.Id);
-        await document.DeleteAsync();
+        var result = await document.DeleteAsync();
+
+        return result?.UpdateTime != null;
     }
 }

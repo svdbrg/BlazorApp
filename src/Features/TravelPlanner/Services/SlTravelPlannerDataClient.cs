@@ -47,4 +47,39 @@ public class SlTravelPlannerDataClient : ITravelPlannerDataClient
                 t.Legs.First().Origin.Time < DateTime.Now.AddHours(1));
         }
     }
+
+    public async Task<IEnumerable<string>> GetDeparturesForStop(string stopName)
+    {
+        stopName += "|Stockholm";
+
+        using (var client = _httpClientFactory.CreateClient("Resrobot"))
+        {
+            var response = await client.GetAsync($"/v2.1/location.name?input={stopName}&format=json&accessId={_keys.Resrobot}");
+            var data = JsonSerializer.Deserialize<ResrobotDTO>(await response.Content.ReadAsStreamAsync());
+            var extid = data?.stopLocationOrCoordLocation.First().StopLocation.extId;
+
+            var departureResponse = await client.GetAsync($"/v2.1/departureBoard?id={extid}&format=json&accessId={_keys.Resrobot}");
+            var result = JsonSerializer.Deserialize<DeparturesDTO>(await departureResponse.Content.ReadAsStreamAsync());
+
+            return result?.Departure?
+                .Select(FormatListString)
+                .Where(d => !string.IsNullOrWhiteSpace(d)) ?? new List<string>();
+        }
+    }
+
+    private string FormatListString(Departure departure)
+    {
+        var minutesToDeparture = Math.Round(DateTime.Parse(departure.date + " " + departure.time).Subtract(DateTime.Now).TotalMinutes);
+        var lineNumber = departure.ProductAtStop.displayNumber;
+        var direction = departure.direction
+            .Substring(0, departure.direction.IndexOf('('))
+            .Trim();
+
+        if (minutesToDeparture < 1)
+        {
+            return string.Empty;
+        }
+
+        return $"{minutesToDeparture} mins - {lineNumber} {direction}";
+    }
 }

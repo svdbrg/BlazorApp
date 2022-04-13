@@ -4,6 +4,7 @@ using BlazorApp.Features.TravelPlanner.Configuration;
 using BlazorApp.Features.Shared;
 using BlazorApp.Features.Shared.Models;
 using MudBlazor.Services;
+using BlazorApp.Features.TravelPlanner.Services.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,6 +74,6 @@ app.UseRequestLocalization("sv-SE");
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
-//app.MapGet("/api/get-line-info/{line}", (IStopsAndMapsDataClient stopsAndMaps, string line) => stopsAndMaps.GetStopsOnLineAsync(line));
+app.MapGet("/api/get-departures-for-stop/{stopname}", (ITravelPlannerDataClient travelPlannerDataClient, string stopname) => travelPlannerDataClient.GetDeparturesForStop(stopname));
 
 app.Run();

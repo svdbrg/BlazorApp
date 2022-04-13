@@ -6,6 +6,6 @@ public interface ITravelPlannerRepository
 {
     Task<List<PlaceOfInterest>> GetPlacesOfInterestAsync();
     Task<List<NearbyStop>> GetOtherNearbyStopsAsync();
-    Task SaveNewNearbyStopAsync(NearbyStop stop);
-    Task DeleteStopAsync(NearbyStop stop);
+    Task<bool> SaveNewNearbyStopAsync(NearbyStop stop);
+    Task<bool> DeleteStopAsync(NearbyStop stop);
 }

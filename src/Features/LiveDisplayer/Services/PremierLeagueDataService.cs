@@ -21,7 +21,7 @@ public class PremierLeagueDataService : IFootballDataService
 
     public async IAsyncEnumerable<Day> GetDaysAndFixturesAsync()
     {
-        var gameweekId = await GetGameweekId();
+        var gameweekId = await GetGameweekIdAsync();
         var fixtureDtos = await GetFixturesWithApiAsync(gameweekId);
         var dtosGrouped = fixtureDtos.content.GroupBy(c => c.kickoff.kickoffDay);
 
@@ -111,7 +111,7 @@ public class PremierLeagueDataService : IFootballDataService
         }
     }
 
-    private async Task<string?> GetGameweekId()
+    private async Task<string?> GetGameweekIdAsync()
     {
         using (var client = _httpClientFactory.CreateClient())
         {

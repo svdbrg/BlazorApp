@@ -38,17 +38,21 @@ public class FirestoreTravelPlannerRepository : ITravelPlannerRepository
             .ToList();
     }
 
-    public async Task SaveNewNearbyStopAsync(NearbyStop stop)
+    public async Task<bool> SaveNewNearbyStopAsync(NearbyStop stop)
     {
         var newStopDto = _mapper.Map<NearbyStopDto>(stop);
         var db = FirestoreDb.Create("mortgager");
         var docref = await db.Collection("nearbystops").AddAsync(newStopDto);
+
+        return docref?.Id != null;
     }
 
-    public async Task DeleteStopAsync(NearbyStop stop)
+    public async Task<bool> DeleteStopAsync(NearbyStop stop)
     {
         var db = FirestoreDb.Create("mortgager");
         var doc = db.Collection("nearbystops").Document(stop.Id);
-        await doc.DeleteAsync();
+        var result = await doc.DeleteAsync();
+
+        return result?.UpdateTime != null;
     }
 }

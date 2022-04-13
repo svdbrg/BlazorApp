@@ -41,6 +41,7 @@
         _loadingState.ToggleLoading(true);
 
         table = await _dataFetcher.GetTableAsync();
+        
         days.Clear();
         Day dayWithPostponedGames = new();
 
