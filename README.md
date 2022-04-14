@@ -32,5 +32,6 @@ View any given pre-defined bus line and its stops on a map.
 ## Instructions
 - Clone repo
 - Place Google Firestore credentials in json-file and add absolute path to `appsettings.json`
+    * When running in container, supply environment variable with contents of firestore credentials json (see `src/Features/Shared/GcpCredentialsConfigurator.cs`)
 - `dotnet run`
 - Enjoy
