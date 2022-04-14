@@ -7,7 +7,7 @@
 @inject IJSRuntime JSRuntime
 @inject IStopsAndMapsDataClient _stopsAndMaps
 @inject LoadingState _loadingState
-@inject IOptions<ApiKeys> _keys
+@inject IOptions<Keys> _keys
 
 <MudText Typo="Typo.h2">@selectedLine</MudText>
 <MudPaper Width="100%">
@@ -44,7 +44,7 @@
         _loadingState.ToggleLoading(true);
 
         var result = await _stopsAndMaps.GetStopsOnLineAsync(selectedLine);
-        await JSRuntime.InvokeVoidAsync("loadBingMap", result, _keys.Value.Bing);
+        await JSRuntime.InvokeVoidAsync("loadBingMap", result, _keys.Value.ApiKeys.Bing);
 
         _loadingState.ToggleLoading(false);
     }

@@ -13,9 +13,9 @@ public class SlStopsAndMapsDataClient : IStopsAndMapsDataClient
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IMapper _mapper;
     private readonly IMemoryCache _cache;
-    private readonly ApiKeys _keys;
+    private readonly Keys _keys;
 
-    public SlStopsAndMapsDataClient(IHttpClientFactory httpClientFactory, IMapper mapper, IMemoryCache cache, IOptions<ApiKeys> keys)
+    public SlStopsAndMapsDataClient(IHttpClientFactory httpClientFactory, IMapper mapper, IMemoryCache cache, IOptions<Keys> keys)
     {
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -29,7 +29,7 @@ public class SlStopsAndMapsDataClient : IStopsAndMapsDataClient
         {
             if (!_cache.TryGetValue<LinesDTO>("buslines", out var linesResult))
             {
-                var linesResponse = await client.GetAsync($"/api2/LineData.json?key={_keys.SlLineData}&model=jour&DefaultTransportModeCode=BUS");
+                var linesResponse = await client.GetAsync($"/api2/LineData.json?key={_keys.ApiKeys.SlLineData}&model=jour&DefaultTransportModeCode=BUS");
                 linesResult = JsonSerializer.Deserialize<LinesDTO>(await linesResponse.Content.ReadAsStringAsync());
 
                 if (linesResult != null)
@@ -53,7 +53,7 @@ public class SlStopsAndMapsDataClient : IStopsAndMapsDataClient
 
             if (!_cache.TryGetValue<StopsDTO>("busstops", out var stops))
             {
-                var x = await client.GetAsync($"/api2/LineData.json?key={_keys.SlLineData}&model=stop");
+                var x = await client.GetAsync($"/api2/LineData.json?key={_keys.ApiKeys.SlLineData}&model=stop");
                 stops = JsonSerializer.Deserialize<StopsDTO>(await x.Content.ReadAsStringAsync());
 
                 if (stops != null)

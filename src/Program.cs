@@ -45,8 +45,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto;
 });
 
-builder.Services.Configure<ApiKeys>(builder.Configuration.GetSection("ApiKeys"));
-builder.Services.Configure<EncryptionKeys>(builder.Configuration.GetSection("EncryptionKeys"));
+builder.Services.Configure<Keys>(builder.Configuration);
 
 var app = builder.Build();
 

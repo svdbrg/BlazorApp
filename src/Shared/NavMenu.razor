@@ -9,7 +9,7 @@
 @inject IDialogService DialogService
 @inject AuthState _authState
 @inject ILogger<NavMenu> _logger
-@inject IOptions<EncryptionKeys> _encryptionKeys
+@inject IOptions<Keys> _keys
 
 <MudNavMenu Bordered="true">
     <MudNavLink Icon="@Icons.Filled.Home" Href="/#">Home</MudNavLink>
@@ -83,7 +83,7 @@
             var authString = await _localStorage.GetStringAsync("auth");
             if (authString != null)
             {
-                var decryptedAuthString = Encryption.DecryptString(authString, _encryptionKeys.Value.AuthorizationEncryptionKey);
+                var decryptedAuthString = Encryption.DecryptString(authString, _keys.Value.EncryptionKeys.AuthorizationEncryptionKey);
 
                 isAdmin = bool.Parse(decryptedAuthString.Split('-')[1]);
             }
