@@ -9,10 +9,10 @@ A tool for calculating your mortgage and the monthly cost for your apartment or 
 A live display for current standings and upcoming, ongoing and past fixtures in Barclays Premier League.
 
 ### Travel Planner
-Displays when the next bus leaves from bus stops near my house to Slussen (default).
+Displays when the next bus leaves from one bus stop to another.
 
 ### Bus Line Viewer
-View any given pre-defined bus line and its stops on a map.
+View any bus line and its stops on a map.
 
 ## Technologies
 - .NET 6
